@@ -24,8 +24,8 @@ public class MecanumDrive extends OpMode {
     //Slide Motors
     private DcMotor SlideR, SlideL, Intake;
 
-    private Servo BucketHold, Bucket;
-    private Servo Drone;
+    private Servo BucketHold, BucketR, BucketL, Drone;
+
 
     //limitswitch
     private TouchSensor LimitSwitch;
@@ -52,13 +52,21 @@ public class MecanumDrive extends OpMode {
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         back_right_drive.setDirection(DcMotor.Direction.REVERSE);
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
-        Bucket = hardwareMap.get(Servo.class, "Bucket");
+        BucketL = hardwareMap.get(Servo.class, "BucketL");
+        BucketHold = hardwareMap.get(Servo.class, "BucketHold");
+        BucketR = hardwareMap.get(Servo.class, "BucketR");
         Drone = hardwareMap.get(Servo.class, "Drone");
         Intake = hardwareMap.dcMotor.get("Intake");
+        BucketL.setDirection(Servo.Direction.REVERSE);
 
 
 
 
+        //O position for Servos Default
+/*
+        BucketR.setPosition(0);
+        BucketL.setPosition(1);
+*/
 
 
     }
@@ -91,14 +99,18 @@ public class MecanumDrive extends OpMode {
 
         //attachments
 
+
         if (gamepad2.x){
-            Bucket.setPosition(0.2);
+            Drone.setPosition(0.2);
+            Drone.setPosition(0.2);
         }
         if(gamepad2.dpad_down){
-            Bucket.setPosition(0.7);
+            Drone.setPosition(0.7);
+            Drone.setPosition(0.2);
         }
         if(gamepad2.dpad_up){
-            Bucket.setPosition(0);
+            Drone.setPosition(0);
+            Drone.setPosition(0.2);
         }
         if (rightbumper) {
 
@@ -130,22 +142,22 @@ public class MecanumDrive extends OpMode {
 
         if (UpSlideBumper) {
             //BucketHold.setPosition(0);
-            Bucket.setPosition(0.7);
+
             SlideR.setPower(0.5);
             SlideL.setPower(0.5);
+            BucketHold.setPosition(0.1);
 
         }
         else{
             SlideR.setPower(0.1);
             SlideL.setPower(0.1);
         }
-        if(gamepad2.b){
-            Bucket.setPosition(1);
-        }
+
 
         //Slide Goes Down
         if(!LimitSwitch.isPressed()){
             if(DownSlideBumper){
+
 
                 SlideR.setPower(-0.4);
                 SlideL.setPower(-0.4);
@@ -158,12 +170,36 @@ public class MecanumDrive extends OpMode {
             SlideL.setPower(0);
         }
 
+        if (gamepad2.y){
+            BucketR.setPosition(0.415);
+            BucketL.setPosition(0.35);
+        }
 
+        if(gamepad2.b){
+            BucketR.setPosition(0.115);
+            BucketL.setPosition(0.05);
+            sleep(1500);
+            BucketHold.setPosition(0.3);
+        }
 
+        if(gamepad2.x){
+            BucketR.setPosition(0.515);
+            BucketL.setPosition(0.45);
+        }
+
+        // open
+        if(gamepad2.left_trigger > 0.3) {
+            BucketHold.setPosition(0.1);
+        }
+
+        // close
+        if(gamepad2.right_trigger > 0.3) {
+            BucketHold.setPosition(0.3);
+        }
 
         //intake
         if(gamepad2.a) {
-            Intake.setPower(1);
+            Intake.setPower(0.8);
             telemetry.addData("Motor", "1 power");
         }
       /*  else if(gamepad2.b){
