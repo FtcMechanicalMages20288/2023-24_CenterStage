@@ -29,13 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.robotcore.external.tfod.TfodParameters.CurrentGame.LABELS;
-
 import android.util.Log;
 import android.util.Size;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -222,7 +219,7 @@ public class TensorFlowTest extends LinearOpMode {
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
-                .setModelAssetName("RedElementCenterStage.tflite")
+                .setModelAssetName("RedElement.tflite")
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
                 // Use setModelFileName() if you have downloaded a custom team model to the Robot Controller.

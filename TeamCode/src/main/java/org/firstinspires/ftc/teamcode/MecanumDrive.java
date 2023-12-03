@@ -31,7 +31,9 @@ public class MecanumDrive extends OpMode {
     private TouchSensor LimitSwitch;
 
 
-
+    boolean IntakeDelay = true;
+    boolean AutoHold = true;
+    boolean Rumbled = false;
     boolean frontDrive = true;
 
     //Motor Power
@@ -58,6 +60,7 @@ public class MecanumDrive extends OpMode {
         Drone = hardwareMap.get(Servo.class, "Drone");
         Intake = hardwareMap.dcMotor.get("Intake");
         BucketL.setDirection(Servo.Direction.REVERSE);
+        SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
 
 
@@ -74,181 +77,27 @@ public class MecanumDrive extends OpMode {
 
     @Override
     public void loop() {
+        if(frontDrive = true){
 
+            telemetry.addData("SlideL:", SlideL.getCurrentPosition());
 
-
-        //Movement Controller
-        right_drivePower = gamepad1.right_stick_y *-1 ;
-        back_left_drivePower = gamepad1.left_stick_y;
-        left_drivePower = gamepad1.left_stick_y;
-        back_right_drivePower = gamepad1.right_stick_y * -1;
-
-
-        left_drive.setPower(left_drivePower);
-        right_drive.setPower(right_drivePower);
-        back_left_drive.setPower(left_drivePower);
-        back_right_drive.setPower(right_drivePower);
-
-
-        boolean rightbumper = gamepad1.right_bumper; //Strafe Right
-        boolean leftbumper = gamepad1.left_bumper; //Strafe Left
-
-        boolean UpSlideBumper = gamepad2.right_bumper;
-        boolean DownSlideBumper = gamepad2.left_bumper;
-
-
-        //attachments
-
-
-        if (gamepad2.x){
-            Drone.setPosition(0.2);
-            Drone.setPosition(0.2);
-        }
-        if(gamepad2.dpad_down){
-            Drone.setPosition(0.7);
-            Drone.setPosition(0.2);
-        }
-        if(gamepad2.dpad_up){
-            Drone.setPosition(0);
-            Drone.setPosition(0.2);
-        }
-        if (rightbumper) {
-
-            left_drive.setPower(-1); // left drive is 0
-            right_drive.setPower(-1); // right drive is 2
-            back_left_drive.setPower(1); // back left drive is 1
-            back_right_drive.setPower(1); // back right drive is 3
-
-
-        } else if (leftbumper) {
-
-
-            left_drive.setPower(1);
-            right_drive.setPower(1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(-1);
-        }
-
-
-        // CLAW ROTATION
-
-
-        if (LimitSwitch.isPressed()) {
-            telemetry.addData("Digital Touch", "Pressed");
-        } else {
-            telemetry.addData("Digital Touch", " Not Pressed");
-        }
-
-
-        if (UpSlideBumper) {
-            //BucketHold.setPosition(0);
-
-            SlideR.setPower(0.5);
-            SlideL.setPower(0.5);
-            BucketHold.setPosition(0.1);
-
-        }
-        else{
-            SlideR.setPower(0.1);
-            SlideL.setPower(0.1);
-        }
-
-
-        //Slide Goes Down
-        if(!LimitSwitch.isPressed()){
-            if(DownSlideBumper){
-
-
-                SlideR.setPower(-0.4);
-                SlideL.setPower(-0.4);
-            }
-        }
-        else{
-
-
-            SlideR.setPower(0);
-            SlideL.setPower(0);
-        }
-
-        if (gamepad2.y){
-            BucketR.setPosition(0.415);
-            BucketL.setPosition(0.35);
-        }
-
-        if(gamepad2.b){
-            BucketR.setPosition(0.115);
-            BucketL.setPosition(0.05);
-            sleep(1500);
-            BucketHold.setPosition(0.3);
-        }
-
-        if(gamepad2.x){
-            BucketR.setPosition(0.515);
-            BucketL.setPosition(0.45);
-        }
-
-        // open
-        if(gamepad2.left_trigger > 0.3) {
-            BucketHold.setPosition(0.1);
-        }
-
-        // close
-        if(gamepad2.right_trigger > 0.3) {
-            BucketHold.setPosition(0.3);
-        }
-
-        //intake
-        if(gamepad2.a) {
-            Intake.setPower(0.8);
-            telemetry.addData("Motor", "1 power");
-        }
-      /*  else if(gamepad2.b){
-            Intake.setPower(-1);
-            telemetry.addData("Motor", "-1 Power");
-        } */
-
-        else Intake.setPower(0);
-
-        if (gamepad2.dpad_down) {
-            Drone.setPosition(1);
-        }
-        else{
-            Drone.setPosition(0.7);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-       /* while(!frontDrive){
-            right_drivePower = gamepad1.right_stick_y;
+            //Movement Controller
+            right_drivePower = gamepad1.right_stick_y  ;
             back_left_drivePower = gamepad1.left_stick_y;
             left_drivePower = gamepad1.left_stick_y;
-            back_right_drivePower = gamepad1.right_stick_y;
+            back_right_drivePower = gamepad1.right_stick_y ;
 
 
-            left_drive.setPower(left_drivePower*-1);
-            right_drive.setPower(right_drivePower*-1);
-            back_left_drive.setPower(left_drivePower*-1);
-            back_right_drive.setPower(right_drivePower*-1);
+            left_drive.setPower(left_drivePower);
+            right_drive.setPower(right_drivePower);
+            back_left_drive.setPower(left_drivePower);
+            back_right_drive.setPower(right_drivePower);
 
 
             boolean rightbumper = gamepad1.right_bumper; //Strafe Right
             boolean leftbumper = gamepad1.left_bumper; //Strafe Left
+
+
 
             boolean UpSlideBumper = gamepad2.right_bumper;
             boolean DownSlideBumper = gamepad2.left_bumper;
@@ -256,13 +105,19 @@ public class MecanumDrive extends OpMode {
 
             //attachments
 
-            if(gamepad1.a){
-                frontDrive = true;
-                break;
+
+            if (gamepad2.x){
+                Drone.setPosition(0.2);
+                Drone.setPosition(0.2);
             }
-
-
-
+            if(gamepad2.dpad_down){
+                Drone.setPosition(0.7);
+                Drone.setPosition(0.2);
+            }
+            if(gamepad2.dpad_up){
+                Drone.setPosition(0);
+                Drone.setPosition(0.2);
+            }
             if (rightbumper) {
 
                 left_drive.setPower(-1); // left drive is 0
@@ -279,8 +134,211 @@ public class MecanumDrive extends OpMode {
                 back_left_drive.setPower(-1);
                 back_right_drive.setPower(1);
             }
-            if (gamepad1.y) {
-                Drone.setPosition(0.3);
+
+
+            // CLAW ROTATION
+
+
+            if (LimitSwitch.isPressed()) {
+                telemetry.addData("Intake", "Ready");
+                if(Rumbled = false){
+                    gamepad2.rumble(200);
+                    Rumbled= true;
+                }
+            } else {
+                Rumbled = false;
+                telemetry.addData("Intake", " Not Ready");
+            }
+
+
+
+
+
+            //Slide Goes Down
+            if(!LimitSwitch.isPressed()){
+                if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
+                    if(IntakeDelay = true){
+                        BucketR.setPosition(0.415);
+                        BucketL.setPosition(0.35);
+                        SlideR.setPower(-0.1);
+                        SlideL.setPower(-0.1);
+                        sleep(750);
+                        SlideR.setPower(-0.6);
+                        SlideL.setPower(-0.6);
+                        IntakeDelay = false;
+                    }
+                    else {
+
+                        SlideR.setPower(-0.6);
+                        SlideL.setPower(-0.6);
+                    }
+
+                } else if (DownSlideBumper && (SlideL.getCurrentPosition() < -49)){
+
+
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
+                    SlideR.setPower(-0.4);
+                    SlideL.setPower(-0.4);
+                }
+
+            } else {
+                StopSlides();
+                OpenBox();
+                AutoHold = true;
+            }
+            if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
+
+                BucketR.setPosition(0.415);
+                BucketL.setPosition(0.35);
+                SlideR.setPower(0.8);
+                SlideL.setPower(0.8);
+
+                AutoHold = true;
+
+
+            } else if (UpSlideBumper && (SlideL.getCurrentPosition() < -49)) {
+                IntakeDelay = true;
+                if (AutoHold = true) {
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
+                    SlideR.setPower(0.8);
+                    SlideL.setPower(0.8);
+                    CloseBox();
+                    AutoHold = false;
+                } else{
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
+                    SlideR.setPower(0.8);
+                    SlideL.setPower(0.8);
+
+                }
+
+            } else if (!DownSlideBumper){
+
+                HoldSlides();
+
+
+            }
+
+
+
+
+            //Drop Box on Board
+            if(gamepad2.y){
+                BoardDropBox();
+
+            }
+
+
+
+            // open
+            if(gamepad2.left_trigger > 0.3) {
+                CloseBox();
+            }
+
+            // close
+            if(gamepad2.right_trigger > 0.3) {
+                OpenBox();
+            }
+
+            //intake
+            if(gamepad2.a) {
+                Intake.setPower(0.8);
+
+            }
+            // outtake
+            else if(gamepad2.b){
+                Intake.setPower(-0.8);
+
+            }
+
+            else Intake.setPower(0);
+
+            if (gamepad2.dpad_down) {
+                Drone.setPosition(1);
+            }
+            else{
+                Drone.setPosition(0.7);
+            }
+            if(gamepad1.a){
+                frontDrive = false;
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        else {
+
+            telemetry.addData("SlideL:", SlideL.getCurrentPosition());
+
+            //Movement Controller
+            right_drivePower = gamepad1.right_stick_y * -1 ;
+            back_left_drivePower = gamepad1.left_stick_y*-1;
+            left_drivePower = gamepad1.left_stick_y*-1;
+            back_right_drivePower = gamepad1.right_stick_y*-1 ;
+
+
+            left_drive.setPower(left_drivePower);
+            right_drive.setPower(right_drivePower);
+            back_left_drive.setPower(left_drivePower);
+            back_right_drive.setPower(right_drivePower);
+
+
+            boolean rightbumper = gamepad1.right_bumper; //Strafe Right
+            boolean leftbumper = gamepad1.left_bumper; //Strafe Left
+
+
+
+            boolean UpSlideBumper = gamepad2.right_bumper;
+            boolean DownSlideBumper = gamepad2.left_bumper;
+
+
+            //attachments
+
+
+            if (gamepad2.x){
+                Drone.setPosition(0.2);
+                Drone.setPosition(0.2);
+            }
+            if(gamepad2.dpad_down){
+                Drone.setPosition(0.7);
+                Drone.setPosition(0.2);
+            }
+            if(gamepad2.dpad_up){
+                Drone.setPosition(0);
+                Drone.setPosition(0.2);
+            }
+            if (rightbumper) {
+                left_drive.setPower(1);
+                right_drive.setPower(-1);
+                back_left_drive.setPower(-1);
+                back_right_drive.setPower(1);
+
+
+            } else if (leftbumper) {
+                left_drive.setPower(-1); // left drive is 0
+                right_drive.setPower(1); // right drive is 2
+                back_left_drive.setPower(1); // back left drive is 1
+                back_right_drive.setPower(-1); // back right drive is 3
+
+
+
             }
 
 
@@ -288,73 +346,169 @@ public class MecanumDrive extends OpMode {
 
 
             if (LimitSwitch.isPressed()) {
-                telemetry.addData("Digital Touch", "Pressed");
+                telemetry.addData("Intake", "Ready");
+                if(Rumbled = false){
+                    gamepad2.rumble(200);
+                    Rumbled= true;
+                }
             } else {
-                telemetry.addData("Digital Touch", " Not Pressed");
+                Rumbled = false;
+                telemetry.addData("Intake", " Not Ready");
             }
 
 
-            //Slide Goes Up
-            if (UpSlideBumper) {
-                //BucketHold.setPosition(0);
-                SlideR.setPower(0.5);
-                SlideL.setPower(0.5);
-            }
-            else{
-                SlideR.setPower(0);
-                SlideL.setPower(0);
-            }
+
+
 
             //Slide Goes Down
             if(!LimitSwitch.isPressed()){
-                if(DownSlideBumper){
+                if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
+                    if(IntakeDelay = true){
+                        BucketR.setPosition(0.415);
+                        BucketL.setPosition(0.35);
+                        SlideR.setPower(-0.1);
+                        SlideL.setPower(-0.1);
+                        sleep(750);
+                        SlideR.setPower(-0.6);
+                        SlideL.setPower(-0.6);
+                        IntakeDelay = false;
+                    }
+                    else {
+
+                        SlideR.setPower(-0.6);
+                        SlideL.setPower(-0.6);
+                    }
+
+                } else if (DownSlideBumper && (SlideL.getCurrentPosition() < -49)){
+
+
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
                     SlideR.setPower(-0.4);
                     SlideL.setPower(-0.4);
                 }
+
+            } else {
+                StopSlides();
+                OpenBox();
+                AutoHold = true;
+            }
+            if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
+
+                BucketR.setPosition(0.415);
+                BucketL.setPosition(0.35);
+                SlideR.setPower(0.8);
+                SlideL.setPower(0.8);
+
+                AutoHold = true;
+
+
+            } else if (UpSlideBumper && (SlideL.getCurrentPosition() < -49)) {
+                IntakeDelay = true;
+                if (AutoHold = true) {
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
+                    SlideR.setPower(0.8);
+                    SlideL.setPower(0.8);
+                    CloseBox();
+                    AutoHold = false;
+                } else{
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
+                    SlideR.setPower(0.8);
+                    SlideL.setPower(0.8);
+
+                }
+
+            } else if (!DownSlideBumper){
+
+                HoldSlides();
+
+
+            }
+
+
+
+
+            //Drop Box on Board
+            if(gamepad2.y){
+                BoardDropBox();
+
+            }
+
+
+
+            // open
+            if(gamepad2.left_trigger > 0.3) {
+                CloseBox();
+            }
+
+            // close
+            if(gamepad2.right_trigger > 0.3) {
+                OpenBox();
+            }
+
+            //intake
+            if(gamepad2.a) {
+                Intake.setPower(0.8);
+
+            }
+            // outtake
+            else if(gamepad2.b){
+                Intake.setPower(-0.8);
+
+            }
+
+            else Intake.setPower(0);
+
+            if (gamepad2.dpad_down) {
+                Drone.setPosition(1);
             }
             else{
-                //   BucketHold.setPosition(0.5);
-                SlideR.setPower(0);
-                SlideL.setPower(0);
+                Drone.setPosition(0.7);
             }
+            if(gamepad1.a){
+                frontDrive = true;
+            }
+
         }
 
 
 
 
 
-        */
-    /*
 
 
-        // Precision moves
-        if (gamepad1.y) { //forward
-            left_drive.setPower(-.5);
-            right_drive.setPower(-.5);
-            back_left_drive.setPower(-.5);
-            back_right_drive.setPower(-.5);
-        }
 
-        if (gamepad1.a) { //back
-            left_drive.setPower(.5);
-            right_drive.setPower(.5);
-            back_left_drive.setPower(.5);
-            back_right_drive.setPower(.5);
-        }
-        if (gamepad1.x) {
-            left_drive.setPower(0.42);
-            right_drive.setPower(-0.42);
-            back_left_drive.setPower(0.42);
-            back_right_drive.setPower(-0.42);
-        }
 
-        //hi
-        if (gamepad1.b) {
-            left_drive.setPower(-0.42);
-            right_drive.setPower(0.42);
-            back_left_drive.setPower(-0.42);
-            back_right_drive.setPower(0.42);
-        }
-     */
+
+
+
+
+
+
+
+
+
+
+
+    }
+    private void CloseBox(){
+        BucketHold.setPosition(0.1); //close
+    }
+    private void OpenBox(){
+        BucketHold.setPosition(0.3); //close
+    }
+    private void BoardDropBox(){
+        BucketR.setPosition(0.115);
+        BucketL.setPosition(0.05);
+    }
+    private void HoldSlides(){
+        SlideR.setPower(0.35);
+        SlideL.setPower(0.35);
+    }
+    private void StopSlides(){
+        SlideR.setPower(0);
+        SlideL.setPower(0);
     }
 }
