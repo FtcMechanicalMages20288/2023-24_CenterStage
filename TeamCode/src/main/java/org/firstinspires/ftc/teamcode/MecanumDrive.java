@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -29,12 +30,16 @@ public class MecanumDrive extends OpMode {
 
     //limitswitch
     private TouchSensor LimitSwitch;
+    //BoxColorSensor
+    private NormalizedColorSensor Color;
 
+    int Pixels = 0;
 
     boolean IntakeDelay = true;
     boolean AutoHold = true;
     boolean Rumbled = false;
     boolean frontDrive = true;
+    boolean IntakeReady = false;
 
     //Motor Power
     double left_drivePower;
@@ -54,12 +59,13 @@ public class MecanumDrive extends OpMode {
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         back_right_drive.setDirection(DcMotor.Direction.REVERSE);
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
+        Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         Drone = hardwareMap.get(Servo.class, "Drone");
         Intake = hardwareMap.dcMotor.get("Intake");
-        BucketL.setDirection(Servo.Direction.REVERSE);
+        BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
 
@@ -77,9 +83,13 @@ public class MecanumDrive extends OpMode {
 
     @Override
     public void loop() {
-        if(frontDrive = true){
+
 
             telemetry.addData("SlideL:", SlideL.getCurrentPosition());
+        if (Color instanceof DistanceSensor) {
+            telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) Color).getDistance(DistanceUnit.CM));
+        }
+            telemetry.addData("Pixels:", Pixels);
 
             //Movement Controller
             right_drivePower = gamepad1.right_stick_y  ;
@@ -106,18 +116,8 @@ public class MecanumDrive extends OpMode {
             //attachments
 
 
-            if (gamepad2.x){
-                Drone.setPosition(0.2);
-                Drone.setPosition(0.2);
-            }
-            if(gamepad2.dpad_down){
-                Drone.setPosition(0.7);
-                Drone.setPosition(0.2);
-            }
-            if(gamepad2.dpad_up){
-                Drone.setPosition(0);
-                Drone.setPosition(0.2);
-            }
+
+
             if (rightbumper) {
 
                 left_drive.setPower(-1); // left drive is 0
@@ -158,8 +158,8 @@ public class MecanumDrive extends OpMode {
             if(!LimitSwitch.isPressed()){
                 if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
                     if(IntakeDelay = true){
-                        BucketR.setPosition(0.415);
-                        BucketL.setPosition(0.35);
+                        BucketR.setPosition(0.395);
+                        BucketL.setPosition(0.33);
                         SlideR.setPower(-0.1);
                         SlideL.setPower(-0.1);
                         sleep(750);
@@ -184,21 +184,35 @@ public class MecanumDrive extends OpMode {
 
             } else {
                 StopSlides();
+                IntakeReady = true;
                 OpenBox();
                 AutoHold = true;
+                if (IntakeReady = true) {
+                    if (Pixels == 2) {
+                        CloseBox();
+                    }
+                    if (Pixels < 2 ) {
+                        if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 3) {
+                            Pixels++;
+                            sleep(1000);
+                        }
+                    }
+                }
             }
             if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
 
-                BucketR.setPosition(0.415);
-                BucketL.setPosition(0.35);
+                BucketR.setPosition(0.395);
+                BucketL.setPosition(0.33);
                 SlideR.setPower(0.8);
                 SlideL.setPower(0.8);
 
                 AutoHold = true;
+                Pixels = 0;
 
 
             } else if (UpSlideBumper && (SlideL.getCurrentPosition() < -49)) {
                 IntakeDelay = true;
+                IntakeReady = false;
                 if (AutoHold = true) {
                     BucketR.setPosition(0.515);
                     BucketL.setPosition(0.45);
@@ -214,7 +228,7 @@ public class MecanumDrive extends OpMode {
 
                 }
 
-            } else if (!DownSlideBumper){
+            } else if (!DownSlideBumper && !LimitSwitch.isPressed()){
 
                 HoldSlides();
 
@@ -261,238 +275,14 @@ public class MecanumDrive extends OpMode {
             else{
                 Drone.setPosition(0.7);
             }
-            if(gamepad1.a){
-                frontDrive = false;
-            }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        else {
-
-            telemetry.addData("SlideL:", SlideL.getCurrentPosition());
-
-            //Movement Controller
-            right_drivePower = gamepad1.right_stick_y * -1 ;
-            back_left_drivePower = gamepad1.left_stick_y*-1;
-            left_drivePower = gamepad1.left_stick_y*-1;
-            back_right_drivePower = gamepad1.right_stick_y*-1 ;
-
-
-            left_drive.setPower(left_drivePower);
-            right_drive.setPower(right_drivePower);
-            back_left_drive.setPower(left_drivePower);
-            back_right_drive.setPower(right_drivePower);
-
-
-            boolean rightbumper = gamepad1.right_bumper; //Strafe Right
-            boolean leftbumper = gamepad1.left_bumper; //Strafe Left
-
-
-
-            boolean UpSlideBumper = gamepad2.right_bumper;
-            boolean DownSlideBumper = gamepad2.left_bumper;
-
-
-            //attachments
-
-
-            if (gamepad2.x){
-                Drone.setPosition(0.2);
-                Drone.setPosition(0.2);
-            }
-            if(gamepad2.dpad_down){
-                Drone.setPosition(0.7);
-                Drone.setPosition(0.2);
-            }
-            if(gamepad2.dpad_up){
-                Drone.setPosition(0);
-                Drone.setPosition(0.2);
-            }
-            if (rightbumper) {
-                left_drive.setPower(1);
-                right_drive.setPower(-1);
-                back_left_drive.setPower(-1);
-                back_right_drive.setPower(1);
-
-
-            } else if (leftbumper) {
-                left_drive.setPower(-1); // left drive is 0
-                right_drive.setPower(1); // right drive is 2
-                back_left_drive.setPower(1); // back left drive is 1
-                back_right_drive.setPower(-1); // back right drive is 3
-
-
-
-            }
-
-
-            // CLAW ROTATION
-
-
-            if (LimitSwitch.isPressed()) {
-                telemetry.addData("Intake", "Ready");
-                if(Rumbled = false){
-                    gamepad2.rumble(200);
-                    Rumbled= true;
-                }
-            } else {
-                Rumbled = false;
-                telemetry.addData("Intake", " Not Ready");
-            }
-
-
-
-
-
-            //Slide Goes Down
-            if(!LimitSwitch.isPressed()){
-                if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
-                    if(IntakeDelay = true){
-                        BucketR.setPosition(0.415);
-                        BucketL.setPosition(0.35);
-                        SlideR.setPower(-0.1);
-                        SlideL.setPower(-0.1);
-                        sleep(750);
-                        SlideR.setPower(-0.6);
-                        SlideL.setPower(-0.6);
-                        IntakeDelay = false;
-                    }
-                    else {
-
-                        SlideR.setPower(-0.6);
-                        SlideL.setPower(-0.6);
-                    }
-
-                } else if (DownSlideBumper && (SlideL.getCurrentPosition() < -49)){
-
-
-                    BucketR.setPosition(0.515);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(-0.4);
-                    SlideL.setPower(-0.4);
-                }
-
-            } else {
-                StopSlides();
-                OpenBox();
-                AutoHold = true;
-            }
-            if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
-
-                BucketR.setPosition(0.415);
-                BucketL.setPosition(0.35);
-                SlideR.setPower(0.8);
-                SlideL.setPower(0.8);
-
-                AutoHold = true;
-
-
-            } else if (UpSlideBumper && (SlideL.getCurrentPosition() < -49)) {
-                IntakeDelay = true;
-                if (AutoHold = true) {
-                    BucketR.setPosition(0.515);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(0.8);
-                    SlideL.setPower(0.8);
-                    CloseBox();
-                    AutoHold = false;
-                } else{
-                    BucketR.setPosition(0.515);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(0.8);
-                    SlideL.setPower(0.8);
-
-                }
-
-            } else if (!DownSlideBumper){
-
-                HoldSlides();
-
-
-            }
-
-
-
-
-            //Drop Box on Board
-            if(gamepad2.y){
-                BoardDropBox();
-
-            }
-
-
-
-            // open
-            if(gamepad2.left_trigger > 0.3) {
-                CloseBox();
-            }
-
-            // close
-            if(gamepad2.right_trigger > 0.3) {
-                OpenBox();
-            }
-
-            //intake
-            if(gamepad2.a) {
-                Intake.setPower(0.8);
-
-            }
-            // outtake
-            else if(gamepad2.b){
-                Intake.setPower(-0.8);
-
-            }
-
-            else Intake.setPower(0);
-
-            if (gamepad2.dpad_down) {
-                Drone.setPosition(1);
-            }
-            else{
-                Drone.setPosition(0.7);
-            }
-            if(gamepad1.a){
-                frontDrive = true;
-            }
-
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 
     }
+
+
     private void CloseBox(){
         BucketHold.setPosition(0.1); //close
     }
