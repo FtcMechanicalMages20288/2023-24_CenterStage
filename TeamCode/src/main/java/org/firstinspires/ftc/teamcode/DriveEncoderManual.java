@@ -77,8 +77,8 @@ public class DriveEncoderManual extends LinearOpMode {
 
         waitForStart();
         if (opModeIsActive()) {
-            driveEncoder(10,0.3);
-         //   turnEncoder(10,0.3);
+            driveEncoder(1,0.3);
+            //turnEncoder(10,0.3);
         }
     }
     //to go backward reverse the distance and make the power negative
@@ -91,7 +91,8 @@ public class DriveEncoderManual extends LinearOpMode {
         back_right_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         double circumference = 3.14*3.78;
-        double rotationsNeeded = distance/circumference;
+        double rotationsNeeded;
+        rotationsNeeded = -(distance/circumference);
         int encoderDrivingTarget = (int)(rotationsNeeded*538);
 
         right_drive.setTargetPosition(encoderDrivingTarget);
@@ -99,10 +100,10 @@ public class DriveEncoderManual extends LinearOpMode {
         back_left_drive.setTargetPosition(encoderDrivingTarget);
         back_right_drive.setTargetPosition(encoderDrivingTarget);
 
-        right_drive.setPower(power);
+        right_drive.setPower(-power);
         left_drive.setPower(power);
         back_left_drive.setPower(power);
-        back_right_drive.setPower(power);
+        back_right_drive.setPower(-power);
 
 
         right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -141,21 +142,21 @@ public class DriveEncoderManual extends LinearOpMode {
         back_right_drive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         double circumference = 3.14*3.78;
-        double LrotationsNeeded = -distance/circumference;
+        double LrotationsNeeded = distance/circumference;
         int LencoderDrivingTarget = (int)(LrotationsNeeded*tickCount);
 
         double RrotationsNeeded = distance/circumference;
         int RencoderDrivingTarget = (int)(RrotationsNeeded*tickCount);
 
-        right_drive.setTargetPosition(-RencoderDrivingTarget);
-        left_drive.setTargetPosition(LencoderDrivingTarget);
-        back_left_drive.setTargetPosition(LencoderDrivingTarget);
-        back_right_drive.setTargetPosition(-RencoderDrivingTarget);
+        right_drive.setTargetPosition(RencoderDrivingTarget);
+        left_drive.setTargetPosition(-LencoderDrivingTarget);
+        back_left_drive.setTargetPosition(-LencoderDrivingTarget);
+        back_right_drive.setTargetPosition(RencoderDrivingTarget);
 
-        right_drive.setPower(-power);
-        left_drive.setPower(power);
-        back_left_drive.setPower(power);
-        back_right_drive.setPower(-power);
+        right_drive.setPower(power);
+        left_drive.setPower(-power);
+        back_left_drive.setPower(-power);
+        back_right_drive.setPower(power);
 
         right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
