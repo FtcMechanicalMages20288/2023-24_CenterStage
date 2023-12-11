@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 
-@Autonomous(name = "DriveEncoderManual", group = "Auto")
-public class DriveEncoderManual extends LinearOpMode {
+@Autonomous(name = "Basic Drive Encoder", group = "Auto")
+public class BasicDriveEncoder extends LinearOpMode {
     private DcMotor right_drive, left_drive, back_right_drive, back_left_drive;
     //Slide Motors
     private DcMotor SlideR, SlideL, Intake;
@@ -52,8 +52,8 @@ public class DriveEncoderManual extends LinearOpMode {
         back_left_drive = hardwareMap.dcMotor.get("blm");
         SlideR = hardwareMap.dcMotor.get("SlideR");
         SlideL = hardwareMap.dcMotor.get("SlideL");
-        right_drive.setDirection(DcMotor.Direction.REVERSE);
-        back_right_drive.setDirection(DcMotor.Direction.REVERSE);
+        right_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right_drive.setDirection(DcMotorSimple.Direction.REVERSE);
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
         Color = hardwareMap.get(NormalizedColorSensor.class, "Color");
         BucketL = hardwareMap.get(Servo.class, "BucketL");
@@ -66,10 +66,6 @@ public class DriveEncoderManual extends LinearOpMode {
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
 
-        right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        back_right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
 
@@ -78,8 +74,48 @@ public class DriveEncoderManual extends LinearOpMode {
         waitForStart();
 
 
-            driveEncoder(31);
-         //   turnEncoder(10,0.3);
+        right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        double circumference = 3.14 * 3.78;
+        double rotationsNeeded;
+        rotationsNeeded = 20/ circumference;
+        int encoderDrivingTarget = (int) (rotationsNeeded * 538);
+
+        right_drive.setTargetPosition(-encoderDrivingTarget);
+        left_drive.setTargetPosition(-encoderDrivingTarget);
+        back_left_drive.setTargetPosition(-encoderDrivingTarget);
+        back_right_drive.setTargetPosition(-encoderDrivingTarget);
+
+
+        right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        right_drive.setPower(0.2);
+        left_drive.setPower(0.2);
+        back_left_drive.setPower(0.2);
+        back_right_drive.setPower(0.2);
+
+        while(right_drive.isBusy() || left_drive.isBusy() || back_left_drive.isBusy() || back_right_drive.isBusy()){
+            telemetry.addData("Encoder Right", right_drive.getCurrentPosition());
+            telemetry.addData("Encoder Left:", left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Left:", back_left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Right:", back_right_drive.getCurrentPosition());
+            telemetry.addData("Target:", encoderDrivingTarget);
+            telemetry.update();
+        }
+
+        right_drive.setPower(0);
+        left_drive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+
+        //driveEncoder(31);
+        //   turnEncoder(10,0.3);
 
     }
     //to go backward reverse the distance and make the power negative

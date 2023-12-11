@@ -33,8 +33,10 @@ import android.util.Log;
 import android.util.Size;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -55,7 +57,7 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "TensorFlowTest", group = "TeleOp")
+@Autonomous(name = "TensorFlowTest", group = "Auto")
 public class TensorFlowTest extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -70,7 +72,7 @@ public class TensorFlowTest extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
-    int DropPos = 0;
+    int DropPos = 1;
 
 
     private static final String[] LABELS = {
@@ -81,27 +83,38 @@ public class TensorFlowTest extends LinearOpMode {
             "TSE"
     };
 
+    private DcMotor right_drive, left_drive, back_right_drive, back_left_drive;
+
     @Override
     public void runOpMode() {
+        left_drive = hardwareMap.dcMotor.get("lm");
+        right_drive = hardwareMap.dcMotor.get("rm");
+        back_right_drive = hardwareMap.dcMotor.get("brm");
+        back_left_drive = hardwareMap.dcMotor.get("blm");
 
+        right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        back_right_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
+        back_left_drive.setMode(DcMotor.RunMode.RUN_USING_ENCODERS);
         initTfod();
+        sleep(3000);
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
 
-        List<Integer> DropPosList = Arrays.asList();
+
         int DropPos1 = 1;
         int DropPos2 = 1;
         int DropPos3 = 1;
 
-        waitForStart();
+
 
         if (opModeIsActive()) {
             while (opModeIsActive()) {
 
-                telemetryTfod();
+                //telemetryTfod();
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -137,73 +150,55 @@ public class TensorFlowTest extends LinearOpMode {
 
                         if (recognition.getLabel().equals("TSE")) {
                             int TSEpos = (int) recognition.getRight();
-                            if (TSEpos <= 900 && TSEpos >= 600) {
+                            if (TSEpos <= 900 && TSEpos > 600) {
                                 DropPos = 3;
-                            } else if (TSEpos <= 550 && TSEpos >= 350) {
+                            } else if (TSEpos <= 600 && TSEpos >= 300) {
                                 DropPos = 2;
-                            } else if (TSEpos <= 300 && TSEpos >= 0)
+                            } else if (TSEpos < 300 && TSEpos >= 0)
                                 DropPos = 1;
                         } else {
-                            DropPos = 1;
+                            DropPos = 2;
                         }
                     }
 
                     telemetry.addData("slidePos is", DropPos);
-                    //telemetry.update();
+                    telemetry.update();
 
                     i++;
                 }
                 //Insert into the list
-                DropPosList.add(DropPos);
+
             }
         } // end of multiple detection for loop
+        sleep(3000);
 
 
-        Log.d("FTC_20288", "Count all with frequency");
+      /*  Log.d("FTC_20288", "Count all with frequency");
         Set<Integer> set = new HashSet<Integer>(DropPosList);
         /*for (Integer r : set) {
             Log.d("FTC_20288", (r + ": " + Collections.frequency(SlideLevelList, r)));
             int LevelCount = Collections.frequency(SlideLevelList, r);
 
-        }*/
+        }
         int Level1Count = Collections.frequency(DropPosList, 1);
         int Level2Count = Collections.frequency(DropPosList, 2);
         int Level3Count = Collections.frequency(DropPosList, 3);
         Log.d("FTC_20288", (DropPos1 + ": " + DropPos2 + ": " + DropPos3));
+        */
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
+        telemetry.addData("slidePos is", DropPos);
         telemetry.update();
         waitForStart();
         telemetry.addData("Opmode started - Final slidePos is", DropPos);
         telemetry.update();
 
-        //set slide heights using encoders for each position (1, 2, 3)
-           /* Slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            Slide.setPower(0.35);
-            if (slidePos == 1) {
-                Slide.setTargetPosition(slideLevel1);
-                Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+       if(DropPos == 2 ){
+           driveEncoder(-31);
+           //turnEncoder(20);
+       }
 
-                while (opModeIsActive() && Slide.isBusy())   //leftMotor.getCurrentPosition() < leftMotor.getTargetPosition())
-                {
-                    telemetry.addData("Slide Level 1", Slide.getCurrentPosition());
-                }
-            }
-            else if (slidePos == 2) {
-                Slide.setTargetPosition(slideLevel2);
-                Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while (opModeIsActive() && Slide.isBusy())   //leftMotor.getCurrentPosition() < leftMotor.getTargetPosition())
-                {
-                    telemetry.addData("Slide Level 2", Slide.getCurrentPosition());
-                }        }
-            else if (slidePos == 3) {
-                Slide.setTargetPosition(slideLevel3)
-                Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                while (opModeIsActive() && Slide.isBusy())   //leftMotor.getCurrentPosition() < leftMotor.getTargetPosition())
-                {
-                    telemetry.addData("Slide Level 3", Slide.getCurrentPosition());
-                }        }*/
         telemetry.update();
         sleep(3000);
 
@@ -215,11 +210,158 @@ public class TensorFlowTest extends LinearOpMode {
     /**
      * Initialize the TensorFlow Object Detection processor.
      */
+    public void driveEncoder(double distance){
+        right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+
+// manual set target position
+
+
+        double circumference = 3.14 * 3.78;
+        double rotationsNeeded;
+        rotationsNeeded = -(distance / circumference);
+        int encoderDrivingTarget = (int) (rotationsNeeded * 538);
+
+
+
+        right_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+        left_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+        back_left_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+        back_right_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+
+        int right_front_pos = right_drive.getCurrentPosition();
+
+        right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+
+
+
+        while(right_front_pos > encoderDrivingTarget) {
+            right_drive.setPower(0.2);
+            left_drive.setPower(0.2);
+            back_left_drive.setPower(0.2);
+            back_right_drive.setPower(0.2);
+
+            right_front_pos = right_drive.getCurrentPosition();
+            left_drive.getCurrentPosition();
+            back_left_drive.getCurrentPosition();
+            back_right_drive.getCurrentPosition();
+
+
+
+            telemetry.addData("Encoder Right", right_drive.getCurrentPosition());
+            telemetry.addData("Encoder Left:", left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Left:", back_left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Right:", back_right_drive.getCurrentPosition());
+            telemetry.addData("encoderDrivingTarget: ", encoderDrivingTarget);
+            telemetry.update();
+
+
+
+
+            //turnEncoder(10,0.3);
+
+        }
+
+
+        right_drive.setPower(0);
+        left_drive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+
+        telemetry.addData("Trajectory","finished");
+    }
+
+    public void turnEncoder(double distance){
+        right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_left_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        back_right_drive.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+
+// manual set target position
+
+
+        double circumference = 3.14 * 3.78;
+        double rotationsNeeded;
+        rotationsNeeded = -(distance / circumference);
+        int encoderDrivingTarget = (int) (rotationsNeeded * 538);
+
+
+
+        right_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+        left_drive.setTargetPosition(encoderDrivingTarget);
+        back_left_drive.setTargetPosition(encoderDrivingTarget);
+        back_right_drive.setTargetPosition(Math.abs(encoderDrivingTarget));
+
+        int right_front_pos = right_drive.getCurrentPosition();
+        int left_front_pos = left_drive.getCurrentPosition();
+
+
+        right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_left_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        back_right_drive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+
+
+
+
+        while(right_front_pos > encoderDrivingTarget && left_front_pos < encoderDrivingTarget ){
+            right_drive.setPower(0.2);
+            left_drive.setPower(-0.2);
+            back_left_drive.setPower(-0.2);
+            back_right_drive.setPower(0.2);
+
+            right_front_pos = right_drive.getCurrentPosition();
+            left_front_pos = left_drive.getCurrentPosition();
+
+            left_drive.getCurrentPosition();
+            back_left_drive.getCurrentPosition();
+            back_right_drive.getCurrentPosition();
+
+
+
+            telemetry.addData("Encoder Right", right_drive.getCurrentPosition());
+            telemetry.addData("Encoder Left:", left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Left:", back_left_drive.getCurrentPosition());
+            telemetry.addData("Encoder Back Right:", back_right_drive.getCurrentPosition());
+            telemetry.addData("encoderDrivingTarget: ", encoderDrivingTarget);
+            telemetry.update();
+
+
+
+
+            //turnEncoder(10,0.3);
+
+        }
+
+
+        right_drive.setPower(0);
+        left_drive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+
+        telemetry.addData("Trajectory","finished");
+    }
+
+
     private void initTfod() {
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
-                .setModelAssetName("RedElement.tflite")
+                //.setModelAssetName("RedElement.tflite")
                 .setModelAssetName("BlueElement.tflite")
 
                 // Use setModelAssetName() if the TF Model is built in as an asset.
