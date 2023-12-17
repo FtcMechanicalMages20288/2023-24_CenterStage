@@ -32,16 +32,16 @@ package org.firstinspires.ftc.teamcode;
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -51,15 +51,20 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "Tensy", group = "Auto")
+@Autonomous(name = "TensyApril", group = "Auto")
 
-public class Tensy extends LinearOpMode {
+public class AprilTensorflow extends LinearOpMode {
 
 
     int dropPos1;
     int dropPos2;
     int dropPos3;
     int finalDropPos;
+
+    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+    private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    boolean targetFound = false;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -87,31 +92,32 @@ public class Tensy extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+
         initTfod();
         sleep(3000);
 
         // Wait for the DS start button to be touched.
-      //  telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-       // telemetry.addData(">", "Touch Play to start OpMode");
+        //  telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+        // telemetry.addData(">", "Touch Play to start OpMode");
 
-       for(int i = 0; i< 10; i++) {
-           telemetryTfod();
-       }
-       if(dropPos1 > dropPos2 && dropPos1 > dropPos3){
-           finalDropPos = 1;
-       }
-       else if(dropPos2 > dropPos1 && dropPos2 > dropPos3){
+        for(int i = 0; i< 10; i++) {
+            telemetryTfod();
+        }
+        if(dropPos1 > dropPos2 && dropPos1 > dropPos3){
+            finalDropPos = 1;
+        }
+        else if(dropPos2 > dropPos1 && dropPos2 > dropPos3){
             finalDropPos = 2;
         }
-       else if(dropPos3 > dropPos1 && dropPos3 > dropPos2){
-           finalDropPos = 3 ;
-       }
-       else{
-           finalDropPos = 2;
-           telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
-       }
+        else if(dropPos3 > dropPos1 && dropPos3 > dropPos2){
+            finalDropPos = 3 ;
+        }
+        else{
+            finalDropPos = 2;
+            telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
+        }
 
-       telemetry.addData("Final Pixel Position: ", finalDropPos);
+        telemetry.addData("Final Pixel Position: ", finalDropPos);
 
         telemetry.update();
         waitForStart();
@@ -130,6 +136,10 @@ public class Tensy extends LinearOpMode {
 
             telemetry.update();
         }
+        while (opModeIsActive()){
+            AprilTelemetry();
+        }
+
 
 
 
@@ -144,6 +154,20 @@ public class Tensy extends LinearOpMode {
      * Initialize the TensorFlow Object Detection processor.
      */
     private void initTfod() {
+
+        // Create the AprilTag processor by using a builder.
+        aprilTag = new AprilTagProcessor.Builder()
+        .build();
+
+        // Adjust Image Decimation to trade-off detection-range for detection-rate.
+        // eg: Some typical detection data using a Logitech C920 WebCam
+        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
+        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
+        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second
+        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second
+        // Note: Decimation can be changed on-the-fly to adapt during a match.
+        aprilTag.setDecimation(2);
+        // Create the vision portal by using a builder.
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
@@ -177,6 +201,8 @@ public class Tensy extends LinearOpMode {
             builder.setCamera(BuiltinCameraDirection.BACK);
         }
 
+
+
         // Choose a camera resolution. Not all cameras support all resolutions.
         builder.setCameraResolution(new Size(640, 480));
 
@@ -192,7 +218,10 @@ public class Tensy extends LinearOpMode {
         builder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
+        builder.addProcessor(aprilTag);
         builder.addProcessor(tfod);
+
+
 
         // Build the Vision Portal, using the above settings.
         visionPortal = builder.build();
@@ -205,9 +234,79 @@ public class Tensy extends LinearOpMode {
 
     }   // end method initTfod()
 
+
+    /**
+     * Initialize the AprilTag processor.
+     */
+    private void initAprilTag() {
+
+
+
+visionPortal.setProcessorEnabled(tfod, false);
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
+
+
+
+
+        // Create the vision portal by using a builder.
+      /*
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                    .addProcessor(aprilTag)
+                    .build();
+                    */
+
+
+    }
+    private void AprilTelemetry(){
+        initAprilTag();
+        targetFound = false;
+        desiredTag  = null;
+
+        // Step through the list of detected tags and look for a matching tag
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                    // Yes, we want to use this tag.
+                    targetFound = true;
+                    desiredTag = detection;
+                    break;  // don't look any further.
+                } else {
+                    // This tag is in the library, but we do not want to track it right now.
+                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                }
+            } else {
+                // This tag is NOT in the library, so we don't have enough information to track to it.
+                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+            }
+        }
+
+        // Tell the driver what we see, and what to do.
+        if (targetFound) {
+            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+            telemetry.update();
+        } else {
+            telemetry.addData("\n>","No AprilTags found\n");
+            telemetry.update();
+        }
+
+    }
+
+
+
     /**
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
      */
+
+
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
