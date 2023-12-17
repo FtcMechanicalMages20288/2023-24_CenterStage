@@ -71,6 +71,8 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
     static final double     FORWARD_SPEED = 0.2;
     static final double     TURN_SPEED    = 0.2;
 
+
+
     @Override
     public void runOpMode() {
 
@@ -88,6 +90,8 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
         back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
 
+
+
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Ready to run");    //
         telemetry.update();
@@ -95,9 +99,26 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
+        // if (object_position == 1) {
+        driveForward(3.5);
+        turnLeft(3);
+        // }
+
+        // if (object_position == 2) {
+        driveForward(4);
+        // }
+
+        // if (object_position == 3) {
+        driveForward(3.5);
+        turnRight(3);
+        // }
+
+
+
         // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
 
         // Step 1:  Drive forward for 3 seconds
+        /*
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
         back_right_drive.setPower(FORWARD_SPEED);
@@ -119,7 +140,7 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
             telemetry.addData("Path", "Leg 2: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
         }
-        /*
+
         // Step 3:  Drive Backward for 1 Second
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
@@ -129,7 +150,7 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         while (opModeIsActive() && (runtime.seconds() < 1.0)) {
             telemetry.addData("Path", "Leg 3: %4.1f S Elapsed", runtime.seconds());
             telemetry.update();
-        }*/
+        }
 
         // Step 4:  Stop
         leftDrive.setPower(0);
@@ -138,5 +159,86 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         telemetry.addData("Path", "Complete");
         telemetry.update();
         sleep(1000);
+        */
+    }
+
+    private void driveForward(double seconds) {
+        double FORWARD_SPEED = 0.4;  // Adjust as needed
+
+        // Set motor powers to drive forward
+        leftDrive.setPower(FORWARD_SPEED);
+        rightDrive.setPower(FORWARD_SPEED);
+        back_left_drive.setPower(FORWARD_SPEED);
+        back_right_drive.setPower(FORWARD_SPEED);
+
+        // Reset runtime
+        runtime.reset();
+
+        // Continue driving until the specified duration is reached
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+            // You can add additional actions or conditions here if needed
+        }
+
+        // Stop the motors
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+    }
+
+    private void turnRight(double seconds) {
+        double FORWARD_SPEED = 0.4;  // Adjust as needed
+
+        // Set motor powers to drive forward
+        leftDrive.setPower(FORWARD_SPEED);
+        rightDrive.setPower(-FORWARD_SPEED);
+        back_left_drive.setPower(FORWARD_SPEED);
+        back_right_drive.setPower(-FORWARD_SPEED);
+
+        // Reset runtime
+        runtime.reset();
+
+        // Continue driving until the specified duration is reached
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+            // You can add additional actions or conditions here if needed
+        }
+
+        // Stop the motors
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+    }
+
+    private void turnLeft(double seconds) {
+        double FORWARD_SPEED = 0.4;  // Adjust as needed
+
+        // Set motor powers to drive forward
+        leftDrive.setPower(-FORWARD_SPEED);
+        rightDrive.setPower(FORWARD_SPEED);
+        back_left_drive.setPower(-FORWARD_SPEED);
+        back_right_drive.setPower(FORWARD_SPEED);
+
+        // Reset runtime
+        runtime.reset();
+
+        // Continue driving until the specified duration is reached
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+            // You can add additional actions or conditions here if needed
+        }
+
+        // Stop the motors
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
     }
 }
+
+
