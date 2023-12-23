@@ -106,5 +106,16 @@ public class LeadScrewTest extends OpMode {
             LeadScrew.setPower(0);
             LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
+
+        if(gamepad2.dpad_down){
+            Hook.setPower(0.5);
+        }
+        else if(gamepad2.dpad_up){
+            Hook.setPower(-0.5);
+
+        }
+        else{
+            Hook.setPower(0);
+        }
     }
 }

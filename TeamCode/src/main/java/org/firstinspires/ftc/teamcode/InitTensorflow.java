@@ -54,9 +54,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "TensyApril", group = "Auto")
+@Autonomous(name = "TensyAprilInit", group = "Auto")
 
-public class AprilTensorflow extends LinearOpMode {
+public class InitTensorflow extends LinearOpMode {
 
 
     int dropPos1;
@@ -81,10 +81,6 @@ public class AprilTensorflow extends LinearOpMode {
     private static final String[] LABELS = {
             "TSE",
     };
-
-    boolean autoDrive = false;
-
-    private int desiredRange = 6;
 
     private DcMotor         leftDrive   = null;
     private DcMotor         rightDrive  = null;
@@ -114,6 +110,7 @@ public class AprilTensorflow extends LinearOpMode {
         //  telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         // telemetry.addData(">", "Touch Play to start OpMode");
 
+
         leftDrive  = hardwareMap.get(DcMotor.class, "lm");
         rightDrive = hardwareMap.get(DcMotor.class, "rm");
         back_right_drive = hardwareMap.get(DcMotor.class, "brm");
@@ -127,55 +124,46 @@ public class AprilTensorflow extends LinearOpMode {
         back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
         back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        while (opModeInInit()) {
+        for(int i = 0; i< 10; i++) {
             telemetryTfod();
-            telemetry.addData(" Pixel Position: ", finalDropPos);
-            telemetry.update();
+        }
+        if(dropPos1 > dropPos2 && dropPos1 > dropPos3){
+            finalDropPos = 1;
+        }
+        else if(dropPos2 > dropPos1 && dropPos2 > dropPos3){
+            finalDropPos = 2;
+        }
+        else if(dropPos3 > dropPos1 && dropPos3 > dropPos2){
+            finalDropPos = 3 ;
+        }
+        else{
+            finalDropPos = 2;
+            telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
         }
 
+        telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-
-
+        telemetry.update();
         waitForStart();
         if(finalDropPos == 1){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
 
-            driveForward(1.2);
-            turnLeft(3);
         }
         else if(finalDropPos == 2){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
-            driveForward(1.2);
-
         }
         else if(finalDropPos ==3){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
-            driveForward(1.2);
-            turnRight(3);
         }
         while (opModeIsActive()){
             AprilTelemetry();
 
-            if(targetFound && desiredRange < desiredTag.ftcPose.range && autoDrive){
-                leftDrive.setPower(0.25);
-                rightDrive.setPower(0.25);
-                back_left_drive.setPower(0.25);
-                back_right_drive.setPower(0.25);
-            }else if(targetFound && desiredRange < desiredTag.ftcPose.range && !autoDrive) {
-
-            }
-            else{
-                leftDrive.setPower(0);
-                rightDrive.setPower(0);
-                back_left_drive.setPower(0);
-                back_right_drive.setPower(0);
-            }
         }
 
 
@@ -187,7 +175,6 @@ public class AprilTensorflow extends LinearOpMode {
         visionPortal.close();
 
     }   // end runOpMode()
-
 
     //Drive Methds
 
@@ -271,7 +258,6 @@ public class AprilTensorflow extends LinearOpMode {
         back_right_drive.setPower(0);
     }
 
-
     /**
      * Initialize the TensorFlow Object Detection processor.
      */
@@ -279,7 +265,7 @@ public class AprilTensorflow extends LinearOpMode {
 
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder()
-        .build();
+                .build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -364,7 +350,7 @@ public class AprilTensorflow extends LinearOpMode {
 
 
 
-visionPortal.setProcessorEnabled(tfod, false);
+        visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
 
 
@@ -446,15 +432,15 @@ visionPortal.setProcessorEnabled(tfod, false);
 
             if(x>=0 && x<=300){
                 dropPos1 ++;
-                telemetry.addData("Pixel Position :", finalDropPos = 1);
+                telemetry.addData("Pixel Position :", dropPos1);
             }
             if(x>=301 && x<=600){
                 dropPos2 ++;
-                telemetry.addData("Pixel Position:", finalDropPos = 2);
+                telemetry.addData("Pixel Position:", dropPos2);
             }
             if(x>=601 && x<=900){
                 dropPos3 ++;
-                telemetry.addData("Pixel Position:", finalDropPos = 3);
+                telemetry.addData("Pixel Position:", dropPos3);
             }
         }   // end for() loop
 

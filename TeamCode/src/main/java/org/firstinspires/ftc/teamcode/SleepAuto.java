@@ -159,14 +159,14 @@ public class SleepAuto extends LinearOpMode {
 
             telemetry.update();
 
-            driveForward(3.5);
+            driveForward(1.5);
             turnLeft(3);
         }
         else if(finalDropPos == 2){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
-            driveForward(4);
+            driveForward(1.5);
 
         }
         else if(finalDropPos ==3){
@@ -174,7 +174,7 @@ public class SleepAuto extends LinearOpMode {
 
             telemetry.update();
 
-            driveForward(3.5);
+            driveForward(1.25);
             turnRight(3);
         }
         while (opModeIsActive()){
@@ -196,6 +196,7 @@ public class SleepAuto extends LinearOpMode {
     private void driveForward(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
+        runtime.reset();
         // Set motor powers to drive forward
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
@@ -247,6 +248,7 @@ public class SleepAuto extends LinearOpMode {
 
     private void turnLeft(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
+
 
         // Set motor powers to drive forward
         leftDrive.setPower(-FORWARD_SPEED);
@@ -446,18 +448,20 @@ public class SleepAuto extends LinearOpMode {
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+            telemetry.addData("X value: ", x);
+
 
             if(x>=0 && x<=300){
                 dropPos1 ++;
-                telemetry.addData("Pixel Position :", dropPos1);
+                telemetry.addData("Pixel Position :", "dropPos1");
             }
             if(x>=301 && x<=600){
                 dropPos2 ++;
-                telemetry.addData("Pixel Position:", dropPos2);
+                telemetry.addData("Pixel Position:", "dropPos2");
             }
             if(x>=601 && x<=900){
                 dropPos3 ++;
-                telemetry.addData("Pixel Position:", dropPos3);
+                telemetry.addData("Pixel Position:", "dropPos3");
             }
         }   // end for() loop
 
