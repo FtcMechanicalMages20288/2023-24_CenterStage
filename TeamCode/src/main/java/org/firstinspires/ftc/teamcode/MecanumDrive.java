@@ -4,6 +4,7 @@ import static android.os.SystemClock.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,6 +27,9 @@ public class MecanumDrive extends OpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone;
+
+    private DcMotor LeadScrew;
+    private CRServo Hook;
 
 
     //limitswitch
@@ -67,6 +71,9 @@ public class MecanumDrive extends OpMode {
         Intake = hardwareMap.dcMotor.get("Intake");
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
+        Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
 
@@ -271,20 +278,42 @@ public class MecanumDrive extends OpMode {
 
             else Intake.setPower(0);
 
-            if (gamepad2.dpad_down) {
+            //drone launching and resetting
+            if (gamepad2.x) {
                 Drone.setPosition(0.8);
             }
             else{
                 Drone.setPosition(0.4);
             }
-            if(gamepad2.x){
-                BucketR.setPosition(0);
-                BucketL.setPosition(0);
-            }
-            if(gamepad2.dpad_up){
-                BucketR.setPosition(0.5);
-                BucketL.setPosition(0.5);
-            }
+
+
+           // Hanging / LeadScrew Binds
+        if(gamepad2.dpad_right) {
+            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            LeadScrew.setPower(1);
+
+        }
+        else if (gamepad2.dpad_left) {
+            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            LeadScrew.setPower(-1);
+
+        }
+        else{
+            LeadScrew.setPower(0);
+            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
+        if(gamepad2.dpad_down){
+            Hook.setPower(0.5);
+        }
+        else if(gamepad2.dpad_up){
+            Hook.setPower(-0.5);
+
+        }
+        else{
+            Hook.setPower(0);
+        }
+
 
 
 
