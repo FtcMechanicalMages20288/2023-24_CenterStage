@@ -33,8 +33,7 @@ import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -54,9 +53,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "SleepAuto", group = "Auto")
+@Autonomous(name = "SleepAutoTFODTEST", group = "Auto")
 
-public class SleepAuto extends LinearOpMode {
+public class SleepAutoTestingTFOD extends LinearOpMode {
 
 
     int dropPos1;
@@ -82,12 +81,6 @@ public class SleepAuto extends LinearOpMode {
             "TSE",
     };
 
-
-    private DcMotor         leftDrive   = null;
-    private DcMotor         rightDrive  = null;
-    private DcMotor  back_right_drive = null;
-    private DcMotor back_left_drive = null;
-
     private ElapsedTime runtime = new ElapsedTime();
 
     /**
@@ -103,18 +96,12 @@ public class SleepAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        leftDrive  = hardwareMap.get(DcMotor.class, "lm");
-        rightDrive = hardwareMap.get(DcMotor.class, "rm");
-        back_right_drive = hardwareMap.get(DcMotor.class, "brm");
-        back_left_drive = hardwareMap.get(DcMotor.class, "blm");
+
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         //braking after each motion
         /*
@@ -159,14 +146,13 @@ public class SleepAuto extends LinearOpMode {
 
             telemetry.update();
 
-            driveForward(1.5);
-            turnLeft(3);
+
         }
         else if(finalDropPos == 2){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
-            driveForward(1.5);
+
 
         }
         else if(finalDropPos ==3){
@@ -174,8 +160,7 @@ public class SleepAuto extends LinearOpMode {
 
             telemetry.update();
 
-            driveForward(1.25);
-            turnRight(3);
+
         }
         while (opModeIsActive()){
             AprilTelemetry();
@@ -193,85 +178,11 @@ public class SleepAuto extends LinearOpMode {
 
     //Drive Methds
 
-    private void driveForward(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
-
-        runtime.reset();
-        // Set motor powers to drive forward
-        leftDrive.setPower(FORWARD_SPEED);
-        rightDrive.setPower(FORWARD_SPEED);
-        back_left_drive.setPower(FORWARD_SPEED);
-        back_right_drive.setPower(FORWARD_SPEED);
-
-        // Reset runtime
-        runtime.reset();
-
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
-
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
-    }
-
-    private void turnRight(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
-
-        // Set motor powers to drive forward
-        leftDrive.setPower(FORWARD_SPEED);
-        rightDrive.setPower(-FORWARD_SPEED);
-        back_left_drive.setPower(FORWARD_SPEED);
-        back_right_drive.setPower(-FORWARD_SPEED);
-
-        // Reset runtime
-        runtime.reset();
-
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
-
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
-    }
-
-    private void turnLeft(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
 
 
-        // Set motor powers to drive forward
-        leftDrive.setPower(-FORWARD_SPEED);
-        rightDrive.setPower(FORWARD_SPEED);
-        back_left_drive.setPower(-FORWARD_SPEED);
-        back_right_drive.setPower(FORWARD_SPEED);
 
-        // Reset runtime
-        runtime.reset();
 
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
 
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
-    }
 
 
 

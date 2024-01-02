@@ -172,6 +172,7 @@ public class InitTensorflow extends LinearOpMode {
 
 
         // Save more CPU resources when camera is no longer needed.
+        visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.close();
 
     }   // end runOpMode()

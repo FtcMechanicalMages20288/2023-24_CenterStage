@@ -54,9 +54,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "SleepAuto", group = "Auto")
+@Autonomous(name = "NewSleepAutoBros", group = "Auto")
 
-public class SleepAuto extends LinearOpMode {
+public class NewSuperSleepAutoBros extends LinearOpMode {
 
 
     int dropPos1;
@@ -64,10 +64,10 @@ public class SleepAuto extends LinearOpMode {
     int dropPos3;
     int finalDropPos;
 
-    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-    private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
-    boolean targetFound = false;
+    // private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    // private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+    // private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    // boolean targetFound = false;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -76,16 +76,16 @@ public class SleepAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
-    //private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
+    private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
     // Define the labels recognized in the model for TFOD (must be in training order!)
     private static final String[] LABELS = {
-            "TSE",
+            "Pixel",
     };
 
 
-    private DcMotor         leftDrive   = null;
-    private DcMotor         rightDrive  = null;
-    private DcMotor  back_right_drive = null;
+    private DcMotor leftDrive   = null;
+    private DcMotor rightDrive  = null;
+    private DcMotor back_right_drive = null;
     private DcMotor back_left_drive = null;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -126,59 +126,89 @@ public class SleepAuto extends LinearOpMode {
          */
 
         initTfod();
-        sleep(3000);
 
         // Wait for the DS start button to be touched.
-        //  telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        // telemetry.addData(">", "Touch Play to start OpMode");
+        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
+        telemetry.addData(">", "Touch Play to start OpMode");
+        telemetry.update();
 
-        for(int i = 0; i< 10; i++) {
-            telemetryTfod();
-        }
-        if(dropPos1 > dropPos2 && dropPos1 > dropPos3){
+        //for(int i = 0; i< 10; i++) {
+        //    telemetryTfod();
+        //}
+
+        /*telemetryTfod();
+
+        // Push telemetry to the Driver Station.
+        telemetry.update();
+
+        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
             finalDropPos = 1;
 
-        }
-        else if(dropPos2 > dropPos1 && dropPos2 > dropPos3){
+        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
             finalDropPos = 2;
-        }
-        else if(dropPos3 > dropPos1 && dropPos3 > dropPos2){
-            finalDropPos = 3 ;
-        }
-        else{
+        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
+            finalDropPos = 3;
+        } else {
             finalDropPos = 2;
             telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
         }
 
         telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-        telemetry.update();
+        telemetry.update();*/
+
+
         waitForStart();
-        if(finalDropPos == 1){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-            telemetry.update();
 
-            driveForward(1.5);
-            turnLeft(3);
-        }
-        else if(finalDropPos == 2){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-            telemetry.update();
-            driveForward(1.5);
+        if (opModeIsActive()) {
+            while (opModeIsActive()) {
+                //AprilTelemetry();
 
-        }
-        else if(finalDropPos ==3){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
+                telemetryTfod();
 
-            telemetry.update();
+                // Push telemetry to the Driver Station.
+                telemetry.update();
 
-            driveForward(1.25);
-            turnRight(3);
-        }
-        while (opModeIsActive()){
-            AprilTelemetry();
+                if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
+                    finalDropPos = 1;
+
+                } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
+                    finalDropPos = 2;
+                } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
+                    finalDropPos = 3;
+                } else {
+                    finalDropPos = 2;
+                    telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
+                }
+
+                telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+                telemetry.update();
+
+                /*if (finalDropPos == 1) {
+                    telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+                    telemetry.update();
+
+                    driveForward(1.5);
+                    turnLeft(3);
+                } else if (finalDropPos == 2) {
+                    telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+                    telemetry.update();
+                    driveForward(1.5);
+
+                } else if (finalDropPos == 3) {
+                    telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+                    telemetry.update();
+
+                    driveForward(1.25);
+                    turnRight(3);
+                }*/
+            }
         }
 
 
@@ -282,7 +312,7 @@ public class SleepAuto extends LinearOpMode {
      */
     private void initTfod() {
 
-        // Create the AprilTag processor by using a builder.
+     /*   // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder()
                 .build();
 
@@ -295,7 +325,7 @@ public class SleepAuto extends LinearOpMode {
         // Note: Decimation can be changed on-the-fly to adapt during a match.
         aprilTag.setDecimation(2);
         // Create the vision portal by using a builder.
-
+*/
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
 
@@ -309,12 +339,11 @@ public class SleepAuto extends LinearOpMode {
 
                 // The following default settings are available to un-comment and edit as needed to
                 // set parameters for custom models.
-                .setModelLabels(LABELS)
+                //.setModelLabels(LABELS)
                 //.setIsModelTensorFlow2(true)
                 //.setIsModelQuantized(true)
                 .setModelInputSize(300)
                 .setModelAspectRatio(16.0 / 9.0)
-
 
                 .build();
 
@@ -334,18 +363,18 @@ public class SleepAuto extends LinearOpMode {
         builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        builder.enableLiveView(true);
+        //builder.enableLiveView(true);
 
         // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
+        //builder.setStreamFormat(VisionPortal.StreamFormat.MJPEG);
 
         // Choose whether or not LiveView stops if no processors are enabled.
         // If set "true", monitor shows solid orange screen if no processors enabled.
         // If set "false", monitor shows camera view without annotations.
-        builder.setAutoStopLiveView(false);
+        //builder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
-        builder.addProcessor(aprilTag);
+        //builder.addProcessor(aprilTag);
         builder.addProcessor(tfod);
 
 
@@ -354,78 +383,12 @@ public class SleepAuto extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.75f);
+        //tfod.setMinResultConfidence(0.75f);
 
         // Disable or re-enable the TFOD processor at any time.
-        visionPortal.setProcessorEnabled(tfod, true);
+        //visionPortal.setProcessorEnabled(tfod, true);
 
     }   // end method initTfod()
-
-
-    /**
-     * Initialize the AprilTag processor.
-     */
-    private void initAprilTag() {
-
-
-
-        visionPortal.setProcessorEnabled(tfod, false);
-        visionPortal.setProcessorEnabled(aprilTag, true);
-
-
-
-
-
-        // Create the vision portal by using a builder.
-      /*
-            visionPortal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                    .addProcessor(aprilTag)
-                    .build();
-                    */
-
-
-    }
-    private void AprilTelemetry(){
-        initAprilTag();
-        targetFound = false;
-        desiredTag  = null;
-
-        // Step through the list of detected tags and look for a matching tag
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            // Look to see if we have size info on this tag.
-            if (detection.metadata != null) {
-                //  Check to see if we want to track towards this tag.
-                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                    // Yes, we want to use this tag.
-                    targetFound = true;
-                    desiredTag = detection;
-                    break;  // don't look any further.
-                } else {
-                    // This tag is in the library, but we do not want to track it right now.
-                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                }
-            } else {
-                // This tag is NOT in the library, so we don't have enough information to track to it.
-                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-            }
-        }
-
-        // Tell the driver what we see, and what to do.
-        if (targetFound) {
-            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
-            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
-            telemetry.update();
-        } else {
-            telemetry.addData("\n>","No AprilTags found\n");
-            telemetry.update();
-        }
-
-    }
 
 
 
@@ -448,7 +411,7 @@ public class SleepAuto extends LinearOpMode {
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-            telemetry.addData("X value: ", x);
+            //telemetry.addData("X value: ", x);
 
 
             if(x>=0 && x<=300){
