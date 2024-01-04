@@ -98,11 +98,12 @@ public class Robot {
         // motor/device must match the names assigned during the robot configuration.
 
         // !!!  Set the drive direction to ensure positive power drives each wheel forward.
-        lm  = setupDriveMotor("lm", DcMotor.Direction.FORWARD);
-        rm = setupDriveMotor("rm", DcMotor.Direction.REVERSE);
-        blm  = setupDriveMotor( "blm", DcMotor.Direction.FORWARD);
-        brm = setupDriveMotor( "brm",DcMotor.Direction.REVERSE);
+        lm  = setupDriveMotor("lm", DcMotor.Direction.REVERSE);
+        rm = setupDriveMotor("rm", DcMotor.Direction.FORWARD);
+        blm  = setupDriveMotor( "blm", DcMotor.Direction.REVERSE);
+        brm = setupDriveMotor( "brm",DcMotor.Direction.FORWARD);
         imu = myOpMode.hardwareMap.get(IMU.class, "imu");
+
 
         //  Connect to the encoder channels using the name of that channel.
         LeadScrew = myOpMode.hardwareMap.get(DcMotor.class, "LeadScrew");
@@ -116,8 +117,8 @@ public class Robot {
 
         // Tell the software how the Control Hub is mounted on the robot to align the IMU XYZ axes correctly
         RevHubOrientationOnRobot orientationOnRobot =
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                                             RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                                             RevHubOrientationOnRobot.UsbFacingDirection.UP);
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
         // zero out all the odometry readings.
