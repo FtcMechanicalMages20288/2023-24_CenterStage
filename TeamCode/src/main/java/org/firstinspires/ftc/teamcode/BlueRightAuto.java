@@ -34,15 +34,12 @@ import android.util.Size;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
@@ -54,9 +51,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "NewSleepAutoBros", group = "Auto")
+@Autonomous(name = "BlueRightAuto", group = "Auto")
 
-public class NewSuperSleepAutoBros extends LinearOpMode {
+public class BlueRightAuto extends LinearOpMode {
 
 
     int dropPos1;
@@ -202,14 +199,7 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                     //after deposition
                     driveBackward(0.25);
                     turnRight(0.6);
-                    driveBackward(0.9);
-                    // execute 90 degree turn
-                    turnLeft(1.15);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -223,13 +213,7 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                     telemetry.update();
                     driveForward(1.35);
                     driveBackward(1);
-                    // execute 90 degree turn
-                    turnLeft(1.25);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -248,14 +232,7 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                     //after deposition
                     driveBackward(0.25);
                     turnLeft(0.6);
-                    driveBackward(0.9);
-                    // execute 90 degree turn
-                    turnLeft(1.15);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
