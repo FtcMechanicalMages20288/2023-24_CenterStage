@@ -231,6 +231,8 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                     // strafeRight(0.6);
                     // insert slide/bucket code to deposit pixel
 
+                    telemetry.addData("Route Completed ", finalDropPos);
+                    telemetry.update();
 
                     sleep(30000);
 
@@ -254,6 +256,9 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                     // strafes to align with pixel board
                     // strafeRight(0.6);
                     // insert slide/bucket code to deposit pixel
+
+                    telemetry.addData("Route Completed ", finalDropPos);
+                    telemetry.update();
 
                     sleep(30000);
                 }
