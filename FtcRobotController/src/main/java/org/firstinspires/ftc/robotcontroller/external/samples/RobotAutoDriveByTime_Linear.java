@@ -87,8 +87,8 @@ public class RobotAutoDriveByTime_Linear extends LinearOpMode {
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right_drive.setDirection(DcMotor.Direction.FORWARD);
+        back_left_drive.setDirection(DcMotor.Direction.REVERSE);
 
 
 

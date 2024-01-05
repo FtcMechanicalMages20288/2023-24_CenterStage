@@ -125,7 +125,12 @@ public class MecanumDrive extends OpMode {
             //attachments
 
 
-
+            if(gamepad1.a){
+                left_drive.setPower(0.2); // left drive is 0
+                right_drive.setPower(0.2); // right drive is 2
+                back_left_drive.setPower(0.2); // back left drive is 1
+                back_right_drive.setPower(0.2);
+            }
 
             if (rightbumper) {
 

@@ -113,8 +113,8 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        back_right_drive.setDirection(DcMotor.Direction.FORWARD);
+        back_left_drive.setDirection(DcMotor.Direction.REVERSE);
 
         //braking after each motion
         /*
@@ -131,6 +131,8 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
+
+
 
         //for(int i = 0; i< 10; i++) {
         //    telemetryTfod();
@@ -179,35 +181,84 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
                 } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
                     finalDropPos = 3;
                 } else {
-                    finalDropPos = 2;
-                    telemetry.addData("failed to find correct pixel pos: ", finalDropPos);
+                    finalDropPos = 3;
+                    telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
                 }
 
                 telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                 telemetry.update();
 
-                /*if (finalDropPos == 1) {
+                sleep(3000);
+
+                if (finalDropPos == 1) {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
 
-                    driveForward(1.5);
-                    turnLeft(3);
+                    driveForward(1.1);
+                    turnLeft(0.6);
+                    driveForward(0.35);
+                    //after deposition
+                    driveBackward(0.25);
+                    turnRight(0.6);
+                    driveBackward(0.9);
+                    // execute 90 degree turn
+                    turnLeft(1.15);
+                    sleep(250);
+                    driveForward(1.6);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
+
+                    telemetry.addData("Route Completed ", finalDropPos);
+                    telemetry.update();
+
+                    sleep(30000);
+
+
                 } else if (finalDropPos == 2) {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
-                    driveForward(1.5);
+                    driveForward(1.35);
+                    driveBackward(1);
+                    // execute 90 degree turn
+                    turnLeft(1.25);
+                    sleep(250);
+                    driveForward(1.6);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
+
+
+                    sleep(30000);
+
 
                 } else if (finalDropPos == 3) {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
 
-                    driveForward(1.25);
-                    turnRight(3);
-                }*/
+                    driveForward(1.1);
+                    turnRight(0.6);
+                    driveForward(0.35);
+                    //after deposition
+                    driveBackward(0.25);
+                    turnLeft(0.6);
+                    driveBackward(0.9);
+                    // execute 90 degree turn
+                    turnLeft(1.15);
+                    sleep(250);
+                    driveForward(1.6);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
+
+                    sleep(30000);
+                }
+
+                // requestOpModeStop();
             }
         }
 
@@ -221,8 +272,42 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
 
     }   // end runOpMode()
 
-    //Drive Methds
+    //Drive Methods
 
+    private void strafeRight(double seconds) {
+        double FORWARD_SPEED = 0.4;  // Adjust as needed
+
+        runtime.reset();
+        // Set motor powers to drive forward
+        leftDrive.setPower(-FORWARD_SPEED);
+        rightDrive.setPower(-FORWARD_SPEED);
+        back_left_drive.setPower(FORWARD_SPEED);
+        back_right_drive.setPower(FORWARD_SPEED);
+
+        // Reset runtime
+        runtime.reset();
+
+        // Continue driving until the specified duration is reached
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+            // You can add additional actions or conditions here if needed
+        }
+
+        // tell motors to break when power is zero
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Stop the motors
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+
+        sleep(850);
+    }
     private void driveForward(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
@@ -243,11 +328,56 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
             // You can add additional actions or conditions here if needed
         }
 
+        // tell motors to break when power is zero
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         back_left_drive.setPower(0);
         back_right_drive.setPower(0);
+
+        sleep(850);
+
+    }
+
+    private void driveBackward(double seconds) {
+        double FORWARD_SPEED = 0.4;  // Adjust as needed
+
+        runtime.reset();
+        // Set motor powers to drive forward
+        leftDrive.setPower(-FORWARD_SPEED);
+        rightDrive.setPower(-FORWARD_SPEED);
+        back_left_drive.setPower(-FORWARD_SPEED);
+        back_right_drive.setPower(-FORWARD_SPEED);
+
+        // Reset runtime
+        runtime.reset();
+
+        // Continue driving until the specified duration is reached
+        while (opModeIsActive() && runtime.seconds() < seconds) {
+            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
+            telemetry.update();
+            // You can add additional actions or conditions here if needed
+        }
+
+        // tell motors to break when power is zero
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Stop the motors
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+
+        sleep(850);
+
     }
 
     private void turnRight(double seconds) {
@@ -269,18 +399,27 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
             // You can add additional actions or conditions here if needed
         }
 
+        // tell motors to break when power is zero
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         back_left_drive.setPower(0);
         back_right_drive.setPower(0);
+
+        sleep(850);
+
     }
 
     private void turnLeft(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
 
-        // Set motor powers to drive forward
         leftDrive.setPower(-FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
         back_left_drive.setPower(-FORWARD_SPEED);
@@ -296,11 +435,20 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
             // You can add additional actions or conditions here if needed
         }
 
+        // tell motors to break when power is zero
+        leftDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         back_left_drive.setPower(0);
         back_right_drive.setPower(0);
+
+        sleep(850);
+
     }
 
 
@@ -362,6 +510,7 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
         // Choose a camera resolution. Not all cameras support all resolutions.
         builder.setCameraResolution(new Size(640, 480));
 
+
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
         //builder.enableLiveView(true);
 
@@ -414,15 +563,15 @@ public class NewSuperSleepAutoBros extends LinearOpMode {
             //telemetry.addData("X value: ", x);
 
 
-            if(x>=0 && x<=300){
+            if(x>=0 && x<=350){
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=301 && x<=600){
+            if(x>=351 && x<=890){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=601 && x<=900){
+            if(x>=891 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
