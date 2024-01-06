@@ -79,12 +79,12 @@ public class TestRobotAutoDriveByEncoder_Linear extends LinearOpMode {
     // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
     // This is gearing DOWN for less speed and more torque.
     // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 19.2 ;     // No External Gearing.
+    static final double     COUNTS_PER_MOTOR_REV    = 537.7 ;    // eg: gobilda at output shaft
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0;     // No External Gearing.
     static final double     WHEEL_DIAMETER_INCHES   = 3.7 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.1;
+    static final double     DRIVE_SPEED             = 0.5;
     static final double     TURN_SPEED              = 0.1;
 
     @Override
@@ -162,6 +162,8 @@ public class TestRobotAutoDriveByEncoder_Linear extends LinearOpMode {
                              double timeoutS) {
         int newLeftTarget;
         int newRightTarget;
+        int newBackLeftTarget;
+        int newBackRightTarget;
 
         // Ensure that the OpMode is still active
         if (opModeIsActive()) {
@@ -169,17 +171,21 @@ public class TestRobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // Determine new target position, and pass to motor controller
             newLeftTarget = leftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
             newRightTarget = rightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+            newBackLeftTarget = backleftDrive.getCurrentPosition() + (int)(leftInches * COUNTS_PER_INCH);
+            newBackRightTarget = backrightDrive.getCurrentPosition() + (int)(rightInches * COUNTS_PER_INCH);
+
             leftDrive.setTargetPosition(newLeftTarget);
             rightDrive.setTargetPosition(newRightTarget);
-            backleftDrive.setTargetPosition(newLeftTarget);
-            backrightDrive.setTargetPosition(newRightTarget);
+            backleftDrive.setTargetPosition(newBackLeftTarget);
+            backrightDrive.setTargetPosition(newBackRightTarget);
 
 
             // Turn On RUN_TO_POSITION
             leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            sleep(1000);
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backleftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            backrightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
             // reset the timeout time and start motion.
@@ -197,10 +203,10 @@ public class TestRobotAutoDriveByEncoder_Linear extends LinearOpMode {
             // onto the next step, use (isBusy() || isBusy()) in the loop test.
             while (opModeIsActive() &&
                    (runtime.seconds() < timeoutS) &&
-                    ((leftDrive.isBusy() && rightDrive.isBusy()) || (backleftDrive.isBusy() && backrightDrive.isBusy()))) {
+                    (leftDrive.isBusy() && rightDrive.isBusy() && backleftDrive.isBusy() && backrightDrive.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Running to",  " %7d :%7d", newLeftTarget,  newRightTarget);
+                telemetry.addData("Running to",  " %7d :%7d  :%7d  :%7d", newLeftTarget,  newRightTarget, newBackLeftTarget,  newBackRightTarget);
                 telemetry.addData("front at",  " at %7d :%7d",
                                             leftDrive.getCurrentPosition(), rightDrive.getCurrentPosition());
                 telemetry.addData("back at",  " at %7d :%7d",
