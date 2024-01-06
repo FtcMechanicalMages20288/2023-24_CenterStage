@@ -160,149 +160,116 @@ public class MecanumDriveSingleStick2024 extends OpMode {
             }
 
 
-            // CLAW ROTATION
+        // CLAW ROTATION
 
 
-            if (LimitSwitch.isPressed()) {
-                telemetry.addData("Intake", "Ready");
-                if(Rumbled = false){
-                    gamepad2.rumble(200);
-                    Rumbled= true;
-                }
-            } else {
-                Rumbled = false;
-                telemetry.addData("Intake", " Not Ready");
+        if (LimitSwitch.isPressed()) {
+            telemetry.addData("Intake", "Ready");
+            if (Rumbled = false) {
+                gamepad2.rumble(200);
+                Rumbled = true;
+            }
+        } else {
+            Rumbled = false;
+            telemetry.addData("Intake", " Not Ready");
+        }
+
+
+        //Slide Goes Down
+        if (!LimitSwitch.isPressed()) {
+            if (DownSlideBumper) {
+
+                IntakeBox();
+                SlideR.setPower(-0.3);
+                SlideL.setPower(-0.3);
+
+            }
+            else if (DownSlideBumper && SlideL.getCurrentPosition() > -120){
+                IntakeBox();
+                SlideR.setPower(-0.8);
+                SlideL.setPower(-0.8);
             }
 
-
-
-
-
-            //Slide Goes Down
-            if(!LimitSwitch.isPressed()){
-                if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
-                    if(IntakeDelay = true){
-                        BucketR.setPosition(0.34);
-                        BucketL.setPosition(0.33);
-                        SlideR.setPower(-0.1);
-                        SlideL.setPower(-0.1);
-                        sleep(750);
-                        SlideR.setPower(-0.6);
-                        SlideL.setPower(-0.6);
-                        IntakeDelay = false;
-                    }
-                    else {
-
-                        SlideR.setPower(-0.6);
-                        SlideL.setPower(-0.6);
-                    }
-
-                } else if (DownSlideBumper && (SlideL.getCurrentPosition() < -49)){
-
-
-                    BucketR.setPosition(0.45);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(-0.4);
-                    SlideL.setPower(-0.4);
-                }
-
-            } else {
-                StopSlides();
-                IntakeReady = true;
-                OpenBox();
-                AutoHold = true;
-                if (IntakeReady = true) {
-                    if (Pixels == 2) {
-                        CloseBox();
-                    }
-                    if (Pixels < 2 ) {
-                        if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 3) {
-                            Pixels++;
-                            sleep(1000);
-                        }
-                    }
-                }
-            }
-            if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
-
-                BucketR.setPosition(0.34);
-                BucketL.setPosition(0.33);
-                SlideR.setPower(0.8);
-                SlideL.setPower(0.8);
-
-                AutoHold = true;
-                Pixels = 0;
-
-
-            } else if (UpSlideBumper && (SlideL.getCurrentPosition() < -49)) {
-                IntakeDelay = true;
-                IntakeReady = false;
-                if (AutoHold = true) {
-                    BucketR.setPosition(0.45);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(0.8);
-                    SlideL.setPower(0.8);
+        } else {
+            StopSlides();
+            IntakeReady = true;
+            OpenBox();
+            AutoHold = true;
+            if (IntakeReady = true) {
+                if (Pixels == 2) {
                     CloseBox();
-                    AutoHold = false;
-                } else{
-                    BucketR.setPosition(0.45);
-                    BucketL.setPosition(0.45);
-                    SlideR.setPower(0.8);
-                    SlideL.setPower(0.8);
-
                 }
-
-            } else if (!DownSlideBumper && !LimitSwitch.isPressed()){
-
-                HoldSlides();
-
-
+                if (Pixels < 2) {
+                    if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 3) {
+                        Pixels++;
+                        sleep(1000);
+                    }
+                }
             }
+        }
+        if (UpSlideBumper ) {
+
+            Pixels = 0;
+            IntakeReady = false;
+            CloseBox();
+            IntakeBox();
+            SlideR.setPower(0.8);
+            SlideL.setPower(0.8);
+
+
+        } else if (!DownSlideBumper && !LimitSwitch.isPressed()){
+
+            HoldSlides();
+
+
+        }
 
 
 
 
-            //Drop Box on Board
-            if(gamepad2.y){
-                BoardDropBox();
+        //Drop Box on Board
+        if(gamepad2.y){
+            BoardDropBox();
 
-            }
-
-
-
-            // open
-            if(gamepad2.left_trigger > 0.3) {
-                CloseBox();
-            }
-
-            // close
-            if(gamepad2.right_trigger > 0.3) {
-                OpenBox();
-            }
-
-            //intake
-            if(gamepad2.a) {
-                Intake.setPower(0.8);
-
-            }
-            // outtake
-            else if(gamepad2.b){
-                Intake.setPower(-0.8);
-
-            }
-
-            else Intake.setPower(0);
-
-            //drone launching and resetting
-            if (gamepad2.x) {
-                Drone.setPosition(0.8);
-            }
-            else{
-                Drone.setPosition(0.4);
-            }
+        }
 
 
-           // Hanging / LeadScrew Binds
+
+        // open
+        if(gamepad2.left_trigger > 0.3) {
+            CloseBox();
+        }
+
+        // close
+        if(gamepad2.right_trigger > 0.3) {
+            OpenBox();
+        }
+
+        //intake
+        if(gamepad2.a) {
+            Intake.setPower(0.65);
+
+        }
+        // outtake
+        else if(gamepad2.b){
+            Intake.setPower(-0.8);
+
+        }
+
+        else Intake.setPower(0);
+
+        //drone launching and resetting
+        if (gamepad2.x) {
+            Drone.setPosition(0.8);
+        }
+        else{
+            Drone.setPosition(0.4);
+        }
+
+
+
+
+        // Hanging / LeadScrew Binds
         if(gamepad2.dpad_right) {
             LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             LeadScrew.setPower(1);
@@ -338,14 +305,14 @@ public class MecanumDriveSingleStick2024 extends OpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0.1); //close
+        BucketHold.setPosition(0.7); //close
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.3); //close
+        BucketHold.setPosition(0); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0);
-        BucketL.setPosition(0.05);
+        BucketR.setPosition(0.85);
+        BucketL.setPosition(0.85);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);
@@ -355,4 +322,9 @@ public class MecanumDriveSingleStick2024 extends OpMode {
         SlideR.setPower(0);
         SlideL.setPower(0);
     }
+    private void IntakeBox(){
+        BucketR.setPosition(0.5);
+        BucketL.setPosition(0.5);
+    }
+
 }

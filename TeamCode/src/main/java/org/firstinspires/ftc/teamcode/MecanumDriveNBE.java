@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Disabled
 @TeleOp(name = "MecanumDriveNBE", group = "TeleOp")
 
 public class MecanumDriveNBE extends OpMode {
@@ -106,10 +105,10 @@ public class MecanumDriveNBE extends OpMode {
         back_right_drivePower = gamepad1.left_stick_y;
 
 
-        left_drive.setPower(left_drivePower);
-        right_drive.setPower(right_drivePower);
-        back_left_drive.setPower(left_drivePower);
-        back_right_drive.setPower(right_drivePower);
+        left_drive.setPower(left_drivePower*-1);
+        right_drive.setPower(right_drivePower*-1);
+        back_left_drive.setPower(left_drivePower*-1);
+        back_right_drive.setPower(right_drivePower*-1);
 
 
         boolean rightbumper = gamepad1.right_bumper; //Strafe Right
@@ -125,21 +124,24 @@ public class MecanumDriveNBE extends OpMode {
 
         if (rightbumper) {
 
-            left_drive.setPower(-1); // left drive is 0
-            right_drive.setPower(1); // right drive is 2
-            back_left_drive.setPower(1); // back left drive is 1
-            back_right_drive.setPower(-1); // back right drive is 3
-
-
-        } else if (leftbumper) {
 
 
             left_drive.setPower(1);
             right_drive.setPower(-1);
             back_left_drive.setPower(-1);
             back_right_drive.setPower(1);
-        }
 
+
+        } else if (leftbumper) {
+
+            left_drive.setPower(-1); // left drive is 0
+            right_drive.setPower(1); // right drive is 2
+            back_left_drive.setPower(1); // back left drive is 1
+            back_right_drive.setPower(-1); // back right drive is 3
+
+        }
+        telemetry.addData("Slides", SlideL.getCurrentPosition());
+        telemetry.update();
 
         // CLAW ROTATION
 
@@ -152,7 +154,7 @@ public class MecanumDriveNBE extends OpMode {
             }
         } else {
             Rumbled = false;
-            telemetry.addData("Intake", " Not Ready");
+            telemetry.addData("Intake", " Not Ready");;;
         }
 
 
@@ -160,11 +162,15 @@ public class MecanumDriveNBE extends OpMode {
         if (!LimitSwitch.isPressed()) {
             if (DownSlideBumper) {
 
-                BucketR.setPosition(0.34);
-                BucketL.setPosition(0.33);
-                SlideR.setPower(-0.6);
-                SlideL.setPower(-0.6);
+                IntakeBox();
+                SlideR.setPower(-0.3);
+                SlideL.setPower(-0.3);
 
+            }
+            else if (DownSlideBumper && SlideL.getCurrentPosition() > -70){
+                IntakeBox();
+                SlideR.setPower(-1);
+                SlideL.setPower(-1);
             }
 
         } else {
@@ -189,8 +195,7 @@ public class MecanumDriveNBE extends OpMode {
              Pixels = 0;
              IntakeReady = false;
              CloseBox();
-             BucketR.setPosition(0.45);
-             BucketL.setPosition(0.45);
+             IntakeBox();
              SlideR.setPower(0.8);
              SlideL.setPower(0.8);
 
@@ -225,7 +230,7 @@ public class MecanumDriveNBE extends OpMode {
 
         //intake
         if(gamepad2.a) {
-            Intake.setPower(0.8);
+            Intake.setPower(0.65);
 
         }
         // outtake
@@ -237,11 +242,11 @@ public class MecanumDriveNBE extends OpMode {
         else Intake.setPower(0);
 
         //drone launching and resetting
-        if (gamepad2.x) {
-            Drone.setPosition(0.8);
+        if (gamepad2.back) {
+            Drone.setPosition(0.2);
         }
         else{
-            Drone.setPosition(0.4);
+            Drone.setPosition(0.55);
         }
 
 
@@ -283,14 +288,14 @@ public class MecanumDriveNBE extends OpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0.1); //close
+        BucketHold.setPosition(0.7); //close
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.3); //close
+        BucketHold.setPosition(0); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0);
-        BucketL.setPosition(0.05);
+        BucketR.setPosition(0.85);
+        BucketL.setPosition(0.85);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);
@@ -299,5 +304,9 @@ public class MecanumDriveNBE extends OpMode {
     private void StopSlides(){
         SlideR.setPower(0);
         SlideL.setPower(0);
+    }
+    private void IntakeBox(){
+        BucketR.setPosition(0.5);
+        BucketL.setPosition(0.5);
     }
 }

@@ -211,7 +211,7 @@ public class RedLeftAuto extends LinearOpMode {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
-                    driveForward(1.5);
+                    driveForward(1.35);
                     driveBackward(1);
 
 

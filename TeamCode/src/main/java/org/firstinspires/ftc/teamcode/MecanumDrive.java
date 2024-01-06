@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -16,6 +17,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+@Disabled
 @TeleOp(name = "MecanumDrive", group = "TeleOp")
 
 public class MecanumDrive extends OpMode {
@@ -107,10 +109,10 @@ public class MecanumDrive extends OpMode {
             back_right_drivePower = gamepad1.left_stick_y;
 
 
-            left_drive.setPower(left_drivePower);
-            right_drive.setPower(right_drivePower);
-            back_left_drive.setPower(left_drivePower);
-            back_right_drive.setPower(right_drivePower);
+            left_drive.setPower(left_drivePower*-1);
+            right_drive.setPower(right_drivePower*-1);
+            back_left_drive.setPower(left_drivePower*-1);
+            back_right_drive.setPower(right_drivePower*-1);
 
 
             boolean rightbumper = gamepad1.right_bumper; //Strafe Right
@@ -228,8 +230,7 @@ public class MecanumDrive extends OpMode {
                 IntakeDelay = true;
                 IntakeReady = false;
                 if (AutoHold = true) {
-                    BucketR.setPosition(0.45);
-                    BucketL.setPosition(0.45);
+                    IntakeBox();
                     SlideR.setPower(0.8);
                     SlideL.setPower(0.8);
                     CloseBox();
@@ -328,14 +329,18 @@ public class MecanumDrive extends OpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0.1); //close
+        BucketHold.setPosition(0.7); //close
     }
     private void OpenBox(){
         BucketHold.setPosition(0.3); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0);
-        BucketL.setPosition(0.05);
+        BucketR.setPosition(0.2);
+        BucketL.setPosition(0.2);
+    }
+    private void IntakeBox(){
+        BucketR.setPosition(0.5);
+        BucketL.setPosition(0.5);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);

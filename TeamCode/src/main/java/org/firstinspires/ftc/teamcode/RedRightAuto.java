@@ -157,7 +157,7 @@ public class RedRightAuto extends LinearOpMode {
         telemetry.update();*/
 
         while(opModeInInit()){
-            telemetryTfod();
+
             telemetry.addData("DropPos1: ",dropPos1);
             telemetry.addData("DropPos2: ", dropPos2);
             telemetry.addData("DropPos3: ", dropPos3);
@@ -170,6 +170,7 @@ public class RedRightAuto extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 //AprilTelemetry();
+                telemetryTfod();
 
 
                 // Push telemetry to the Driver Station.
@@ -223,7 +224,7 @@ public class RedRightAuto extends LinearOpMode {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
-                    driveForward(1.5);
+                    driveForward(1.35);
                     driveBackward(1);
                     // execute 90 degree turn
                     turnRight(1);
