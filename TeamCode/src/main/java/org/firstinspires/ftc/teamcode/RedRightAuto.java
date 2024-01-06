@@ -51,9 +51,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "BlueLeftAuto", group = "Auto")
+@Autonomous(name = "RedRightAuto", group = "Auto")
 
-public class BlueLeftAuto extends LinearOpMode {
+public class RedRightAuto extends LinearOpMode {
 
 
     int dropPos1;
@@ -70,7 +70,7 @@ public class BlueLeftAuto extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -206,7 +206,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     turnRight(0.6);
                     driveBackward(0.9);
                     // execute 90 degree turn
-                    turnLeft(1);
+                    turnRight(1);
                     sleep(250);
                     driveForward(1.6);
                     // strafes to align with pixel board
@@ -226,7 +226,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     driveForward(1.35);
                     driveBackward(1);
                     // execute 90 degree turn
-                    turnLeft(1);
+                    turnRight(1);
                     sleep(250);
                     driveForward(1.6);
                     // strafes to align with pixel board
@@ -252,7 +252,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     turnLeft(0.6);
                     driveBackward(0.9);
                     // execute 90 degree turn
-                    turnLeft(1);
+                    turnRight(1);
                     sleep(250);
                     driveForward(1.6);
                     // strafes to align with pixel board
