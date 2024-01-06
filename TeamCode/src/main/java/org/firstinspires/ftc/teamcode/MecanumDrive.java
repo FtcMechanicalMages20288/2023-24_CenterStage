@@ -234,7 +234,7 @@ public class MecanumDrive extends OpMode {
                     SlideL.setPower(0.8);
                     CloseBox();
                     AutoHold = false;
-                } else{
+                } else {
                     BucketR.setPosition(0.45);
                     BucketL.setPosition(0.45);
                     SlideR.setPower(0.8);

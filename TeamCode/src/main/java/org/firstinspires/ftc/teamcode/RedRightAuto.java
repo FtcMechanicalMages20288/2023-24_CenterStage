@@ -223,7 +223,7 @@ public class RedRightAuto extends LinearOpMode {
                     telemetry.addData("Final Pixel Position: ", finalDropPos);
 
                     telemetry.update();
-                    driveForward(1.35);
+                    driveForward(1.5);
                     driveBackward(1);
                     // execute 90 degree turn
                     turnRight(1);

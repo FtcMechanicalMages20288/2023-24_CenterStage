@@ -51,9 +51,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "BlueLeftAuto", group = "Auto")
+@Autonomous(name = "RedLeftAuto", group = "Auto")
 
-public class BlueLeftAuto extends LinearOpMode {
+public class RedLeftAuto extends LinearOpMode {
 
 
     int dropPos1;
@@ -156,13 +156,7 @@ public class BlueLeftAuto extends LinearOpMode {
 
         telemetry.update();*/
 
-        while(opModeInInit()){
-            telemetryTfod();
-            telemetry.addData("DropPos1: ",dropPos1);
-            telemetry.addData("DropPos2: ", dropPos2);
-            telemetry.addData("DropPos3: ", dropPos3);
-            telemetry.update();
-        }
+
         waitForStart();
 
 
@@ -171,6 +165,7 @@ public class BlueLeftAuto extends LinearOpMode {
             while (opModeIsActive()) {
                 //AprilTelemetry();
 
+                telemetryTfod();
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -204,14 +199,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     //after deposition
                     driveBackward(0.25);
                     turnRight(0.6);
-                    driveBackward(0.9);
-                    // execute 90 degree turn
-                    turnLeft(1);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -225,13 +213,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     telemetry.update();
                     driveForward(1.5);
                     driveBackward(1);
-                    // execute 90 degree turn
-                    turnLeft(1);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -250,14 +232,7 @@ public class BlueLeftAuto extends LinearOpMode {
                     //after deposition
                     driveBackward(0.25);
                     turnLeft(0.6);
-                    driveBackward(0.9);
-                    // execute 90 degree turn
-                    turnLeft(1);
-                    sleep(250);
-                    driveForward(1.6);
-                    // strafes to align with pixel board
-                    // strafeRight(0.6);
-                    // insert slide/bucket code to deposit pixel
+
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
