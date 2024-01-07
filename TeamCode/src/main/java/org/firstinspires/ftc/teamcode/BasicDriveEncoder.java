@@ -11,7 +11,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+@Disabled
 @Autonomous(name = "Basic Drive Encoder", group = "Auto")
 public class BasicDriveEncoder extends LinearOpMode {
     private DcMotor right_drive, left_drive, back_right_drive, back_left_drive;

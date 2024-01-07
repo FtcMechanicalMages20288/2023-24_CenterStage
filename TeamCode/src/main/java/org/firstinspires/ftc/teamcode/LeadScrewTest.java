@@ -15,7 +15,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+@Disabled
 @TeleOp(name = "LeadScrewTest", group = "TeleOp")
 
 public class LeadScrewTest extends OpMode {

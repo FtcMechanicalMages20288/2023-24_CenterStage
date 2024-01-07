@@ -124,20 +124,19 @@ public class MecanumDriveNBE extends OpMode {
 
         if (rightbumper) {
 
+            left_drive.setPower(-1); // left drive is 0
+            right_drive.setPower(1); // right drive is 2
+            back_left_drive.setPower(1); // back left drive is 1
+            back_right_drive.setPower(-1); // back right drive is 3
 
+
+
+        } else if (leftbumper) {
 
             left_drive.setPower(1);
             right_drive.setPower(-1);
             back_left_drive.setPower(-1);
             back_right_drive.setPower(1);
-
-
-        } else if (leftbumper) {
-
-            left_drive.setPower(-1); // left drive is 0
-            right_drive.setPower(1); // right drive is 2
-            back_left_drive.setPower(1); // back left drive is 1
-            back_right_drive.setPower(-1); // back right drive is 3
 
         }
         telemetry.addData("Slides", SlideL.getCurrentPosition());
@@ -228,6 +227,13 @@ public class MecanumDriveNBE extends OpMode {
             OpenBox();
         }
 
+        if(gamepad1.right_trigger > 0.3){
+            left_drive.setPower(1);
+            right_drive.setPower(-1);
+            back_left_drive.setPower(-1);
+            back_right_drive.setPower(1);
+        }
+
         //intake
         if(gamepad2.a) {
             Intake.setPower(0.65);
@@ -235,7 +241,7 @@ public class MecanumDriveNBE extends OpMode {
         }
         // outtake
         else if(gamepad2.b){
-            Intake.setPower(-0.8);
+            Intake.setPower(-0.6);
 
         }
 
@@ -243,10 +249,10 @@ public class MecanumDriveNBE extends OpMode {
 
         //drone launching and resetting
         if (gamepad2.back) {
-            Drone.setPosition(0.2);
+            Drone.setPosition(0.55);
         }
         else{
-            Drone.setPosition(0.55);
+            Drone.setPosition(0.375);
         }
 
 

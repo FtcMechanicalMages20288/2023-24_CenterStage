@@ -15,7 +15,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+@Disabled
 @TeleOp(name = "MecanumTwoWayv2", group = "TeleOp")
 
 public class MecanumTwoWayv2 extends OpMode {
