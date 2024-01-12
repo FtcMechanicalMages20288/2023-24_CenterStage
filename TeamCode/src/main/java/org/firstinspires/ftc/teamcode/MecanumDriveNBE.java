@@ -229,8 +229,14 @@ public class MecanumDriveNBE extends OpMode {
 
         if(gamepad1.right_trigger > 0.3){
             left_drive.setPower(1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
+            right_drive.setPower(1);
+            back_left_drive.setPower(1);
+            back_right_drive.setPower(1);
+        }
+        if(gamepad1.b){
+            left_drive.setPower(1);
+            right_drive.setPower(1);
+            back_left_drive.setPower(1);
             back_right_drive.setPower(1);
         }
 
