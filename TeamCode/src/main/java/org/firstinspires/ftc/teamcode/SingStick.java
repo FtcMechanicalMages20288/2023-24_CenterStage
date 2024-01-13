@@ -16,9 +16,9 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "MecanumDriveNBE", group = "TeleOp")
+@TeleOp(name = "Single Stick Mecanum", group = "TeleOp")
 
-public class MecanumDriveNBE extends OpMode {
+public class SingStick extends OpMode {
 
 
     //DriveTrain Motors
@@ -189,14 +189,14 @@ public class MecanumDriveNBE extends OpMode {
                 }
             }
         }
-         if (UpSlideBumper ) {
+        if (UpSlideBumper ) {
 
-             Pixels = 0;
-             IntakeReady = false;
-             CloseBox();
-             IntakeBox();
-             SlideR.setPower(0.8);
-             SlideL.setPower(0.8);
+            Pixels = 0;
+            IntakeReady = false;
+            CloseBox();
+            IntakeBox();
+            SlideR.setPower(0.8);
+            SlideL.setPower(0.8);
 
 
         } else if (!DownSlideBumper && !LimitSwitch.isPressed()){
@@ -227,25 +227,22 @@ public class MecanumDriveNBE extends OpMode {
             OpenBox();
         }
 
-
-        //Auto Forward and Backward
-
         if(gamepad1.right_trigger > 0.3){
             left_drive.setPower(1);
             right_drive.setPower(1);
             back_left_drive.setPower(1);
             back_right_drive.setPower(1);
         }
-        if(gamepad1.left_trigger > 0.3){
-            left_drive.setPower(-1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(-1);
+        if(gamepad1.b){
+            left_drive.setPower(1);
+            right_drive.setPower(1);
+            back_left_drive.setPower(1);
+            back_right_drive.setPower(1);
         }
 
         //intake
         if(gamepad2.a) {
-            Intake.setPower(0.84);
+            Intake.setPower(0.65);
 
         }
         // outtake

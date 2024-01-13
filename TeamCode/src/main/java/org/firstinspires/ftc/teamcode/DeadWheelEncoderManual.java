@@ -61,7 +61,7 @@ public class DeadWheelEncoderManual extends LinearOpMode {
         Drone = hardwareMap.get(Servo.class, "Drone");
         Intake = hardwareMap.dcMotor.get("Intake");
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "brm"));
-        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rm"));
+        rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "blm"));
         frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "Intake"));
         leftEncoder.setDirection(Encoder.Direction.REVERSE);
         frontEncoder.setDirection(Encoder.Direction.FORWARD);
