@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -28,8 +27,9 @@ import java.util.List;
  */
 
 @Config
-@Autonomous(group = "R BL Auto")
-public class RBLAuto extends LinearOpMode {
+@Autonomous(group = "R RR  Auto")
+public class RRRAuto extends LinearOpMode {
+
 
     int dropPos1;
     int dropPos2;
@@ -45,7 +45,7 @@ public class RBLAuto extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -65,45 +65,59 @@ public class RBLAuto extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
-
-
-
-
-
-
-
-
-
-
-
-    // Tfod Stuff Above
-
     private Servo BucketHold, BucketR, BucketL;
     private DcMotor SlideR, SlideL, Intake;
 
-   public static double slidePower = 0.45;
+    public static double slidePower = 0.45;
     int xValue = 19;
-   int yValue = -10;
+    int yValue = 12;
+    public static double gate2x = 49;
+    public static double gate2y = 73.5;
+
+    public static double gate2y2 = 100;
+
+
+    public static double gate2x3 = 60;
+    public static double gate2y3 = 80   ;
+
+    public static int gatex = 49 ;
+    public static int gatex1 = 51 ;
+
+    public static double gatey =-.75 ;
+    public static double gatey1 = -5 ;
+
+
+
+    public static double srd  = 5;
+
+    public static double srd2  = 39 ;
+
+
+
+    public static double boardx = -15;
+    public static double boardy = 73.5;
 
     public static int x2Value = 26;
-    public static int y2Value = 4 ;
+    public static int y2Value = -4 ;
 
 
     public static int x3Value = 23;
-    public static int y3Value = 5;
+    public static double y3Value = -3.5;
 
     public static double x3Value2 = -22;
     public static int y3Value2 = 34 ;
 
     public static int bw = 10;
+    public static int turn4 = 18;
 
-    public static int turn3 = 110;
+    public static int turn5 = 27;
 
-   public static int waitTime = 750;
+    public static int turn3 = -89;
+
+    public static int waitTime = 650;
     public static int waitTimev2 = 750;
 
-   public static double FwBw = 8;
-    @Override
+    public static double FwBw = 10;
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -126,16 +140,46 @@ public class RBLAuto extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
+
+
+                .lineTo(new Vector2d(x3Value, y3Value))
+                .turn(Math.toRadians(90))
+                .forward(1.4)
+                .back(10)
+                .turn(Math.toRadians(-90))
+                .build();
+
+
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
                 .lineTo(new Vector2d(xValue, yValue))
-                .back(7)
-                .lineTo(new Vector2d(20, -30))
-                .turn(Math.toRadians(110))
+                .back(8)
+                .turn(Math.toRadians(-90))
+                .forward(18)
+                .strafeRight(srd)
+
+                .build();
+
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
+                .lineTo(new Vector2d(x2Value, y2Value))
+                .back(6)
+                .lineTo(new Vector2d(x2Value-6,y2Value+26))
+                .turn(Math.toRadians(-110))
+
                 .build();
 
 
 
 
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
+        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos3.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+                .build();
+        TrajectorySequence traj2p2 = drive.trajectorySequenceBuilder(pos2.end())
                 .forward(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -163,26 +207,12 @@ public class RBLAuto extends LinearOpMode {
 
                 .build();
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(-90))
-                .back(3)
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(x3Value2, y3Value2))
-                .build();
 
 
 
-        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(bw)
-                .lineTo(new Vector2d(28.4, -30))
-                .turn(Math.toRadians(110))
-                .build();
 
 
-
-        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
+        TrajectorySequence traj3pos1 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -191,12 +221,25 @@ public class RBLAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeTo(new Vector2d(45,-26))
+                .strafeLeft(15)
 
 
                 .build();
 
 
+        TrajectorySequence traj3pos3 = drive.trajectorySequenceBuilder(traj2p2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .strafeLeft(22)
+
+
+                .build();
 
 
 
@@ -208,8 +251,9 @@ public class RBLAuto extends LinearOpMode {
 
 
         waitForStart();
-
         telemetryTfod();
+
+
         if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
             finalDropPos = 1;
 
@@ -218,33 +262,14 @@ public class RBLAuto extends LinearOpMode {
         } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
             finalDropPos = 3;
         } else {
-            finalDropPos = 3;
+            finalDropPos = 1;
             telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
         }
 
-        telemetry.addData("Final Pixel Position: ", finalDropPos);
-
-        telemetry.update();
-
         if(!isStopRequested()){
             if(finalDropPos == 1 ) {
-            drive.followTrajectorySequence(pos1);
 
-            IntakeBox();
-            SlidePower(slidePower);
-            sleep(waitTime);
-            HoldSlides();
-            BoardDropBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj2);
-            OpenBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj3);
-
-
-            }
-            if(finalDropPos == 2 ) {
-                drive.followTrajectorySequence(pos2);
+                drive.followTrajectorySequence(pos1);
 
                 IntakeBox();
                 SlidePower(slidePower);
@@ -255,7 +280,24 @@ public class RBLAuto extends LinearOpMode {
                 drive.followTrajectorySequence(traj2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                drive.followTrajectorySequence(traj3pos1);
+
+
+            }
+            if(finalDropPos == 2 ) {
+
+                drive.followTrajectorySequence(pos2);
+
+                IntakeBox();
+                SlidePower(slidePower);
+                sleep(waitTime);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2p2);
+                OpenBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj3pos3);
 
 
             }
@@ -271,11 +313,10 @@ public class RBLAuto extends LinearOpMode {
                 drive.followTrajectorySequence(traj2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                drive.followTrajectorySequence(traj3pos3);
             }
 
         }
-
 
 
 
@@ -323,7 +364,6 @@ public class RBLAuto extends LinearOpMode {
         BucketR.setPosition(0.5);
         BucketL.setPosition(0.5);
     }
-
     /**
      * Initialize the TensorFlow Object Detection processor.
      */
@@ -420,7 +460,7 @@ public class RBLAuto extends LinearOpMode {
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
-        // Step through the list of recognitions and display info for each one.
+        // Step through the list of recognitions and display info for each  one.
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
@@ -432,18 +472,19 @@ public class RBLAuto extends LinearOpMode {
             //telemetry.addData("X value: ", x);
 
 
-            if(x>=0 && x<=300){
+            if(x>=0 && x<=200){
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=301 && x<=891){
+            if(x>=201 && x<=400){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=891 && x<=900){
+            if(x>=401 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
+            telemetry.update();
         }   // end for() loop
 
     }   // end method telemetryTfod()
