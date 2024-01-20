@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static android.os.SystemClock.sleep;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -33,6 +34,13 @@ public class MecanumDriveNBE extends OpMode {
     private DcMotor LeadScrew;
     private CRServo Hook;
 
+    RevBlinkinLedDriver blinkinLedDriver;
+    RevBlinkinLedDriver.BlinkinPattern pattern;
+
+    protected enum DisplayKind {
+        MANUAL,
+        AUTO
+    }
 
     //limitswitch
     private TouchSensor LimitSwitch;
@@ -78,7 +86,7 @@ public class MecanumDriveNBE extends OpMode {
         Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
-
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
         //O position for Servos Default
 /*
@@ -144,8 +152,24 @@ public class MecanumDriveNBE extends OpMode {
         telemetry.addData("Slides", SlideL.getCurrentPosition());
         telemetry.update();
 
-        // CLAW ROTATION
+        //Led code
 
+        if(Pixels == 0){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_LAVA_PALETTE;
+            blinkinLedDriver.setPattern(pattern);
+        }
+
+        if(Pixels == 1){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_OCEAN_PALETTE;
+            blinkinLedDriver.setPattern(pattern);
+        }
+
+        if(Pixels==2){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+            blinkinLedDriver.setPattern(pattern);
+        }
+
+        // CLAW ROTATION
 
         if (LimitSwitch.isPressed()) {
             telemetry.addData("Intake", "Ready");

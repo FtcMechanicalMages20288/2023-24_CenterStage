@@ -85,19 +85,21 @@ public class BlinkinTesting extends OpMode {
         pattern = RevBlinkinLedDriver.BlinkinPattern.RAINBOW_RAINBOW_PALETTE;
 
         blinkinLedDriver.setPattern(pattern);
-
+/*
         display = telemetry.addData("Display Kind: ", displayKind.toString());
         patternName = telemetry.addData("Pattern: ", pattern.toString());
 
         ledCycleDeadline = new Deadline(LED_PERIOD, TimeUnit.SECONDS);
         gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
+
+ */
     }
 
     @Override
     public void loop()
     {
        if(gamepad1.a){
-           pattern =  RevBlinkinLedDriver.BlinkinPattern.BREATH_RED;
+           pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_OCEAN_PALETTE;
            blinkinLedDriver.setPattern(pattern);
 
 
@@ -106,11 +108,11 @@ public class BlinkinTesting extends OpMode {
              */
         }
        else if(gamepad1.b){
-           pattern =  RevBlinkinLedDriver.BlinkinPattern.BREATH_BLUE;
+           pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
            blinkinLedDriver.setPattern(pattern);
        }
        else if(gamepad1.x){
-           pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+           pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_LAVA_PALETTE;
            blinkinLedDriver.setPattern(pattern);
        }
     }
