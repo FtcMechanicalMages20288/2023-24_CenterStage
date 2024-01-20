@@ -24,9 +24,8 @@ import java.util.List;
  */
 
 @Config
-@Autonomous(group = "R BR Auto")
-public class RBRAuto extends LinearOpMode {
-
+@Autonomous(group = "R RL  Auto")
+public class RRLAutoTest extends LinearOpMode {
     int dropPos1;
     int dropPos2;
     int dropPos3;
@@ -41,7 +40,7 @@ public class RBRAuto extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -61,25 +60,34 @@ public class RBRAuto extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
-
-
-
-
-
-
-
-
-
-
-
-    // Tfod Stuff Above
-
     private Servo BucketHold, BucketR, BucketL;
     private DcMotor SlideR, SlideL, Intake;
 
-    public static double slidePower = 0.6;
-    int xValue = 19;
-    int yValue = 12;
+    public static double slidePower = 0.45;
+    /*int xValue = 19;
+    int yValue = -10;
+
+    public static int x2Value = 26;
+    public static int y2Value = 4 ;
+
+
+    public static int x3Value = 19;
+    public static int y3Value = 14 ;
+
+    public static double x3Value2 = 31.5;
+    public static int y3Value2 = -30 ;
+
+    public static int bw = 10;
+
+    public static int turn3 = 110;
+
+    public static int waitTime = 750;
+    public static int waitTimev2 = 750;
+
+    public static double FwBw = 8;*/
+
+    int xValue = 10;
+    int yValue = -3;
     public static double gate2x = 49;
     public static double gate2y = 73.5;
 
@@ -128,7 +136,6 @@ public class RBRAuto extends LinearOpMode {
 
     public static double FwBw = 8;
 
-
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -136,8 +143,6 @@ public class RBRAuto extends LinearOpMode {
         initCode();
         initTfod();
         CloseBox();
-
-
 
 
         Pose2d sP = new Pose2d(0,0,0);
@@ -152,24 +157,6 @@ public class RBRAuto extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-
-
-                .lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(90))
-                .forward(1.4)
-                .back(10)
-                .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(gatex1,gatey1))
-                .turn(Math.toRadians(turn3-4))
-                .lineTo(new Vector2d(gate2x3, gate2y3))
-                .turn(Math.toRadians(-180))
-                .strafeRight(srd2)
-                .turn(Math.toRadians(turn5))
-                .build();
-
-
-
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
                 .lineTo(new Vector2d(xValue, yValue))
                 .back(3)
                 .lineTo(new Vector2d(15, -.75))
@@ -184,8 +171,7 @@ public class RBRAuto extends LinearOpMode {
 
 
 
-
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos3.end())
+        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
                 .forward(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -213,23 +199,25 @@ public class RBRAuto extends LinearOpMode {
 
                 .build();
 
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+                .lineTo(new Vector2d(x3Value, y3Value))
+                .back(bw)
+                .lineTo(new Vector2d(x3Value2, y3Value2))
+                .turn(Math.toRadians(turn3))
+                .build();
 
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
                 .lineTo(new Vector2d(x2Value, y2Value))
-                .back(6)
-                .lineTo(new Vector2d(20, 13))
-                .lineTo(new Vector2d(46, 13))
-                .turn(Math.toRadians(-100))
-                .lineTo(new Vector2d(gate2x+13, gate2y2))
-                .turn(Math.toRadians(-180))
-                .strafeRight(srd+12)
-                .turn(Math.toRadians(turn4))
+                .back(bw)
+                .lineTo(new Vector2d(28.4, -30))
+                .turn(Math.toRadians(110))
                 .build();
 
 
-        TrajectorySequence traj3pos1 = drive.trajectorySequenceBuilder(traj2.end())
+
+        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -238,109 +226,52 @@ public class RBRAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeLeft(27)
-
-
-                .build();
-
-
-        TrajectorySequence traj3pos3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeLeft(15)
+                .strafeTo(new Vector2d(45,-26))
 
 
                 .build();
 
 
 
-        //finding tse postions for auto
-    /*
-        while(opModeInInit()){
-            telemetryTfod();
-        }
 
-        */
+
+
+
 
 
 
 
 
         waitForStart();
-        telemetryTfod();
-
-
-        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
-            finalDropPos = 1;
-
-        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
-            finalDropPos = 2;
-        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
-            finalDropPos = 3;
-        } else {
-            finalDropPos = 1;
-            telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
-        }
-
-        telemetry.addData("Final Pixel Position: ", finalDropPos);
-
-        telemetry.update();
 
         if(!isStopRequested()){
-            if(finalDropPos == 1 ) {
+           /* drive.followTrajectorySequence(pos1);
 
-                drive.followTrajectorySequence(pos1);
+            IntakeBox();
+            SlidePower(slidePower);
+            sleep(waitTime);
+            HoldSlides();
+            BoardDropBox();
+            sleep(waitTimev2);
+            drive.followTrajectorySequence(traj2);
+            OpenBox();
+            sleep(waitTimev2);
+            drive.followTrajectorySequence(traj3);
 
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
-                OpenBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos1);
+            */
 
+            drive.followTrajectorySequence(pos2);
 
-            }
-            if(finalDropPos == 2 ) {
-
-                drive.followTrajectorySequence(pos2);
-
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
-                OpenBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos3);
-
-
-            }
-            if(finalDropPos == 3) {
-                drive.followTrajectorySequence(pos3);
-
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
-                OpenBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos3);
-            }
+            IntakeBox();
+            SlidePower(slidePower);
+            sleep(waitTime);
+            HoldSlides();
+            BoardDropBox();
+            sleep(waitTimev2);
+            drive.followTrajectorySequence(traj2);
+            OpenBox();
+            sleep(waitTimev2);
+            drive.followTrajectorySequence(traj3);
 
         }
 
@@ -392,9 +323,6 @@ public class RBRAuto extends LinearOpMode {
         BucketL.setPosition(0.5);
     }
 
-    /**
-     * Initialize the TensorFlow Object Detection processor.
-     */
     private void initTfod() {
 
      /*   // Create the AprilTag processor by using a builder.
@@ -500,15 +428,15 @@ public class RBRAuto extends LinearOpMode {
             //telemetry.addData("X value: ", x);
 
 
-            if(x>=0 && x<=200){
+            if(x>=0 && x<=350){
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=201 && x<=400){
+            if(x>=351 && x<=750){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=401 && x<=900){
+            if(x>=751 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }

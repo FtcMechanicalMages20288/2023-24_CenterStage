@@ -81,9 +81,9 @@ public class RBLAuto extends LinearOpMode {
     private Servo BucketHold, BucketR, BucketL;
     private DcMotor SlideR, SlideL, Intake;
 
-   public static double slidePower = 0.45;
+    public static double slidePower = 0.45;
     int xValue = 19;
-   int yValue = -10;
+    int yValue = -10;
 
     public static int x2Value = 26;
     public static int y2Value = 4 ;
@@ -99,10 +99,10 @@ public class RBLAuto extends LinearOpMode {
 
     public static int turn3 = 110;
 
-   public static int waitTime = 750;
+    public static int waitTime = 750;
     public static int waitTimev2 = 750;
 
-   public static double FwBw = 8;
+    public static double FwBw = 8;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -228,18 +228,18 @@ public class RBLAuto extends LinearOpMode {
 
         if(!isStopRequested()){
             if(finalDropPos == 1 ) {
-            drive.followTrajectorySequence(pos1);
+                drive.followTrajectorySequence(pos1);
 
-            IntakeBox();
-            SlidePower(slidePower);
-            sleep(waitTime);
-            HoldSlides();
-            BoardDropBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj2);
-            OpenBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj3);
+                IntakeBox();
+                SlidePower(slidePower);
+                sleep(waitTime);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2);
+                OpenBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj3);
 
 
             }
@@ -451,4 +451,3 @@ public class RBLAuto extends LinearOpMode {
 
 
 }
-

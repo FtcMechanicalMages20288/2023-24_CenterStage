@@ -25,7 +25,7 @@ import java.util.List;
 
 @Config
 @Autonomous(group = "R BR Auto")
-public class RBRAuto extends LinearOpMode {
+public class RRLAutoSid extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
@@ -41,7 +41,7 @@ public class RBRAuto extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -79,7 +79,7 @@ public class RBRAuto extends LinearOpMode {
 
     public static double slidePower = 0.6;
     int xValue = 19;
-    int yValue = 12;
+    int yValue = -12;
     public static double gate2x = 49;
     public static double gate2y = 73.5;
 
@@ -99,7 +99,7 @@ public class RBRAuto extends LinearOpMode {
 
     public static double srd  = 17.6;
 
-    public static double srd2  = 39 ;
+    public static double srd2  = -18 ;
 
 
 
@@ -155,22 +155,23 @@ public class RBRAuto extends LinearOpMode {
 
 
                 .lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(90))
-                .forward(1.4)
-                .back(10)
-                .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(gatex1,gatey1))
-                .turn(Math.toRadians(turn3-4))
-                .lineTo(new Vector2d(gate2x3, gate2y3))
+                .turn(Math.toRadians(45))
+                //.forward(1.4)
+                .forward(3)
+                .back(5.5)
+                .turn(Math.toRadians(-48))
+                .lineTo(new Vector2d(50, -3.5))
+                .turn(Math.toRadians(-turn3))
+                //.lineTo(new Vector2d(gate2x3, gate2y3))
+                .back(77)
                 .turn(Math.toRadians(-180))
                 .strafeRight(srd2)
-                .turn(Math.toRadians(turn5))
                 .build();
 
 
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(xValue, yValue))
+                /*.lineTo(new Vector2d(xValue, yValue))
                 .back(3)
                 .lineTo(new Vector2d(15, -.75))
                 .lineTo(new Vector2d(gatex,gatey))
@@ -179,9 +180,24 @@ public class RBRAuto extends LinearOpMode {
                 .turn(Math.toRadians(-180))
                 .strafeRight(srd)
                 .turn(Math.toRadians(turn4))
+                .build();*/
+
+                .lineTo(new Vector2d(x3Value, -y3Value))
+                .turn(Math.toRadians(-45))
+                .turn(Math.toRadians(-45))
+                //.forward(1.4)
+                .forward(1)
+                .back(6.5)
+                .turn(Math.toRadians(90))
+                .forward(28)
+                .turn(Math.toRadians(-turn3))
+                //.lineTo(new Vector2d(gate2x3, gate2y3))
+                .back(78)
+                .turn(Math.toRadians(-180))
+                .strafeRight(-36)
+                //.turn(Math.toRadians(turn5))
+                .turn(Math.toRadians(-30))
                 .build();
-
-
 
 
 
@@ -208,7 +224,6 @@ public class RBRAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeRight(15)
 
 
                 .build();
@@ -217,16 +232,17 @@ public class RBRAuto extends LinearOpMode {
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(6)
-                .lineTo(new Vector2d(20, 13))
-                .lineTo(new Vector2d(46, 13))
-                .turn(Math.toRadians(-100))
-                .lineTo(new Vector2d(gate2x+13, gate2y2))
-                .turn(Math.toRadians(-180))
-                .strafeRight(srd+12)
-                .turn(Math.toRadians(turn4))
+                .lineTo(new Vector2d(-36.10, -25.07))
+                .lineTo(new Vector2d(-36.38, -35.69))
+                .lineTo(new Vector2d(-56.50, -33.87))
+                .lineTo(new Vector2d(-56.92, -9.57))
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(47.98, -9.71))
+                .turn(Math.toRadians(180))
+                .lineTo(new Vector2d(48.40, -36.52))
+                .lineTo(new Vector2d(56.92, -36.10))
                 .build();
+
 
 
         TrajectorySequence traj3pos1 = drive.trajectorySequenceBuilder(traj2.end())
@@ -238,7 +254,6 @@ public class RBRAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeLeft(27)
 
 
                 .build();
@@ -284,7 +299,7 @@ public class RBRAuto extends LinearOpMode {
         } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
             finalDropPos = 3;
         } else {
-            finalDropPos = 1;
+            finalDropPos = 3;
             telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
         }
 
