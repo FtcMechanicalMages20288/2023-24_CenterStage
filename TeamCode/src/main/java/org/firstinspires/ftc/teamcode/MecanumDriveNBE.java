@@ -29,7 +29,7 @@ public class MecanumDriveNBE extends OpMode {
     //Slide Motors
     private DcMotor SlideR, SlideL, Intake;
 
-    private Servo BucketHold, BucketR, BucketL, Drone;
+    private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL;
 
     private DcMotor LeadScrew;
     private CRServo Hook;
@@ -82,12 +82,18 @@ public class MecanumDriveNBE extends OpMode {
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
+        HangR = hardwareMap.servo.get("HangR");
+        HangL = hardwareMap.servo.get("HangL");
+
         LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
         Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
+
+        HangR.setPosition(0.5);
+        HangL.setPosition(0.5);
         //O position for Servos Default
 /*
         BucketR.setPosition(0);
@@ -101,6 +107,8 @@ public class MecanumDriveNBE extends OpMode {
     @Override
     public void loop() {
 
+        telemetry.addData("ServoR", HangR.getPosition());
+        telemetry.addData("ServoL", HangL.getPosition());
 
         telemetry.addData("SlideL:", SlideL.getCurrentPosition());
         if (Color instanceof DistanceSensor) {

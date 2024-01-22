@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-@Disabled
+
 @TeleOp(name = "ServoTuner", group = "TeleOp")
 public class BucketTuner extends OpMode{
 //drop 0.2
@@ -15,29 +15,38 @@ public class BucketTuner extends OpMode{
     double temp = 0;
     double tempHold = 0;
 
-    private Servo BucketHold, BucketR, BucketL;
+    private Servo BucketHold, BucketR, BucketL, HangR, HangL;
     @Override
     public void init() {
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
+
+        HangR = hardwareMap.servo.get("HangR");
+        HangL = hardwareMap.servo.get("HangL");
+
+
+        HangR.setPosition(0.5);
+        HangL.setPosition(0.5);
+        HangR.setDirection((Servo.Direction.REVERSE));
         BucketR.setDirection(Servo.Direction.REVERSE);
+
     }
 
     @Override
     public void loop() {
         if(gamepad2.a){
-            BucketL.setPosition(temp + 0.05);
-            BucketR.setPosition(temp + 0.05);
+            HangR.setPosition(temp + 0.05);
+            HangL.setPosition(temp + 0.05);
             temp =  BucketR.getPosition();
-            telemetry.addData("Servo Pos", BucketR.getPosition());
+            telemetry.addData("Servo Pos", HangL.getPosition());
             telemetry.update();
            sleep(1000);
 
         }
         if(gamepad2.b) {
-            BucketL.setPosition(temp - 0.05);
-            BucketR.setPosition(temp - 0.05);
+            HangR.setPosition(temp - 0.05);
+            HangL.setPosition(temp - 0.05);
             temp =  BucketR.getPosition();
             telemetry.addData("Servo Pos", BucketR.getPosition());
             telemetry.update();
