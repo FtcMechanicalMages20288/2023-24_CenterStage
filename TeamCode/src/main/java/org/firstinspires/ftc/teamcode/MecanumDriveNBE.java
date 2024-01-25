@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import android.os.SystemClock;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -46,6 +48,11 @@ public class MecanumDriveNBE extends OpMode {
     private TouchSensor LimitSwitch;
     //BoxColorSensor
     private NormalizedColorSensor Color;
+
+    long startTime = System.currentTimeMillis();
+
+    long endTime = System.currentTimeMillis() - startTime;
+
 
     int Pixels = 0;
 
@@ -174,6 +181,11 @@ public class MecanumDriveNBE extends OpMode {
 
         if(Pixels==2){
             pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
+            blinkinLedDriver.setPattern(pattern);
+        }
+
+        if(endTime > 90000){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.GREEN;
             blinkinLedDriver.setPattern(pattern);
         }
 
