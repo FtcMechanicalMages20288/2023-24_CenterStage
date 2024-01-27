@@ -36,18 +36,18 @@ public class BucketTuner extends OpMode{
     @Override
     public void loop() {
         if(gamepad2.a){
-            HangR.setPosition(temp + 0.05);
-            HangL.setPosition(temp + 0.05);
-            temp =  BucketR.getPosition();
+            BucketR.setPosition(temp + 0.05);
+            BucketL.setPosition(temp + 0.05);
+            temp =  BucketL.getPosition();
             telemetry.addData("Servo Pos", HangL.getPosition());
             telemetry.update();
            sleep(1000);
 
         }
         if(gamepad2.b) {
-            HangR.setPosition(temp - 0.05);
-            HangL.setPosition(temp - 0.05);
-            temp =  BucketR.getPosition();
+            BucketR.setPosition(temp - 0.05);
+            BucketL.setPosition(temp - 0.05);
+            temp =  BucketL.getPosition();
             telemetry.addData("Servo Pos", BucketR.getPosition());
             telemetry.update();
             sleep(1000);

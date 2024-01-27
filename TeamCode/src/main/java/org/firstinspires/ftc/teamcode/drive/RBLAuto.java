@@ -302,14 +302,14 @@ public class RBLAuto extends LinearOpMode {
 
     }
     private void CloseBox(){
-        BucketHold.setPosition(0.7); //close
-    }
-    private void OpenBox(){
         BucketHold.setPosition(0); //close
     }
+    private void OpenBox(){
+        BucketHold.setPosition(0.7); //close
+    }
     private void BoardDropBox(){
-        BucketR.setPosition(0.85);
-        BucketL.setPosition(0.85);
+        BucketR.setPosition(0.15);
+        BucketL.setPosition(0.15);
     }
     private void HoldSlides(){
         SlideR.setPower(0.1);

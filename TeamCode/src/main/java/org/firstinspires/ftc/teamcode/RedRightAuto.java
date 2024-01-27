@@ -388,7 +388,7 @@ public class RedRightAuto extends LinearOpMode {
 
     }
 
-    private void turnRight(double seconds) {
+    private void turnLeft(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
         // Set motor powers to drive forward
@@ -424,7 +424,7 @@ public class RedRightAuto extends LinearOpMode {
 
     }
 
-    private void turnLeft(double seconds) {
+    private void turnRight(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
 

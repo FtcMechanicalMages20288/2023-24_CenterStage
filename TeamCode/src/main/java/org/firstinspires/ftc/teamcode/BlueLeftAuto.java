@@ -105,13 +105,15 @@ public class BlueLeftAuto extends LinearOpMode {
         back_right_drive = hardwareMap.get(DcMotor.class, "brm");
         back_left_drive = hardwareMap.get(DcMotor.class, "blm");
 
+
+
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);
+        back_right_drive.setDirection(DcMotor.Direction.REVERSE);
+
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        back_right_drive.setDirection(DcMotor.Direction.FORWARD);
-        back_left_drive.setDirection(DcMotor.Direction.REVERSE);
+
 
         //braking after each motion
         /*
@@ -387,7 +389,7 @@ public class BlueLeftAuto extends LinearOpMode {
 
     }
 
-    private void turnRight(double seconds) {
+    private void turnLeft(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
         // Set motor powers to drive forward
@@ -423,7 +425,7 @@ public class BlueLeftAuto extends LinearOpMode {
 
     }
 
-    private void turnLeft(double seconds) {
+    private void turnRight(double seconds) {
         double FORWARD_SPEED = 0.4;  // Adjust as needed
 
 

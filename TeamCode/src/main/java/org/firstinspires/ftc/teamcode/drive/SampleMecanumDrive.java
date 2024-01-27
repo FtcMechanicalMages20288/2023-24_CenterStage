@@ -97,10 +97,23 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: adjust the names of the following hardware devices to match your configuration
 
 
+        leftFront = hardwareMap.get(DcMotorEx.class, "blm");
+        leftRear = hardwareMap.get(DcMotorEx.class, "lm");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rm");
+        rightFront = hardwareMap.get(DcMotorEx.class, "brm");
+/*
         leftFront = hardwareMap.get(DcMotorEx.class, "lm");
         leftRear = hardwareMap.get(DcMotorEx.class, "blm");
         rightRear = hardwareMap.get(DcMotorEx.class, "brm");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rm");
+        rightFront = hardwareMap.get(DcMotorEx.class, "rm"); */
+
+        // TODO: reverse any motors using DcMotor.setDirection()
+      /* leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);*/
+
+
+        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -120,9 +133,7 @@ public class SampleMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
