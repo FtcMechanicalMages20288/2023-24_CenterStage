@@ -64,6 +64,8 @@ public class MecanumDriveNBE extends OpMode {
 
     boolean colorSwitch = false;
     //Motor Power
+
+    double SlidePower;
     double left_drivePower;
     double right_drivePower;
     double back_right_drivePower;
@@ -137,11 +139,16 @@ public class MecanumDriveNBE extends OpMode {
         }
         telemetry.addData("Pixels:", Pixels);
 
+
+
+
         //Movement Controller
         right_drivePower = gamepad1.right_stick_y;
         back_left_drivePower = gamepad1.left_stick_y;
         left_drivePower = gamepad1.left_stick_y;
         back_right_drivePower = gamepad1.right_stick_y;
+
+
 
 
         left_drive.setPower(left_drivePower);
@@ -152,6 +159,8 @@ public class MecanumDriveNBE extends OpMode {
 
         boolean rightbumper = gamepad1.right_bumper; //Strafe Right
         boolean leftbumper = gamepad1.left_bumper; //Strafe Left
+
+
 
 
         boolean UpSlideBumper = gamepad2.right_bumper;
@@ -188,13 +197,14 @@ public class MecanumDriveNBE extends OpMode {
 
         //Led code
 
+
         if(Pixels == 0 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_LAVA_PALETTE;
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.RED;
             blinkinLedDriver.setPattern(pattern);
         }
 
         if(Pixels == 1 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_OCEAN_PALETTE;
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.BLUE;
             blinkinLedDriver.setPattern(pattern);
         }
 
@@ -203,9 +213,9 @@ public class MecanumDriveNBE extends OpMode {
             blinkinLedDriver.setPattern(pattern);
         }
 
-        if(endTime > 85000 && Pixels == 0 || endTime > 85000 && Pixels == 1 || endTime > 85000 && Pixels == 2){
+        if(endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2){
 
-            switch((int)endTime){
+            /*switch((int)endTime){
                 case 85500:
                     pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
                     blinkinLedDriver.setPattern(pattern);
@@ -233,7 +243,7 @@ public class MecanumDriveNBE extends OpMode {
                     break;
 
 
-            }
+            } */
 
             if(endTime > 90000 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
@@ -241,43 +251,43 @@ public class MecanumDriveNBE extends OpMode {
             }
 
 
-          /*
-            if(endTime > 85500 && endTime < 86000 ){
+
+            if(endTime > 80100 && endTime < 80500 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
                 blinkinLedDriver.setPattern(pattern);
             }
-            if(endTime > 86000 && endTime < 86500 ){
+            if(endTime >80500  && endTime <  81000 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
                 blinkinLedDriver.setPattern(pattern);
             }
-            if(endTime > 86500 && endTime < 87000 ){
+            if(endTime >81500  && endTime <82000  ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
                 blinkinLedDriver.setPattern(pattern);
 
             }
-            if(endTime > 87000 ){
+            if(endTime > 82000  && endTime < 82500  ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
                 blinkinLedDriver.setPattern(pattern);
             }
-            if(endTime > 87500 && endTime < 88000 ){
+            if(endTime > 82500  && endTime < 83000 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
                 blinkinLedDriver.setPattern(pattern);
             }
-            if(endTime > 88500 && endTime < 89000 ){
+            if(endTime >83500  && endTime <84000  ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
                 blinkinLedDriver.setPattern(pattern);
             }
-            if(endTime > 89500 && endTime < 90000 ){
+            if(endTime >84000  && endTime < 84500 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
                 blinkinLedDriver.setPattern(pattern);
 
             }
-            if(endTime > 90000 ){
+            if(endTime > 85000 ){
                 pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
                 blinkinLedDriver.setPattern(pattern);
             }
 
-           */
+
 
         }
 
@@ -288,6 +298,8 @@ public class MecanumDriveNBE extends OpMode {
 
         //Slide Goes Down
         if (!LimitSwitch.isPressed()) {
+
+
             if (DownSlideBumper) {
 
                 IntakeBox();
@@ -301,11 +313,13 @@ public class MecanumDriveNBE extends OpMode {
                 SlideL.setPower(-1);
             }
 
+
         } else {
             StopSlides();
             IntakeReady = true;
             OpenBox();
             AutoHold = true;
+
             if (IntakeReady) {
                 if (Pixels == 2) {
                     CloseBox();
@@ -313,14 +327,15 @@ public class MecanumDriveNBE extends OpMode {
                 if (Pixels < 2) {
                     if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) {
                         Pixels++;
-                        sleep(1000);
+                        sleep(350);
                     }
                 }
             }
         }
+
          if (UpSlideBumper ) {
 
-             Pixels = 0;
+
              IntakeReady = false;
              CloseBox();
              IntakeBox();
@@ -341,6 +356,7 @@ public class MecanumDriveNBE extends OpMode {
         //Drop Box on Board
         if(gamepad2.y){
             BoardDropBox();
+            Pixels = 0;
 
         }
 
@@ -389,10 +405,11 @@ public class MecanumDriveNBE extends OpMode {
 
         //drone launching and resetting
         if (gamepad2.back) {
-            Drone.setPosition(0.55);
+            Drone.setPosition(0.3);
         }
         else{
-            Drone.setPosition(0.375);
+            Drone.setPosition(0.55);
+
         }
 
 
