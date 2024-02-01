@@ -85,24 +85,49 @@ public class RBLAuto extends LinearOpMode {
     int xValue = 19;
     int yValue = -10;
 
-    public static int x2Value = 26;
-    public static int y2Value = 4 ;
+    public static int x2Value = 20;
+    public static int y2Value = 8 ;
+
+    public static int x22Value = 19;
+    public static int y22Value = 25;
+
+    public static int turn1 = 100;
+    public static int turn2 = 95;
+
+    public static int turn3_3 = -50;
+    public static int turn3_5 = 90;
+
+    public static int strafetox = 0;
+
+    public static int strafetoy = 28;
 
 
-    public static int x3Value = 23;
-    public static int y3Value = 5;
+    public static int x3Value = 28;
+    public static int y3Value = 0;
+
+    public static int x33Value = 25;
+    public static int y33Value = 25;
+
+
+    public static int x4Value = 20;
+    public static int y4Value = 0 ;
+
+    public static int x44Value = 34;
+    public static int y44Value = 25;
+
+
 
     public static double x3Value2 = -22;
     public static int y3Value2 = 34 ;
 
     public static int bw = 10;
 
-    public static int turn3 = 110;
 
-    public static int waitTime = 750;
+
+    public static int waitTime = 535;
     public static int waitTimev2 = 750;
 
-    public static double FwBw = 8;
+    public static double FwBw = 10;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -126,12 +151,10 @@ public class RBLAuto extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(xValue, yValue))
+                .lineToLinearHeading(new Pose2d(x2Value, y2Value))
                 .back(7)
-                .lineTo(new Vector2d(20, -30))
-                .turn(Math.toRadians(110))
+                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
                 .build();
-
 
 
 
@@ -146,42 +169,6 @@ public class RBLAuto extends LinearOpMode {
                 .build();
 
 
-
-
-
-        TrajectorySequence pos1p3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeRight(15)
-
-
-                .build();
-
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(-90))
-                .back(3)
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(x3Value2, y3Value2))
-                .build();
-
-
-
-        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(bw)
-                .lineTo(new Vector2d(28.4, -30))
-                .turn(Math.toRadians(110))
-                .build();
-
-
-
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -191,10 +178,86 @@ public class RBLAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeTo(new Vector2d(45,-26))
+                .lineToLinearHeading(new Pose2d(strafetox,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
+                .lineToLinearHeading(new Pose2d(x3Value, y3Value))
+                .back(7)
+                .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2)))
+                .build();
+
+
+
+        TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
 
 
                 .build();
+
+
+        TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(traj2_2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+                .lineToLinearHeading(new Pose2d(x4Value, y4Value))
+                .turn(Math.toRadians(turn3_3))
+                .forward(8)
+                .back(8)
+                .back(7)
+                .turn(Math.toRadians(turn3_5))
+                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(90)))
+                .build();
+
+
+
+        TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+
+                .build();
+
+
+        TrajectorySequence traj3_3 = drive.trajectorySequenceBuilder(traj3_2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -244,7 +307,7 @@ public class RBLAuto extends LinearOpMode {
 
             }
             if(finalDropPos == 2 ) {
-                drive.followTrajectorySequence(pos2);
+               drive.followTrajectorySequence(pos2);
 
                 IntakeBox();
                 SlidePower(slidePower);
@@ -252,14 +315,15 @@ public class RBLAuto extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
+                drive.followTrajectorySequence(traj2_2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                drive.followTrajectorySequence(traj2_3);
 
 
             }
             if(finalDropPos == 3) {
+
                 drive.followTrajectorySequence(pos3);
 
                 IntakeBox();
@@ -268,10 +332,12 @@ public class RBLAuto extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
+                drive.followTrajectorySequence(traj3_2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                drive.followTrajectorySequence(traj3_3);
+
+
             }
 
         }

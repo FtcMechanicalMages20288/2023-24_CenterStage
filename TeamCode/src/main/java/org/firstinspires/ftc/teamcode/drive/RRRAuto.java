@@ -71,53 +71,48 @@ public class RRRAuto extends LinearOpMode {
     public static double slidePower = 0.45;
     int xValue = 19;
     int yValue = 12;
-    public static double gate2x = 49;
-    public static double gate2y = 73.5;
+    public static int x2Value = 20;
+    public static int y2Value = -8 ;
 
-    public static double gate2y2 = 100;
+    public static int x22Value = 33;
+    public static int y22Value = -25;
 
+    public static int turn1 = -100;
+    public static int turn2 = -95;
 
-    public static double gate2x3 = 60;
-    public static double gate2y3 = 80   ;
+    public static int srdy = -15;
 
-    public static int gatex = 49 ;
-    public static int gatex1 = 51 ;
+    public static int turn3_3 = 50;
+    public static int turn3_5 = -90;
 
-    public static double gatey =-.75 ;
-    public static double gatey1 = -5 ;
+    public static int strafetox = 0;
 
-
-
-    public static double srd  = 5;
-
-    public static double srd2  = 39 ;
+    public static int strafetoy = -28;
 
 
+    public static int x3Value = 28;
+    public static int y3Value = 0;
 
-    public static double boardx = -15;
-    public static double boardy = 73.5;
-
-    public static int x2Value = 26;
-    public static int y2Value = -4 ;
+    public static int x33Value = 25;
+    public static int y33Value = -25;
 
 
-    public static int x3Value = 23;
-    public static double y3Value = -3.5;
+    public static int x4Value = 20;
+    public static int y4Value = 0 ;
+
+    public static int x44Value = 18;
+    public static int y44Value = -25;
+
+
 
     public static double x3Value2 = -22;
     public static int y3Value2 = 34 ;
 
-    public static double bobX = 23;
-    public static double billY = -33;
-
     public static int bw = 10;
-    public static int turn4 = 18;
 
-    public static int turn5 = 27;
 
-    public static int turn3 = -89;
 
-    public static int waitTime = 650;
+    public static int waitTime = 535;
     public static int waitTimev2 = 750;
 
     public static double FwBw = 10;
@@ -141,59 +136,84 @@ public class RRRAuto extends LinearOpMode {
 
 
 
-
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-
-
-                .lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(90))
-                .forward(1.4)
-                .back(10)
-                //.turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(bobX,billY))
-                .strafeLeft(10)
-                .turn(Math.toRadians(180))
+                .lineToLinearHeading(new Pose2d(x2Value, y2Value))
+                .back(7)
+                .lineToLinearHeading(new Pose2d(x2Value-7,srdy ))
+                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
                 .build();
 
+
+
+        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
+                .forward(FwBw+2,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+
+                .build();
+
+
+        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(-90)))
+                .build();
+
+
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
+                .lineToLinearHeading(new Pose2d(x3Value, y3Value))
+                .back(7)
+                .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2)))
+                .build();
+
+
+
+        TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+
+                .build();
+
+
+        TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(traj2_2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(-90)))
+                .build();
 
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(xValue, yValue))
+                .lineToLinearHeading(new Pose2d(x4Value, y4Value))
+                .turn(Math.toRadians(turn3_3))
+                .forward(8)
                 .back(8)
-                .turn(Math.toRadians(-90))
-                .forward(18)
-                .strafeRight(srd)
-
-                .build();
-
-        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(6)
-                .lineTo(new Vector2d(x2Value-6,y2Value+26))
-                .turn(Math.toRadians(-110))
-
+                .back(7)
+                .turn(Math.toRadians(turn3_5))
+                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
                 .build();
 
 
 
-        TrajectorySequence traj2p1 = drive.trajectorySequenceBuilder(pos1.end())
-
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-                .build();
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-                .build();
-        TrajectorySequence traj2p2 = drive.trajectorySequenceBuilder(pos2.end())
+        TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
                 .forward(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -204,17 +224,7 @@ public class RRRAuto extends LinearOpMode {
                 .build();
 
 
-
-
-
-
-
-
-
-
-
-
-        TrajectorySequence traj3pos2 = drive.trajectorySequenceBuilder(traj2.end())
+        TrajectorySequence traj3_3 = drive.trajectorySequenceBuilder(traj3_2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -223,39 +233,9 @@ public class RRRAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeLeft(15)
-
-
+                .lineToLinearHeading(new Pose2d(strafetox,strafetoy,Math.toRadians(-90)))
                 .build();
 
-
-        TrajectorySequence traj3pos3 = drive.trajectorySequenceBuilder(traj2p2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeLeft(22)
-
-
-                .build();
-
-        TrajectorySequence traj3pos1 = drive.trajectorySequenceBuilder(traj2p1.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeLeft(29)
-
-
-                .build();
 
 
 
@@ -276,25 +256,27 @@ public class RRRAuto extends LinearOpMode {
         } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
             finalDropPos = 3;
         } else {
-            finalDropPos = 1;
+            finalDropPos = 3;
             telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
         }
 
         if(!isStopRequested()){
             if(finalDropPos == 1 ) {
 
-                drive.followTrajectorySequence(pos1);
+
+
+                drive.followTrajectorySequence(pos3);
+
                 IntakeBox();
                 SlidePower(slidePower);
                 sleep(waitTime);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
+                drive.followTrajectorySequence(traj3_2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos1);
-
+                drive.followTrajectorySequence(traj3_3);
 
             }
             if(finalDropPos == 2 ) {
@@ -307,16 +289,15 @@ public class RRRAuto extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2p2);
+                drive.followTrajectorySequence(traj2_2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos3);
+                drive.followTrajectorySequence(traj2_3);
 
 
             }
             if(finalDropPos == 3) {
-                drive.followTrajectorySequence(pos3);
-
+                drive.followTrajectorySequence(pos1);
                 IntakeBox();
                 SlidePower(slidePower);
                 sleep(waitTime);
@@ -326,7 +307,7 @@ public class RRRAuto extends LinearOpMode {
                 drive.followTrajectorySequence(traj2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3pos3);
+                drive.followTrajectorySequence(traj3);
             }
 
         }
