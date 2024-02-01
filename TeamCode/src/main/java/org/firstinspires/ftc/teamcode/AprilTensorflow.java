@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -65,6 +66,18 @@ public class AprilTensorflow extends LinearOpMode {
     int dropPos3;
     int finalDropPos;
 
+    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+
+    //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
+    //  applied to the drive motors to correct the error.
+    //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
+    final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+
+    final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+
+
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
@@ -89,8 +102,8 @@ public class AprilTensorflow extends LinearOpMode {
 
     private DcMotor         leftDrive   = null;
     private DcMotor         rightDrive  = null;
-    private DcMotor  back_right_drive = null;
-    private DcMotor back_left_drive = null;
+    private DcMotor  brightDrive = null;
+    private DcMotor bleftDrive = null;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -106,7 +119,9 @@ public class AprilTensorflow extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
 
         initTfod();
         sleep(3000);
@@ -115,18 +130,17 @@ public class AprilTensorflow extends LinearOpMode {
         //  telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         // telemetry.addData(">", "Touch Play to start OpMode");
 
-        leftDrive  = hardwareMap.get(DcMotor.class, "lm");
-        rightDrive = hardwareMap.get(DcMotor.class, "rm");
-        back_right_drive = hardwareMap.get(DcMotor.class, "brm");
-        back_left_drive = hardwareMap.get(DcMotor.class, "blm");
+        bleftDrive  = hardwareMap.get(DcMotor.class, "rm");
+        brightDrive = hardwareMap.get(DcMotor.class, "lm");
+        leftDrive  = hardwareMap.get(DcMotor.class, "brm");
+        rightDrive = hardwareMap.get(DcMotor.class, "blm");
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        bleftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        back_right_drive.setDirection(DcMotorSimple.Direction.FORWARD);
-        back_left_drive.setDirection(DcMotorSimple.Direction.REVERSE);
+        brightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+
 
         while (opModeInInit()) {
             telemetryTfod();
@@ -139,44 +153,32 @@ public class AprilTensorflow extends LinearOpMode {
 
         waitForStart();
         if(finalDropPos == 1){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
+           // telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-            telemetry.update();
+            //telemetry.update();
 
-            driveForward(1.2);
-            turnLeft(3);
+        //    driveForward(1.2);
+        //    turnLeft(3);
         }
         else if(finalDropPos == 2){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
+        //    telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-            telemetry.update();
-            driveForward(1.2);
+          //  telemetry.update();
+        //    driveForward(1.2);
 
         }
         else if(finalDropPos ==3){
             telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             telemetry.update();
-            driveForward(1.2);
-            turnRight(3);
+        //    driveForward(1.2);
+          //  turnRight(3);
         }
         while (opModeIsActive()){
             AprilTelemetry();
 
-            if(targetFound && desiredRange < desiredTag.ftcPose.range && autoDrive){
-                leftDrive.setPower(0.25);
-                rightDrive.setPower(0.25);
-                back_left_drive.setPower(0.25);
-                back_right_drive.setPower(0.25);
-            }else if(targetFound && desiredRange < desiredTag.ftcPose.range && !autoDrive) {
 
-            }
-            else{
-                leftDrive.setPower(0);
-                rightDrive.setPower(0);
-                back_left_drive.setPower(0);
-                back_right_drive.setPower(0);
-            }
+
         }
 
 
@@ -199,8 +201,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Set motor powers to drive forward
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
-        back_left_drive.setPower(FORWARD_SPEED);
-        back_right_drive.setPower(FORWARD_SPEED);
+        bleftDrive.setPower(FORWARD_SPEED);
+        brightDrive.setPower(FORWARD_SPEED);
 
         // Reset runtime
         runtime.reset();
@@ -215,8 +217,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
+        bleftDrive.setPower(0);
+        brightDrive.setPower(0);
     }
 
     private void turnRight(double seconds) {
@@ -225,8 +227,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Set motor powers to drive forward
         leftDrive.setPower(FORWARD_SPEED);
         rightDrive.setPower(-FORWARD_SPEED);
-        back_left_drive.setPower(FORWARD_SPEED);
-        back_right_drive.setPower(-FORWARD_SPEED);
+        bleftDrive.setPower(FORWARD_SPEED);
+        brightDrive.setPower(-FORWARD_SPEED);
 
         // Reset runtime
         runtime.reset();
@@ -241,8 +243,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
+        bleftDrive.setPower(0);
+        brightDrive.setPower(0);
     }
 
     private void turnLeft(double seconds) {
@@ -252,8 +254,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Set motor powers to drive forward
         leftDrive.setPower(-FORWARD_SPEED);
         rightDrive.setPower(FORWARD_SPEED);
-        back_left_drive.setPower(-FORWARD_SPEED);
-        back_right_drive.setPower(FORWARD_SPEED);
+        bleftDrive.setPower(-FORWARD_SPEED);
+        brightDrive.setPower(FORWARD_SPEED);
 
         // Reset runtime
         runtime.reset();
@@ -268,8 +270,8 @@ public class AprilTensorflow extends LinearOpMode {
         // Stop the motors
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-        back_left_drive.setPower(0);
-        back_right_drive.setPower(0);
+        bleftDrive.setPower(0);
+        brightDrive.setPower(0);
     }
 
 
@@ -365,7 +367,7 @@ public class AprilTensorflow extends LinearOpMode {
 
 
 
-visionPortal.setProcessorEnabled(tfod, false);
+        visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
 
 
@@ -384,6 +386,9 @@ visionPortal.setProcessorEnabled(tfod, false);
     }
     private void AprilTelemetry(){
         initAprilTag();
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
+        double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
         targetFound = false;
         desiredTag  = null;
 
@@ -416,6 +421,15 @@ visionPortal.setProcessorEnabled(tfod, false);
             telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
             telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
             telemetry.update();
+            double  rangeError   = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+            double  headingError = desiredTag.ftcPose.bearing;
+
+            // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
+            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            turn  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
+
+            moveRobot(drive, turn);
+            sleep(10);
         } else {
             telemetry.addData("\n>","No AprilTags found\n");
             telemetry.update();
@@ -445,20 +459,38 @@ visionPortal.setProcessorEnabled(tfod, false);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
-            if(x>=0 && x<=300){
-                dropPos1 ++;
-                telemetry.addData("Pixel Position :", finalDropPos = 1);
+            if(x>=0 && x<=350){
+               finalDropPos = 1;
+                telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=301 && x<=600){
-                dropPos2 ++;
-                telemetry.addData("Pixel Position:", finalDropPos = 2);
+            if(x>=351 && x<=890){
+                finalDropPos = 2;
+                telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=601 && x<=900){
-                dropPos3 ++;
-                telemetry.addData("Pixel Position:", finalDropPos = 3);
+            if(x>=891 && x<=900){
+                finalDropPos = 3;
+                telemetry.addData("Pixel Position:", "dropPos3");
             }
         }   // end for() loop
 
     }   // end method telemetryTfod()
 
+    public void moveRobot(double x, double yaw) {
+        // Calculate left and right wheel powers.
+        double leftPower    = x - yaw;
+        double rightPower   = x + yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftPower), Math.abs(rightPower));
+        if (max > 1.0) {
+            leftPower /= max;
+            rightPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftDrive.setPower(leftPower);
+        bleftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+        brightDrive.setPower(rightPower);
+    }
 }   // end class
