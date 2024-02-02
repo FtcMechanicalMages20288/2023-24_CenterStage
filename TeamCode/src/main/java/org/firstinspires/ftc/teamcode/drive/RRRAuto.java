@@ -139,7 +139,6 @@ public class RRRAuto extends LinearOpMode {
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x2Value, y2Value))
                 .back(7)
-                .lineToLinearHeading(new Pose2d(x2Value-7,srdy ))
                 .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
                 .build();
 
