@@ -140,7 +140,7 @@ public class RRRAuto extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(x2Value, y2Value))
                 .back(7)
                 .lineToLinearHeading(new Pose2d(x2Value-7,srdy ))
-                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
+                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
                 .build();
 
 
@@ -208,7 +208,7 @@ public class RRRAuto extends LinearOpMode {
                 .back(8)
                 .back(7)
                 .turn(Math.toRadians(turn3_5))
-                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
                 .build();
 
 
