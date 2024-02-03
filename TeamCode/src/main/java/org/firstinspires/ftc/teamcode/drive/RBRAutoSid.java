@@ -5,18 +5,14 @@ import android.util.Size;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
@@ -29,7 +25,7 @@ import java.util.List;
 
 @Config
 @Autonomous(group = "R BL Auto")
-public class RBLAuto extends LinearOpMode {
+public class RBRAutoSid extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
@@ -126,10 +122,19 @@ public class RBLAuto extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(xValue, yValue))
-                .back(7)
-                .lineTo(new Vector2d(20, -30))
-                .turn(Math.toRadians(110))
+
+                .lineTo(new Vector2d(24, 6))
+                .turn(Math.toRadians(60))
+                .lineTo(new Vector2d(19, 5))
+                .turn(Math.toRadians(-60))
+                .lineTo(new Vector2d(18, 10))
+                .lineTo(new Vector2d(18, 2))
+                .lineTo(new Vector2d(50, 2))
+                .turn(Math.toRadians(-93))
+                .lineTo(new Vector2d(53, 70))
+                .turn(Math.toRadians(200))
+                .lineTo(new Vector2d(32, 80))
+                .turn(Math.toRadians(-15.5))
                 .build();
 
 
@@ -137,7 +142,7 @@ public class RBLAuto extends LinearOpMode {
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
                 .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -164,14 +169,36 @@ public class RBLAuto extends LinearOpMode {
                 .build();
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x3Value, y3Value))
+
+                .lineTo(new Vector2d(24, -10))
+                .lineTo(new Vector2d(18, -10))
+                .lineTo(new Vector2d(18, 2))
+                .lineTo(new Vector2d(50, 2))
+                .turn(Math.toRadians(-93))
+                .lineTo(new Vector2d(53, 70))
+                .turn(Math.toRadians(200))
+                .lineTo(new Vector2d(32, 80))
+                .turn(Math.toRadians(-15.5))
+                /*.lineTo(new Vector2d(11.24, 37.22))
+                .lineTo(new Vector2d(54.54, 35.55))*/
+
+
+                /*.lineTo(new Vector2d(x3Value, y3Value))
                 .turn(Math.toRadians(-90))
                 .back(3)
                 .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(x3Value2, y3Value2))
+                .lineTo(new Vector2d(x3Value2, y3Value2))*/
                 .build();
 
+        TrajectorySequence traj2v3 = drive.trajectorySequenceBuilder(pos3.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
+                )
+
+
+                .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
                 .lineTo(new Vector2d(x2Value, y2Value))
@@ -184,6 +211,20 @@ public class RBLAuto extends LinearOpMode {
 
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                //.lineTo(new Vector2d(1,1))
+
+
+                .build();
+
+        TrajectorySequence traj3v3 = drive.trajectorySequenceBuilder(traj2v3.end())
+                .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -191,10 +232,11 @@ public class RBLAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeTo(new Vector2d(45,-26))
+                //.lineTo(new Vector2d(1,1))
 
 
                 .build();
+
 
 
 
@@ -255,7 +297,7 @@ public class RBLAuto extends LinearOpMode {
                 drive.followTrajectorySequence(traj2);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                //drive.followTrajectorySequence(traj3);
 
 
             }
@@ -268,10 +310,10 @@ public class RBLAuto extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2);
+                drive.followTrajectorySequence(traj2v3);
                 OpenBox();
                 sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3);
+                    drive.followTrajectorySequence(traj3v3);
             }
 
         }

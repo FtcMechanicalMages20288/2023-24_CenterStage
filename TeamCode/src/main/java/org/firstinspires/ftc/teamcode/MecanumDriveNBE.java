@@ -51,7 +51,7 @@ public class MecanumDriveNBE extends OpMode {
 
     long startTime = System.currentTimeMillis();
 
-
+    long endTime = System.currentTimeMillis() - startTime;
 
 
     int Pixels = 0;
@@ -62,16 +62,11 @@ public class MecanumDriveNBE extends OpMode {
     boolean frontDrive = true;
     boolean IntakeReady = false;
 
-    boolean colorSwitch = false;
     //Motor Power
-
-    double SlidePower;
     double left_drivePower;
     double right_drivePower;
     double back_right_drivePower;
     double back_left_drivePower;
-
-
 
 
     @Override
@@ -119,17 +114,6 @@ public class MecanumDriveNBE extends OpMode {
     @Override
     public void loop() {
 
-        if (LimitSwitch.isPressed()) {
-            telemetry.addData("Intake", "Ready");
-            if (Rumbled = false) {
-                gamepad2.rumble(200);
-                Rumbled = true;
-            }
-        } else {
-            Rumbled = false;
-            telemetry.addData("Intake", " Not Ready");;;
-        }
-
         telemetry.addData("ServoR", HangR.getPosition());
         telemetry.addData("ServoL", HangL.getPosition());
 
@@ -139,34 +123,26 @@ public class MecanumDriveNBE extends OpMode {
         }
         telemetry.addData("Pixels:", Pixels);
 
-
-
-
         //Movement Controller
-        right_drivePower = gamepad1.right_stick_y;
-        back_left_drivePower = gamepad1.left_stick_y;
-        left_drivePower = gamepad1.left_stick_y;
-        back_right_drivePower = gamepad1.right_stick_y;
+        right_drivePower = gamepad1.left_stick_y;
+        back_left_drivePower = gamepad1.right_stick_y;
+        left_drivePower = gamepad1.right_stick_y;
+        back_right_drivePower = gamepad1.left_stick_y;
 
 
-
-
-        left_drive.setPower(left_drivePower);
-        right_drive.setPower(right_drivePower);
-        back_left_drive.setPower(left_drivePower);
-        back_right_drive.setPower(right_drivePower);
+        left_drive.setPower(left_drivePower*-1);
+        right_drive.setPower(right_drivePower*-1);
+        back_left_drive.setPower(left_drivePower*-1);
+        back_right_drive.setPower(right_drivePower*-1);
 
 
         boolean rightbumper = gamepad1.right_bumper; //Strafe Right
         boolean leftbumper = gamepad1.left_bumper; //Strafe Left
 
 
-
-
         boolean UpSlideBumper = gamepad2.right_bumper;
         boolean DownSlideBumper = gamepad2.left_bumper;
 
-        long endTime = System.currentTimeMillis() - startTime;
 
         //attachments
 
@@ -180,7 +156,6 @@ public class MecanumDriveNBE extends OpMode {
 
 
 
-
         } else if (leftbumper) {
 
             left_drive.setPower(1);
@@ -188,118 +163,48 @@ public class MecanumDriveNBE extends OpMode {
             back_left_drive.setPower(-1);
             back_right_drive.setPower(1);
 
-
-
-
         }
         telemetry.addData("Slides", SlideL.getCurrentPosition());
         telemetry.update();
 
         //Led code
 
-
-        if(Pixels == 0 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.RED;
+        if(Pixels == 0){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_LAVA_PALETTE;
             blinkinLedDriver.setPattern(pattern);
         }
 
-        if(Pixels == 1 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.BLUE;
+        if(Pixels == 1){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.SINELON_OCEAN_PALETTE;
             blinkinLedDriver.setPattern(pattern);
         }
 
-        if(Pixels==2 && endTime < 85000){
+        if(Pixels==2){
             pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
             blinkinLedDriver.setPattern(pattern);
         }
 
-        if(endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2){
-
-            /*switch((int)endTime){
-                case 85500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 86000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 86500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 87000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 87500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 88000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 88500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 89000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                    break;
-
-
-            } */
-
-            if(endTime > 90000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
-
-
-
-            if(endTime > 80100 && endTime < 80500 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
-            }
-            if(endTime >80500  && endTime <  81000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
-            if(endTime >81500  && endTime <82000  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
-
-            }
-            if(endTime > 82000  && endTime < 82500  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
-            if(endTime > 82500  && endTime < 83000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
-            }
-            if(endTime >83500  && endTime <84000  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
-            if(endTime >84000  && endTime < 84500 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
-
-            }
-            if(endTime > 85000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
-
-
-
+        if(endTime > 90000){
+            pattern =  RevBlinkinLedDriver.BlinkinPattern.GREEN;
+            blinkinLedDriver.setPattern(pattern);
         }
 
         // CLAW ROTATION
 
-
+        if (LimitSwitch.isPressed()) {
+            telemetry.addData("Intake", "Ready");
+            if (Rumbled = false) {
+                gamepad2.rumble(200);
+                Rumbled = true;
+            }
+        } else {
+            Rumbled = false;
+            telemetry.addData("Intake", " Not Ready");;;
+        }
 
 
         //Slide Goes Down
         if (!LimitSwitch.isPressed()) {
-
-
             if (DownSlideBumper) {
 
                 IntakeBox();
@@ -313,29 +218,26 @@ public class MecanumDriveNBE extends OpMode {
                 SlideL.setPower(-1);
             }
 
-
         } else {
             StopSlides();
             IntakeReady = true;
             OpenBox();
             AutoHold = true;
-
-            if (IntakeReady) {
+            if (IntakeReady = true) {
                 if (Pixels == 2) {
                     CloseBox();
                 }
                 if (Pixels < 2) {
-                    if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) {
+                    if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 3) {
                         Pixels++;
-                        sleep(350);
+                        sleep(1000);
                     }
                 }
             }
         }
-
          if (UpSlideBumper ) {
 
-
+             Pixels = 0;
              IntakeReady = false;
              CloseBox();
              IntakeBox();
@@ -356,7 +258,6 @@ public class MecanumDriveNBE extends OpMode {
         //Drop Box on Board
         if(gamepad2.y){
             BoardDropBox();
-            Pixels = 0;
 
         }
 
@@ -376,18 +277,16 @@ public class MecanumDriveNBE extends OpMode {
         //Auto Forward and Backward
 
         if(gamepad1.right_trigger > 0.3){
-            left_drive.setPower(-1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(-1);
-        }
-        if(gamepad1.left_trigger > 0.3){
-
             left_drive.setPower(1);
             right_drive.setPower(1);
             back_left_drive.setPower(1);
             back_right_drive.setPower(1);
-
+        }
+        if(gamepad1.left_trigger > 0.3){
+            left_drive.setPower(-1);
+            right_drive.setPower(-1);
+            back_left_drive.setPower(-1);
+            back_right_drive.setPower(-1);
         }
 
         //intake
@@ -405,11 +304,10 @@ public class MecanumDriveNBE extends OpMode {
 
         //drone launching and resetting
         if (gamepad2.back) {
-            Drone.setPosition(0.3);
+            Drone.setPosition(0.55);
         }
         else{
-            Drone.setPosition(0.55);
-
+            Drone.setPosition(0.375);
         }
 
 
@@ -451,15 +349,14 @@ public class MecanumDriveNBE extends OpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0); //close
+        BucketHold.setPosition(0.7); //close
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.7); //close
-
+        BucketHold.setPosition(0); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.15);
-        BucketL.setPosition(0.15);
+        BucketR.setPosition(0.85);
+        BucketL.setPosition(0.85);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);

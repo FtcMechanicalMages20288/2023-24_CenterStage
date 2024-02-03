@@ -232,14 +232,20 @@ public class RRLAutoSid extends LinearOpMode {
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(-36.10, -25.07))
-                .lineTo(new Vector2d(-36.38, -35.69))
-                .lineTo(new Vector2d(-56.50, -33.87))
-                .lineTo(new Vector2d(-56.92, -9.57))
+                //.lineTo(new Vector2d(-36.10, -25.07))
+                .forward(36)
+                .back(10)
+                .strafeLeft(20)
+                //.lineTo(new Vector2d(-36.38, -35.69))
+                //.lineTo(new Vector2d(-56.50, -33.87))
+                //.lineTo(new Vector2d(-56.92, -9.57))
+                .forward(24)
                 .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(47.98, -9.71))
+                .forward(103)
+                //.lineTo(new Vector2d(47.98, -9.71))
                 .turn(Math.toRadians(180))
-                .lineTo(new Vector2d(48.40, -36.52))
+                .strafeRight(24)
+                //.lineTo(new Vector2d(48.40, -36.52))
                 .lineTo(new Vector2d(56.92, -36.10))
                 .build();
 
