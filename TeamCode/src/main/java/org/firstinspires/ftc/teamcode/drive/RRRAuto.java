@@ -139,6 +139,8 @@ public class RRRAuto extends LinearOpMode {
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x2Value, y2Value))
                 .back(7)
+
+                //going to board
                 .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
                 .build();
 
@@ -171,6 +173,7 @@ public class RRRAuto extends LinearOpMode {
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x3Value, y3Value))
                 .back(7)
+                //going to board
                 .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2)))
                 .build();
 
@@ -206,6 +209,8 @@ public class RRRAuto extends LinearOpMode {
                 .forward(8)
                 .back(8)
                 .back(7)
+
+                //goes to board
                 .turn(Math.toRadians(turn3_5))
                 .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
                 .build();
