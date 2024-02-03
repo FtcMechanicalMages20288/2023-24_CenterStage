@@ -57,7 +57,6 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 @Autonomous(name = "TensyApril", group = "Auto")
-@Disabled
 public class AprilTensorflow extends LinearOpMode {
 
 
@@ -152,7 +151,22 @@ public class AprilTensorflow extends LinearOpMode {
 
 
         waitForStart();
+
+        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
+            finalDropPos = 1;
+
+        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
+            finalDropPos = 2;
+        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
+            finalDropPos = 3;
+        } else {
+            finalDropPos = 3;
+            telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
+        }
+
         if(finalDropPos == 1){
+            sleep(1500);
+            AprilTelemetry();
            // telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             //telemetry.update();
@@ -174,12 +188,7 @@ public class AprilTensorflow extends LinearOpMode {
         //    driveForward(1.2);
           //  turnRight(3);
         }
-        while (opModeIsActive()){
-            AprilTelemetry();
 
-
-
-        }
 
 
 
@@ -187,7 +196,7 @@ public class AprilTensorflow extends LinearOpMode {
 
 
         // Save more CPU resources when camera is no longer needed.
-        visionPortal.close();
+        //visionPortal.close();
 
     }   // end runOpMode()
 
@@ -319,6 +328,7 @@ public class AprilTensorflow extends LinearOpMode {
         // Create the vision portal by using a builder.
         VisionPortal.Builder builder = new VisionPortal.Builder();
 
+
         // Set the camera (webcam vs. built-in RC phone camera).
         if (USE_WEBCAM) {
             builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
@@ -415,7 +425,7 @@ public class AprilTensorflow extends LinearOpMode {
 
         // Tell the driver what we see, and what to do.
         if (targetFound) {
-            telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("\n>"," Driving to Target\n");
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
             telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
             telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
@@ -459,16 +469,16 @@ public class AprilTensorflow extends LinearOpMode {
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
-            if(x>=0 && x<=350){
-               finalDropPos = 1;
+            if(x>=0 && x<=300){
+                dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=351 && x<=890){
-                finalDropPos = 2;
+            if(x>=301 && x<=891){
+                dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
             if(x>=891 && x<=900){
-                finalDropPos = 3;
+                dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
         }   // end for() loop
