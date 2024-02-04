@@ -77,7 +77,7 @@ public class RRRAuto extends LinearOpMode {
     public static int x22Value = 33;
     public static int y22Value = -25;
 
-    public static int turn1 = -100;
+    public static int turn1 = -90;
     public static int turn2 = -95;
 
     public static int srdy = -15;
@@ -141,7 +141,7 @@ public class RRRAuto extends LinearOpMode {
                 .back(7)
 
                 //going to board
-                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-100)))
                 .build();
 
 
@@ -166,7 +166,7 @@ public class RRRAuto extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(strafetox+1,strafetoy,Math.toRadians(-90)))
                 .build();
 
 
