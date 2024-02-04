@@ -304,10 +304,11 @@ public class MecanumDriveNBE extends OpMode {
 
         //drone launching and resetting
         if (gamepad2.back) {
-            Drone.setPosition(0.55);
+            Drone.setPosition(0);
         }
         else{
-            Drone.setPosition(0.375);
+            Drone.setPosition(0.55);
+
         }
 
 
@@ -355,8 +356,8 @@ public class MecanumDriveNBE extends OpMode {
         BucketHold.setPosition(0); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.85);
-        BucketL.setPosition(0.85);
+        BucketR.setPosition(0.15);
+        BucketL.setPosition(0.15);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);

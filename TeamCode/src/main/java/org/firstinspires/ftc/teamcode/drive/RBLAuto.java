@@ -128,6 +128,8 @@ public class RBLAuto extends LinearOpMode {
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
                 .lineTo(new Vector2d(xValue, yValue))
                 .back(7)
+
+
                 .lineTo(new Vector2d(20, -30))
                 .turn(Math.toRadians(110))
                 .build();
