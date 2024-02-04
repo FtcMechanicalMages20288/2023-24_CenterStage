@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -140,12 +142,27 @@ public class ConceptDoubleVision extends LinearOpMode {
         tfod = new TfodProcessor.Builder()
             .build();
 
+
+
         // -----------------------------------------------------------------------------------------
         // Camera Configuration
         // -----------------------------------------------------------------------------------------
 
         if (USE_WEBCAM) {
             myVisionPortal = new VisionPortal.Builder()
+
+                .setCameraResolution(new Size(640, 480))
+
+            // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
+                .enableLiveView(true)
+
+            // Set the stream format; MJPEG uses less bandwidth than default YUY2.
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
+
+            // Choose whether or not LiveView stops if no processors are enabled.
+            // If set "true", monitor shows solid orange screen if no processors enabled.
+            // If set "false", monitor shows camera view without annotations.
+                .setAutoStopLiveView(false)
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
                 .addProcessors(tfod, aprilTag)
                 .build();
@@ -155,6 +172,8 @@ public class ConceptDoubleVision extends LinearOpMode {
                 .addProcessors(tfod, aprilTag)
                 .build();
         }
+
+
     }   // end initDoubleVision()
 
     /**

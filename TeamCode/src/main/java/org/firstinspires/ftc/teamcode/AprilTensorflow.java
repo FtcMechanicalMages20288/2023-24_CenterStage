@@ -65,7 +65,7 @@ public class AprilTensorflow extends LinearOpMode {
     int dropPos3;
     int finalDropPos;
 
-    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
@@ -95,9 +95,11 @@ public class AprilTensorflow extends LinearOpMode {
             "TSE",
     };
 
-    boolean autoDrive = false;
+    boolean aprilAdjust = true;
 
-    private int desiredRange = 6;
+
+
+
 
     private DcMotor         leftDrive   = null;
     private DcMotor         rightDrive  = null;
@@ -115,14 +117,13 @@ public class AprilTensorflow extends LinearOpMode {
      * The variable to store our instance of the vision portal.
      */
     private VisionPortal visionPortal;
+    private VisionPortal visionPortal1;
 
     @Override
     public void runOpMode() {
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
 
-        initTfod();
+
+        initDoubleVision();
         sleep(3000);
 
         // Wait for the DS start button to be touched.
@@ -140,6 +141,8 @@ public class AprilTensorflow extends LinearOpMode {
         brightDrive.setDirection(DcMotor.Direction.FORWARD);
 
 
+        visionPortal.setProcessorEnabled(aprilTag, false);
+        visionPortal.setProcessorEnabled(tfod, true);
 
         while (opModeInInit()) {
             telemetryTfod();
@@ -147,26 +150,25 @@ public class AprilTensorflow extends LinearOpMode {
             telemetry.update();
         }
 
-
-
-
         waitForStart();
+        visionPortal.setProcessorEnabled(tfod, false);
+        visionPortal.setProcessorEnabled(aprilTag, true);
 
-        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
-            finalDropPos = 1;
 
-        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
-            finalDropPos = 2;
-        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
-            finalDropPos = 3;
-        } else {
-            finalDropPos = 3;
-            telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
-        }
 
+        sleep(3000);
+
+
+        telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+        telemetry.update();
         if(finalDropPos == 1){
-            sleep(1500);
-            AprilTelemetry();
+
+
+            while(aprilAdjust) {
+                AprilTelemetry();
+
+            }
            // telemetry.addData("Final Pixel Position: ", finalDropPos);
 
             //telemetry.update();
@@ -175,6 +177,12 @@ public class AprilTensorflow extends LinearOpMode {
         //    turnLeft(3);
         }
         else if(finalDropPos == 2){
+
+
+            while(aprilAdjust) {
+                AprilTelemetry();
+
+            }
         //    telemetry.addData("Final Pixel Position: ", finalDropPos);
 
           //  telemetry.update();
@@ -182,9 +190,15 @@ public class AprilTensorflow extends LinearOpMode {
 
         }
         else if(finalDropPos ==3){
-            telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-            telemetry.update();
+
+
+
+            while(aprilAdjust) {
+                AprilTelemetry();
+
+            }
+
         //    driveForward(1.2);
           //  turnRight(3);
         }
@@ -289,19 +303,7 @@ public class AprilTensorflow extends LinearOpMode {
      */
     private void initTfod() {
 
-        // Create the AprilTag processor by using a builder.
-        aprilTag = new AprilTagProcessor.Builder()
-        .build();
 
-        // Adjust Image Decimation to trade-off detection-range for detection-rate.
-        // eg: Some typical detection data using a Logitech C920 WebCam
-        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
-        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
-        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second
-        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second
-        // Note: Decimation can be changed on-the-fly to adapt during a match.
-        aprilTag.setDecimation(2);
-        // Create the vision portal by using a builder.
 
         // Create the TensorFlow processor by using a builder.
         tfod = new TfodProcessor.Builder()
@@ -353,7 +355,7 @@ public class AprilTensorflow extends LinearOpMode {
         builder.setAutoStopLiveView(false);
 
         // Set and enable the processor.
-        builder.addProcessor(aprilTag);
+
         builder.addProcessor(tfod);
 
 
@@ -375,78 +377,145 @@ public class AprilTensorflow extends LinearOpMode {
      */
     private void initAprilTag() {
 
-
-
-        visionPortal.setProcessorEnabled(tfod, false);
-        visionPortal.setProcessorEnabled(aprilTag, true);
-
+        // Create the AprilTag processor.
+        aprilTag = new AprilTagProcessor.Builder()
 
 
 
+                .build();
 
-        // Create the vision portal by using a builder.
-      /*
+        aprilTag.setDecimation(2);
+
+
+        VisionPortal.Builder builder1 = new VisionPortal.Builder();
+
+        // Set the camera (webcam vs. built-in RC phone camera).
+        if (USE_WEBCAM) {
+            builder1.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
+        } else {
+            builder1.setCamera(BuiltinCameraDirection.BACK);
+        }
+
+
+        // Set and enable the processor.
+        builder1.addProcessor(aprilTag);
+
+        // Build the Vision Portal, using the above settings.
+        visionPortal1 = builder1.build();
+
+        visionPortal1.setProcessorEnabled(aprilTag, true);
+
+
+
+
+
+
+
+
+    }
+
+    private void initDoubleVision() {
+        // -----------------------------------------------------------------------------------------
+        // AprilTag Configuration
+        // -----------------------------------------------------------------------------------------
+
+        aprilTag = new AprilTagProcessor.Builder()
+                .build();
+        aprilTag.setDecimation(2);
+        // -----------------------------------------------------------------------------------------
+        // TFOD Configuration
+        // -----------------------------------------------------------------------------------------
+
+        tfod = new TfodProcessor.Builder()
+
+                .setModelAssetName(TFOD_MODEL_ASSET)
+                //.setModelFileName(TFOD_MODEL_FILE)
+
+                // The following default settings are available to un-comment and edit as needed to
+                // set parameters for custom models.
+                .setModelLabels(LABELS)
+                //.setIsModelTensorFlow2(true)
+                //.setIsModelQuantized(true)
+                .setModelInputSize(300)
+                .setModelAspectRatio(16.0 / 9.0)
+
+                .build();
+                tfod.setMinResultConfidence(0.75f);
+        // -----------------------------------------------------------------------------------------
+        // Camera Configuration
+        // -----------------------------------------------------------------------------------------
+
+        if (USE_WEBCAM) {
             visionPortal = new VisionPortal.Builder()
                     .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                    .addProcessor(aprilTag)
+                    .addProcessors(tfod, aprilTag)
                     .build();
-                    */
-
-
-    }
-    private void AprilTelemetry(){
-        initAprilTag();
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-        double  drive           = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
-        double  turn            = 0;        // Desired turning power/speed (-1 to +1) +ve is CounterClockwise
-        targetFound = false;
-        desiredTag  = null;
+        } else {
+            visionPortal = new VisionPortal.Builder()
+                    .setCamera(BuiltinCameraDirection.BACK)
+                    .addProcessors(tfod, aprilTag)
+                    .build();
+        }
+    }   // end initDoubleVision()
+    private void AprilTelemetry() {
+        double drive = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
+        double turn = 0;
+        targetFound = false;// Desired turning power/speed (-1 to +1) +ve is CounterClockwise
+        desiredTag = null;
 
         // Step through the list of detected tags and look for a matching tag
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            // Look to see if we have size info on this tag.
-            if (detection.metadata != null) {
-                //  Check to see if we want to track towards this tag.
-                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                    // Yes, we want to use this tag.
-                    targetFound = true;
-                    desiredTag = detection;
-                    break;  // don't look any further.
+        try {
+            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+
+
+            for (AprilTagDetection detection : currentDetections) {
+                // Look to see if we have size info on this tag.
+                if (detection.metadata != null) {
+                    //  Check to see if we want to track towards this tag.
+                    if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                        // Yes, we want to use this tag.
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;  // don't look any further.
+                    } else {
+                        // This tag is in the library, but we do not want to track it right now.
+                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                    }
                 } else {
-                    // This tag is in the library, but we do not want to track it right now.
-                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                    // This tag is NOT in the library, so we don't have enough information to track to it.
+                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                 }
-            } else {
-                // This tag is NOT in the library, so we don't have enough information to track to it.
-                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
             }
-        }
 
-        // Tell the driver what we see, and what to do.
-        if (targetFound) {
-            telemetry.addData("\n>"," Driving to Target\n");
-            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
-            telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
-            telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+            // Tell the driver what we see, and what to do.
+            if (targetFound) {
+                telemetry.addData("\n>", " Driving to Target\n");
+                telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+                telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+                telemetry.update();
+                double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+                double headingError = desiredTag.ftcPose.bearing;
+
+                // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
+                drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+
+                moveRobot(drive, turn);
+                sleep(10);
+            } else if (desiredTag.ftcPose.range - DESIRED_DISTANCE == DESIRED_DISTANCE) {
+                aprilAdjust = false;
+            } else {
+                telemetry.addData("\n>", "No AprilTags found\n");
+                telemetry.update();
+            }
+
+        } catch (NullPointerException e) {
+            telemetry.addData("null", desiredTag);
             telemetry.update();
-            double  rangeError   = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-            double  headingError = desiredTag.ftcPose.bearing;
-
-            // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
-            drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-            turn  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
-
-            moveRobot(drive, turn);
-            sleep(10);
-        } else {
-            telemetry.addData("\n>","No AprilTags found\n");
-            telemetry.update();
         }
-
     }
-
 
 
     /**
@@ -470,15 +539,15 @@ public class AprilTensorflow extends LinearOpMode {
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
 
             if(x>=0 && x<=300){
-                dropPos1 ++;
+                finalDropPos = 1;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
             if(x>=301 && x<=891){
-                dropPos2 ++;
+                finalDropPos = 2;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
             if(x>=891 && x<=900){
-                dropPos3 ++;
+                finalDropPos = 3;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
         }   // end for() loop

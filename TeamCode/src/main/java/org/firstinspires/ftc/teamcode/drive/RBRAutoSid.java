@@ -123,13 +123,15 @@ public class RBRAutoSid extends LinearOpMode {
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
-                .lineTo(new Vector2d(24, 3))
-                .turn(Math.toRadians(60))
-                .lineTo(new Vector2d(19, 3))
-                .turn(Math.toRadians(-60))
+                .lineToLinearHeading(new Pose2d(20, 0))
+                .turn(Math.toRadians(50))
+                .forward(8)
+                .back(8)
+                .back(7)
+                .turn(Math.toRadians(-50))
                 //.lineTo(new Vector2d(18, 2))
                 .lineTo(new Vector2d(50, 2))
-                .turn(Math.toRadians(-93))
+                .turn(Math.toRadians(-88))
                 .lineTo(new Vector2d(53, 70))
                 .turn(Math.toRadians(200))
                 .lineTo(new Vector2d(32, 80))
@@ -200,10 +202,12 @@ public class RBRAutoSid extends LinearOpMode {
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(bw)
-                .lineTo(new Vector2d(28.4, -30))
-                .turn(Math.toRadians(110))
+                .lineToLinearHeading(new Pose2d(23, 0))
+                .back(7)
+                .lineTo(new Vector2d(23,12))
+                .lineTo(new Vector2d(50,0))
+                .turn(Math.toRadians(-88))
+
                 .build();
 
 
