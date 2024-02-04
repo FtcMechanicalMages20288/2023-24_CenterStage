@@ -124,10 +124,10 @@ public class MecanumDriveNBE extends OpMode {
         telemetry.addData("Pixels:", Pixels);
 
         //Movement Controller
-        right_drivePower = gamepad1.left_stick_y;
-        back_left_drivePower = gamepad1.right_stick_y;
-        left_drivePower = gamepad1.right_stick_y;
-        back_right_drivePower = gamepad1.left_stick_y;
+        right_drivePower = gamepad1.right_stick_y;
+        back_left_drivePower = gamepad1.left_stick_y;
+        left_drivePower = gamepad1.left_stick_y;
+        back_right_drivePower = gamepad1.right_stick_y;
 
 
         left_drive.setPower(left_drivePower*-1);

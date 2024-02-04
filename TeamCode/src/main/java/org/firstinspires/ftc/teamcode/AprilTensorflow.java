@@ -79,7 +79,7 @@ public class AprilTensorflow extends LinearOpMode {
 
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-    private static final int DESIRED_TAG_ID = -1;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private static final int DESIRED_TAG_ID = 1;     // Choose the tag you want to approach or set to -1 for ANY tag.
     boolean targetFound = false;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -153,15 +153,13 @@ public class AprilTensorflow extends LinearOpMode {
         waitForStart();
         visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
-
-
-
+        telemetry.addData("Final Pixel Position: ", finalDropPos);
+        telemetry.update();
         sleep(3000);
 
 
-        telemetry.addData("Final Pixel Position: ", finalDropPos);
 
-        telemetry.update();
+
         if(finalDropPos == 1){
 
 
@@ -203,7 +201,8 @@ public class AprilTensorflow extends LinearOpMode {
           //  turnRight(3);
         }
 
-
+        telemetry.addData("I got to the end ","Smh");
+        telemetry.update();
 
 
 
@@ -217,85 +216,7 @@ public class AprilTensorflow extends LinearOpMode {
 
     //Drive Methds
 
-    private void driveForward(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
 
-        runtime.reset();
-        // Set motor powers to drive forward
-        leftDrive.setPower(FORWARD_SPEED);
-        rightDrive.setPower(FORWARD_SPEED);
-        bleftDrive.setPower(FORWARD_SPEED);
-        brightDrive.setPower(FORWARD_SPEED);
-
-        // Reset runtime
-        runtime.reset();
-
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
-
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        bleftDrive.setPower(0);
-        brightDrive.setPower(0);
-    }
-
-    private void turnRight(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
-
-        // Set motor powers to drive forward
-        leftDrive.setPower(FORWARD_SPEED);
-        rightDrive.setPower(-FORWARD_SPEED);
-        bleftDrive.setPower(FORWARD_SPEED);
-        brightDrive.setPower(-FORWARD_SPEED);
-
-        // Reset runtime
-        runtime.reset();
-
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
-
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        bleftDrive.setPower(0);
-        brightDrive.setPower(0);
-    }
-
-    private void turnLeft(double seconds) {
-        double FORWARD_SPEED = 0.4;  // Adjust as needed
-
-
-        // Set motor powers to drive forward
-        leftDrive.setPower(-FORWARD_SPEED);
-        rightDrive.setPower(FORWARD_SPEED);
-        bleftDrive.setPower(-FORWARD_SPEED);
-        brightDrive.setPower(FORWARD_SPEED);
-
-        // Reset runtime
-        runtime.reset();
-
-        // Continue driving until the specified duration is reached
-        while (opModeIsActive() && runtime.seconds() < seconds) {
-            telemetry.addData("Path", "Leg 1: %4.1f S Elapsed", runtime.seconds());
-            telemetry.update();
-            // You can add additional actions or conditions here if needed
-        }
-
-        // Stop the motors
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        bleftDrive.setPower(0);
-        brightDrive.setPower(0);
-    }
 
 
 
@@ -390,6 +311,8 @@ public class AprilTensorflow extends LinearOpMode {
 
             } else if (desiredTag.ftcPose.range - DESIRED_DISTANCE == DESIRED_DISTANCE &&  desiredTag.ftcPose.bearing < 2  ) {
                 aprilAdjust = false;
+                telemetry.addData("Adjustment:", " Finished");
+                telemetry.update();
             } else {
                 telemetry.addData("\n>", "No AprilTags found\n");
                 telemetry.update();
