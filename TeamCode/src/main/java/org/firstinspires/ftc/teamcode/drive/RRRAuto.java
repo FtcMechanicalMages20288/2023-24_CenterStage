@@ -101,7 +101,7 @@ public class RRRAuto extends LinearOpMode {
     public static int y4Value = 0 ;
 
     public static int x44Value = 18;
-    public static int y44Value = -25;
+    public static int y44Value = -23;
 
 
 

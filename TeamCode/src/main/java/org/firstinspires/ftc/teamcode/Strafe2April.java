@@ -87,21 +87,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 
-@TeleOp(name="Tank Drive To AprilTag", group = "Concept")
-public class TankApril extends LinearOpMode
+@TeleOp(name="Strafe 2 April", group = "Concept")
+public class Strafe2April extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
-
-    //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
-    //  applied to the drive motors to correct the error.
-    //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double TURN_GAIN  =   0.1;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this mk
     // ax value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.5;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
 
     private DcMotor leftDrive   = null;  //  Used to control the left drive wheel
     private DcMotor rightDrive  = null;  //  Used to control the right drive wheel
@@ -109,7 +102,7 @@ public class TankApril extends LinearOpMode
     private DcMotor brightDrive  = null;  //  Used to control the right drive wheel
 
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static final int DESIRED_TAG_ID = -1;    // Choose the tag you want to approach or set to -1 for ANY tag.
+    private static final int DESIRED_TAG_ID = 1;    // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -187,28 +180,24 @@ public class TankApril extends LinearOpMode
             }
 
             // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-            if (gamepad1.left_bumper && targetFound) {
+            if (gamepad1.left_bumper && !targetFound) {
 
+                strafeLeft();
                 // Determine heading and range error so we can use them to control the robot automatically.
-                double  rangeError   = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                double  headingError = desiredTag.ftcPose.bearing;
-
-                // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
-                drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn  = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN) ;
 
                 telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
-            } else {
+            } else if (targetFound) {
 
-                // drive using manual POV Joystick mode.
-                drive = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
-                turn  = -gamepad1.right_stick_x / 4.0;  // Reduce turn rate to 25%.
-                telemetry.addData("Manual","Drive %5.2f, Turn %5.2f", drive, turn);
+                strafeLeft();
+                if(desiredTag.ftcPose.bearing < -15){
+                    break;
+                }
+
             }
             telemetry.update();
 
             // Apply desired axes motions to the drivetrain.
-            moveRobot(drive, turn);
+           // moveRobot(drive, turn);
             sleep(10);
         }
     }
@@ -238,6 +227,20 @@ public class TankApril extends LinearOpMode
         rightDrive.setPower(rightPower);
         brightDrive.setPower(rightPower);
     }
+
+    public void strafeLeft(){
+        leftDrive.setPower(-0.5);
+        bleftDrive.setPower(0.5);
+        rightDrive.setPower(0.5);
+        brightDrive.setPower(-0.5);
+    }
+    public void stopRobot(){
+        leftDrive.setPower(0);
+        bleftDrive.setPower(0);
+        rightDrive.setPower(0);
+        brightDrive.setPower(0);
+    }
+
 
     /**
      * Initialize the AprilTag processor.
@@ -308,4 +311,5 @@ public class TankApril extends LinearOpMode
             telemetry.update();
         }
     }
+
 }

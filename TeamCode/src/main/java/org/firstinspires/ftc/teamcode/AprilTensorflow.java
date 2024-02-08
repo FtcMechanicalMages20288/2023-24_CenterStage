@@ -41,6 +41,8 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
@@ -48,6 +50,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
  * This OpMode illustrates the basics of TensorFlow Object Detection,
@@ -56,7 +59,6 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Disabled
 @Autonomous(name = "TensyApril", group = "Auto")
 public class AprilTensorflow extends LinearOpMode {
 
@@ -151,21 +153,77 @@ public class AprilTensorflow extends LinearOpMode {
             telemetry.update();
         }
 
+
         waitForStart();
+        finalDropPos = 3;
         visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
         telemetry.addData("Final Pixel Position: ", finalDropPos);
         telemetry.update();
         sleep(3000);
-
-
+        setManualExposure(6, 250);
+        double drive = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
+        double turn = 0;
+        targetFound = false;// Desired turning power/speed (-1 to +1) +ve is CounterClockwise
 
 
         if(finalDropPos == 1){
 
 
             while(aprilAdjust) {
-                AprilTelemetry();
+                targetFound = false;
+                desiredTag  = null;
+
+
+
+                    strafeLeft();
+                    // Determine heading and range error so we can use them to control the robot automatically.
+
+
+
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+
+
+                // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+                 if (targetFound) {
+
+                    strafeLeft();
+
+                    telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                    telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+                    telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+                    if(desiredTag.ftcPose.bearing < -15){
+                        aprilAdjust = false;
+                    }
+
+                }
+                telemetry.update();
+
+                // Apply desired axes motions to the drivetrain.
+                // moveRobot(drive, turn);
+                sleep(10);
+
 
             }
            // telemetry.addData("Final Pixel Position: ", finalDropPos);
@@ -179,8 +237,60 @@ public class AprilTensorflow extends LinearOpMode {
 
 
             while(aprilAdjust) {
-                AprilTelemetry();
+                targetFound = false;
+                desiredTag  = null;
 
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+                if (targetFound) {
+                    telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+                    telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                    telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+                    telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+                } else {
+                    telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+                }
+
+                // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+                if (gamepad1.left_bumper && !targetFound) {
+
+                    strafeLeft();
+                    // Determine heading and range error so we can use them to control the robot automatically.
+
+                    telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
+                } else if (targetFound) {
+
+                    strafeLeft();
+                    if(desiredTag.ftcPose.bearing < -15){
+                        aprilAdjust = false;
+                    }
+
+                }
+                telemetry.update();
+
+                // Apply desired axes motions to the drivetrain.
+                // moveRobot(drive, turn);
+                sleep(10);
             }
         //    telemetry.addData("Final Pixel Position: ", finalDropPos);
 
@@ -194,7 +304,61 @@ public class AprilTensorflow extends LinearOpMode {
 
 
             while(aprilAdjust) {
-                AprilTelemetry();
+                targetFound = false;
+                desiredTag  = null;
+
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+                if (targetFound) {
+                    telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+                    telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                    telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+                    telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+                } else {
+                    telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+                }
+
+                // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+                if (gamepad1.left_bumper && !targetFound) {
+
+                    strafeLeft();
+                    // Determine heading and range error so we can use them to control the robot automatically.
+
+                    telemetry.addData("Auto","Drive %5.2f, Turn %5.2f", drive, turn);
+                } else if (targetFound) {
+
+                    strafeLeft();
+                    if(desiredTag.ftcPose.bearing < -15){
+                        aprilAdjust = false;
+                    }
+
+                }
+                telemetry.update();
+
+                // Apply desired axes motions to the drivetrain.
+                // moveRobot(drive, turn);
+                sleep(10);
+
 
             }
 
@@ -265,11 +429,16 @@ public class AprilTensorflow extends LinearOpMode {
                     .build();
         }
     }   // end initDoubleVision()
-    private void AprilTelemetry() {
-        double drive = 0;        // Desired forward power/speed (-1 to +1) +ve is forward
-        double turn = 0;
-        targetFound = false;// Desired turning power/speed (-1 to +1) +ve is CounterClockwise
-        desiredTag = null;
+
+    public void strafeLeft(){
+        leftDrive.setPower(-0.5);
+        bleftDrive.setPower(0.5);
+        rightDrive.setPower(0.5);
+        brightDrive.setPower(-0.5);
+    }
+    private void AprilTelemetry(double drive, double turn, boolean targetFound) {
+        targetFound = false;
+        desiredTag  = null;
 
         // Step through the list of detected tags and look for a matching tag
         try {
@@ -304,7 +473,7 @@ public class AprilTensorflow extends LinearOpMode {
                 telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
                 telemetry.update();
                 double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                double headingError = desiredTag.ftcPose.bearing;
+                double headingError = desiredTag.ftcPose.bearing - 15;
 
                 // Use the speed and turn "gains" to calculate how we want the robot to move.  Clip it to the maximum
                 drive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
@@ -332,7 +501,41 @@ public class AprilTensorflow extends LinearOpMode {
      * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
      */
 
+    private void    setManualExposure(int exposureMS, int gain) {
+        // Wait for the camera to be open, then use the controls
 
+        if (visionPortal == null) {
+            return;
+        }
+
+        // Make sure camera is streaming before we try to set the exposure controls
+        if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+            telemetry.addData("Camera", "Waiting");
+            telemetry.update();
+            while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                sleep(20);
+            }
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
+
+        // Set camera controls unless we are stopping.
+        if (!isStopRequested())
+        {
+            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                exposureControl.setMode(ExposureControl.Mode.Manual);
+                sleep(50);
+            }
+            exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+            sleep(20);
+            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+            gainControl.setGain(gain);
+            sleep(20);
+            telemetry.addData("Camera", "Ready");
+            telemetry.update();
+        }
+    }
     private void telemetryTfod() {
 
         List<Recognition> currentRecognitions = tfod.getRecognitions();
