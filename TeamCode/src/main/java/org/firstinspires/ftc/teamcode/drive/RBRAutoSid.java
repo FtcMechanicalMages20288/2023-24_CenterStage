@@ -130,12 +130,13 @@ public class RBRAutoSid extends LinearOpMode {
                 .back(7)
                 .turn(Math.toRadians(-50))
                 //.lineTo(new Vector2d(18, 2))
-                .lineToLinearHeading(new Pose2d(53, 2, Math.toRadians(-88)))
+                .lineTo(new Vector2d(53, 2))
+                .turn(Math.toRadians(-90))
+                //.turn(Math.toRadians(-88))
 
-                .turn(Math.toRadians(-88))
-                .lineToLinearHeading(new Pose2d(53, 70))
+                .lineTo(new Vector2d(53, 70))
                 .turn(Math.toRadians(200))
-                .lineToLinearHeading(new Pose2d(32, 70))
+                .lineTo(new Vector2d(32, 70))
                 .turn(Math.toRadians(-15.5))
                 .build();
 
