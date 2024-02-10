@@ -124,7 +124,7 @@ public class RBLfeb1 extends LinearOpMode {
 
 
 
-    public static int waitTime = 535;
+    public static int waitTime = 610;
     public static int waitTimev2 = 750;
 
     public static double FwBw = 10;

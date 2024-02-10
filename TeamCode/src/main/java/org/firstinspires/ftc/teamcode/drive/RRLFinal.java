@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -10,7 +8,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -31,13 +28,13 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Config
-@Autonomous(group = "RBR Final")
-public class RBRFinal extends LinearOpMode {
+@Autonomous(group = "RRL Final")
+public class RRLFinal extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
     int dropPos3;
-    int finalDropPos = 3;
+    int finalDropPos;
 
     // private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     // private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -48,7 +45,7 @@ public class RBRFinal extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -138,7 +135,6 @@ public class RBRFinal extends LinearOpMode {
 
     public static int waitTime = 700;
     public static int waitTimev2 = 750;
-    public static int waitTimev3 = 1000;
 
     public static double FwBw = 8;
     @Override
@@ -165,31 +161,29 @@ public class RBRFinal extends LinearOpMode {
 
 
 
-
+        //pos1
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(20, 0))
-                .turn(Math.toRadians(50))
-                .forward(8)
-                .back(8)
+                .lineToLinearHeading(new Pose2d(20, 8))
                 .back(7)
-                .turn(Math.toRadians(-50))
-                //.lineTo(new Vector2d(18, 2))
-                .lineTo(new Vector2d(53, 2))
-                .turn(Math.toRadians(90))
-                //.turn(Math.toRadians(-88))
-                .lineTo(new Vector2d(53, 70))
-                //.turn(Math.toRadians(200))
-                .lineTo(new Vector2d(35, 70))
-                //.turn(Math.toRadians(-15.5))
+
+                // akash's add ons (after pixel drop)
+                .lineTo(new Vector2d(18, -6))
+                .lineTo(new Vector2d(51, -2))
+                .turn(Math.toRadians(-94))
+
+                //driving thru the stage door
+                .lineTo(new Vector2d(49, -70))
+
                 .build();
 
+        /***************************************************/
+        //pos1 --->
 
-
-
+        //pos1
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
                 .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -200,7 +194,7 @@ public class RBRFinal extends LinearOpMode {
 
 
 
-
+        //pos1
         TrajectorySequence pos1p3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -210,45 +204,22 @@ public class RBRFinal extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeRight(15)
-
-
+                .lineToLinearHeading(new Pose2d(0,28,Math.toRadians(90)))
                 .build();
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+        /***************************************************/
+        //pos2 --->
 
-                .lineTo(new Vector2d(24, -10))
-                .lineTo(new Vector2d(18, -10))
-                .lineTo(new Vector2d(18, 2))
-                .lineTo(new Vector2d(50, 2))
-                .turn(Math.toRadians(-93))
-                .lineTo(new Vector2d(52.5, 70))
-                .lineTo(new Vector2d(45,70))
-                .turn(Math.toRadians(200))
-                .lineTo(new Vector2d(40, 80))
-                .turn(Math.toRadians(-16.5))
-                /*.lineTo(new Vector2d(11.24, 37.22))
-                .lineTo(new Vector2d(54.54, 35.55))*/
-
-
-                /*.lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(-90))
-                .back(3)
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(x3Value2, y3Value2))*/
-                .build();
-
-        TrajectorySequence traj2v3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-
-                .build();
-
+        //pos2
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
+                /*.lineToLinearHeading(new Pose2d(28, -2))
+                .back(5)
+                .strafeLeft(6)
+                .forward(12)
+
+                .lineToLinearHeading(new Pose2d(-2,51,Math.toRadians(-95)))
+                .build();*/
+
                 .lineToLinearHeading(new Pose2d(30, 0))
                 .back(7)
                 .lineToLinearHeading(new Pose2d(30,-14, Math.toRadians(0)))
@@ -262,21 +233,63 @@ public class RBRFinal extends LinearOpMode {
                 .build();
 
 
+        //pos2
+        TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
-        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
+                )
+
+
+                .build();
+
+        //pos2
+        TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(traj2_2.end())
                 .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                //.lineTo(new Vector2d(1,1))
+                .lineToLinearHeading(new Pose2d(3,28,Math.toRadians(90)))
+                .build();
 
+        /***************************************************/
+        //pos3 --->
+
+
+        //pos3
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+
+                .lineTo(new Vector2d(20, -2))
+                .turn(Math.toRadians(-50))
+                .forward(6)
+                .back(8)
+                .back(7)
+                .turn(Math.toRadians(50))
+
+                // akash's add ons (after pixel push)
+                .lineTo(new Vector2d(18, 0))
+                .lineTo(new Vector2d(52, -2))
+                .turn(Math.toRadians(-95)) //
+                .lineTo(new Vector2d(45, -70)) // 52
 
                 .build();
 
+        //pos3
+        TrajectorySequence traj2v3 = drive.trajectorySequenceBuilder(pos3.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+
+                .build();
+        //pos3
         TrajectorySequence traj3v3 = drive.trajectorySequenceBuilder(traj2v3.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -286,10 +299,7 @@ public class RBRFinal extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-
-
-
-
+                .lineToLinearHeading(new Pose2d(5,28,Math.toRadians(90)))
                 .build();
 
 
@@ -341,7 +351,7 @@ public class RBRFinal extends LinearOpMode {
                 sleep(waitTimev2);
 
                 DESIRED_TAG_ID = 1;
-                strafeLeft();
+                strafeRight();
 
 
                 while(aprilAdjust) {
@@ -372,8 +382,8 @@ public class RBRFinal extends LinearOpMode {
                     // Tell the driver what we see, and what to do.
                     if (targetFound) {
 
-                        strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -15){
+                        strafeRight();
+                        if(desiredTag.ftcPose.bearing > 15){
                             aprilAdjust = false;
                         }
 
@@ -394,12 +404,14 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 OpenBox();
-                sleep(waitTimev3);
+                sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(300);
+                sleep(400);
+                stopRobot();
+
                 IntakeBox();
-                sleep(250);
+                sleep(500);
                 stopRobot();
 
             }
@@ -416,7 +428,7 @@ public class RBRFinal extends LinearOpMode {
                 sleep(waitTimev2);
 
                 DESIRED_TAG_ID = 2;
-                strafeLeft();
+                strafeRight();
 
 
                 while(aprilAdjust) {
@@ -447,7 +459,7 @@ public class RBRFinal extends LinearOpMode {
                     // Tell the driver what we see, and what to do.
                     if (targetFound) {
 
-                        strafeLeft();
+                        strafeRight();
                         if(desiredTag.ftcPose.bearing < -15){
                             aprilAdjust = false;
                         }
@@ -469,12 +481,12 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 OpenBox();
-                sleep(waitTimev3);
+                sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(300);
+                sleep(400);
                 IntakeBox();
-                sleep(250);
+                sleep(500);
                 stopRobot();
 
             }
@@ -491,7 +503,7 @@ public class RBRFinal extends LinearOpMode {
                 sleep(waitTimev2);
 
                 DESIRED_TAG_ID = 3;
-                strafeLeft();
+                strafeRight();
 
 
                 while(aprilAdjust) {
@@ -522,7 +534,7 @@ public class RBRFinal extends LinearOpMode {
                     // Tell the driver what we see, and what to do.
                     if (targetFound) {
 
-                        strafeLeft();
+                        strafeRight();
                         if(desiredTag.ftcPose.bearing < -10){
                             aprilAdjust = false;
                         }
@@ -540,16 +552,16 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(1000);
+                sleep(500);
                 stopRobot();
 
                 OpenBox();
-                sleep(waitTimev3);
+                sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(300);
+                sleep(500);
                 IntakeBox();
-                sleep(250);
+                sleep(500);
                 stopRobot();
 
 
@@ -670,6 +682,13 @@ public class RBRFinal extends LinearOpMode {
         brightDrive.setPower(-0.5);
     }
 
+    public void strafeRight(){
+        leftDrive.setPower(0.5);
+        bleftDrive.setPower(-0.5);
+        rightDrive.setPower(-0.5);
+        brightDrive.setPower(0.5);
+    }
+
     public void stopRobot(){
         leftDrive.setPower(0);
         bleftDrive.setPower(0);
@@ -759,10 +778,9 @@ public class RBRFinal extends LinearOpMode {
             if(x>=891 && x<=900){
                 finalDropPos = 3;
                 telemetry.addData("Pixel Position:", "dropPos3");
-            }
-            else{
+            } else {
                 finalDropPos = 3;
-                telemetry.addData("Pixel Position:", "Failsafe: 3");
+                telemetry.addData("Detection Failed. Default Pixel Position:", "dropPos3");
             }
         }   // end for() loop
 
