@@ -320,15 +320,15 @@ public class MecanumDriveNBE extends OpMode {
             OpenBox();
             AutoHold = true;
 
-            if (IntakeReady) {
-                if (Pixels == 2) {
-                    CloseBox();
-                }
-                if (Pixels < 2) {
-                    if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) {
-                        Pixels++;
-                        sleep(350);
-                    }
+            if (Pixels == 2) {
+                CloseBox();
+            }
+
+
+            if (Pixels < 2) {
+                if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) {
+                    Pixels++;
+                    sleep(350);
                 }
             }
         }
@@ -392,7 +392,7 @@ public class MecanumDriveNBE extends OpMode {
 
         //intake
         if(gamepad2.a) {
-            Intake.setPower(0.84);
+            Intake.setPower(.9);
 
         }
         // outtake

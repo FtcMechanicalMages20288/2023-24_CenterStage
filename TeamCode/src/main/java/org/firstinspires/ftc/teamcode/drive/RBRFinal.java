@@ -118,7 +118,7 @@ public class RBRFinal extends LinearOpMode {
     private Servo BucketHold, BucketR, BucketL;
     private DcMotor SlideR, SlideL, Intake;
 
-    public static double slidePower = 0.45;
+    public static double slidePower = 0.525;
     int xValue = 19;
     int yValue = -10;
 
@@ -175,12 +175,12 @@ public class RBRFinal extends LinearOpMode {
                 .turn(Math.toRadians(-50))
                 //.lineTo(new Vector2d(18, 2))
                 .lineTo(new Vector2d(53, 2))
-                .turn(Math.toRadians(-90))
+                .turn(Math.toRadians(90))
                 //.turn(Math.toRadians(-88))
                 .lineTo(new Vector2d(53, 70))
-                .turn(Math.toRadians(200))
+                //.turn(Math.toRadians(200))
                 .lineTo(new Vector2d(35, 70))
-                .turn(Math.toRadians(-15.5))
+                //.turn(Math.toRadians(-15.5))
                 .build();
 
 
@@ -247,13 +247,15 @@ public class RBRFinal extends LinearOpMode {
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(23, 0))
+                .lineToLinearHeading(new Pose2d(30, 0))
                 .back(7)
-                .lineTo(new Vector2d(23,12))
-                .lineTo(new Vector2d(53,0))
-                .turn(Math.toRadians(-88))
-                .lineTo(new Vector2d(53, 70))
-                .turn(Math.toRadians(200))
+                .lineToLinearHeading(new Pose2d(30,-14, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(53,-14, Math.toRadians(70)))
+                //.turn(Math.toRadians(90))
+                //.lineTo(new Vector2d(53, 80))
+                //.lineToLinearHeading(new Pose2d(53,80, Math.toRadians(70)))
+                //.turn(Math.toRadians(200))
+                .forward(90)
 
                 .build();
 
@@ -309,7 +311,7 @@ public class RBRFinal extends LinearOpMode {
 
 
         waitForStart();
-        finalDropPos = 3;
+        //finalDropPos = 3;
         visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
         telemetry.addData("Final Pixel Position: ", finalDropPos);
@@ -386,19 +388,22 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(500);
+                sleep(1000);
                 stopRobot();
 
                 OpenBox();
                 sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(500);
+                sleep(400);
+                stopRobot();
+
                 IntakeBox();
                 sleep(500);
                 stopRobot();
 
             }
+
             if(finalDropPos == 2 ) {
 
                 drive.followTrajectorySequence(pos2);
@@ -460,14 +465,14 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(500);
+                sleep(1000);
                 stopRobot();
 
                 OpenBox();
                 sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(500);
+                sleep(400);
                 IntakeBox();
                 sleep(500);
                 stopRobot();
@@ -518,7 +523,7 @@ public class RBRFinal extends LinearOpMode {
                     if (targetFound) {
 
                         strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -15){
+                        if(desiredTag.ftcPose.bearing < -10){
                             aprilAdjust = false;
                         }
 
