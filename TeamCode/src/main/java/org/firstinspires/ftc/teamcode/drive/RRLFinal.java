@@ -34,7 +34,7 @@ public class RRLFinal extends LinearOpMode {
     int dropPos1;
     int dropPos2;
     int dropPos3;
-    int finalDropPos;
+    int finalDropPos =3;
 
     // private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     // private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -164,16 +164,19 @@ public class RRLFinal extends LinearOpMode {
         //pos1
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(20, 8))
+                .lineToLinearHeading(new Pose2d(20, 10))
                 .back(7)
 
+
+
                 // akash's add ons (after pixel drop)
-                .lineTo(new Vector2d(18, -6))
-                .lineTo(new Vector2d(51, -2))
+                .lineTo(new Vector2d(18, -2))
+                .lineTo(new Vector2d(52, -2))
                 .turn(Math.toRadians(-94))
 
                 //driving thru the stage door
                 .lineTo(new Vector2d(49, -70))
+                .forward(10)
 
                 .build();
 
@@ -222,8 +225,8 @@ public class RRLFinal extends LinearOpMode {
 
                 .lineToLinearHeading(new Pose2d(30, 0))
                 .back(7)
-                .lineToLinearHeading(new Pose2d(30,-14, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(53,-14, Math.toRadians(70)))
+                .lineToLinearHeading(new Pose2d(30,14, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(53,14, Math.toRadians(-80)))
                 //.turn(Math.toRadians(90))
                 //.lineTo(new Vector2d(53, 80))
                 //.lineToLinearHeading(new Pose2d(53,80, Math.toRadians(70)))
@@ -275,7 +278,8 @@ public class RRLFinal extends LinearOpMode {
                 .lineTo(new Vector2d(18, 0))
                 .lineTo(new Vector2d(52, -2))
                 .turn(Math.toRadians(-95)) //
-                .lineTo(new Vector2d(45, -70)) // 52
+                .forward(67)
+                .forward(10)
 
                 .build();
 
@@ -345,12 +349,12 @@ public class RRLFinal extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
 
-                DESIRED_TAG_ID = 1;
+                DESIRED_TAG_ID = 4;
                 strafeRight();
 
 
@@ -383,7 +387,7 @@ public class RRLFinal extends LinearOpMode {
                     if (targetFound) {
 
                         strafeRight();
-                        if(desiredTag.ftcPose.bearing > 15){
+                        if(desiredTag.ftcPose.bearing > -15){
                             aprilAdjust = false;
                         }
 
@@ -399,6 +403,9 @@ public class RRLFinal extends LinearOpMode {
 
                 stopRobot();
 
+
+                strafeLeft();
+                sleep(400);
                 forwardRobot();
                 sleep(1000);
                 stopRobot();
@@ -427,7 +434,7 @@ public class RRLFinal extends LinearOpMode {
                 BoardDropBox();
                 sleep(waitTimev2);
 
-                DESIRED_TAG_ID = 2;
+                DESIRED_TAG_ID = 5;
                 strafeRight();
 
 
@@ -460,7 +467,7 @@ public class RRLFinal extends LinearOpMode {
                     if (targetFound) {
 
                         strafeRight();
-                        if(desiredTag.ftcPose.bearing < -15){
+                        if(desiredTag.ftcPose.bearing > -15){
                             aprilAdjust = false;
                         }
 
@@ -475,6 +482,9 @@ public class RRLFinal extends LinearOpMode {
                 }
 
                 stopRobot();
+
+                strafeLeft();
+                sleep(250);
 
                 forwardRobot();
                 sleep(1000);
@@ -497,12 +507,12 @@ public class RRLFinal extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
 
-                DESIRED_TAG_ID = 3;
+                DESIRED_TAG_ID = 6;
                 strafeRight();
 
 
@@ -535,7 +545,7 @@ public class RRLFinal extends LinearOpMode {
                     if (targetFound) {
 
                         strafeRight();
-                        if(desiredTag.ftcPose.bearing < -10){
+                        if(desiredTag.ftcPose.bearing > -22){
                             aprilAdjust = false;
                         }
 
@@ -551,17 +561,20 @@ public class RRLFinal extends LinearOpMode {
 
                 stopRobot();
 
+                strafeLeft();
+                sleep(250);
+
                 forwardRobot();
-                sleep(500);
+                sleep(1000);
                 stopRobot();
 
                 OpenBox();
                 sleep(waitTimev2);
 
                 backwardRobot();
-                sleep(500);
+                sleep(200);
                 IntakeBox();
-                sleep(500);
+                sleep(300);
                 stopRobot();
 
 
@@ -778,10 +791,10 @@ public class RRLFinal extends LinearOpMode {
             if(x>=891 && x<=900){
                 finalDropPos = 3;
                 telemetry.addData("Pixel Position:", "dropPos3");
-            } else {
+            } /*else {
                 finalDropPos = 3;
                 telemetry.addData("Detection Failed. Default Pixel Position:", "dropPos3");
-            }
+            }*/
         }   // end for() loop
 
     }   // end method telemetryTfod()

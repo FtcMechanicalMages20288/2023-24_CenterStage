@@ -87,7 +87,7 @@ public class RBRAuto extends LinearOpMode {
 
 
     public static double gate2x3 = 60;
-    public static double gate2y3 = 80   ;
+    public static double gate2y3 = 80;
 
     public static int gatex = 49 ;
     public static int gatex1 = 51 ;

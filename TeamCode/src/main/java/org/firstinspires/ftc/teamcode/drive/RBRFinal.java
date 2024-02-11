@@ -390,7 +390,7 @@ public class RBRFinal extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(1000);
+                sleep(1250);
                 stopRobot();
 
                 OpenBox();
@@ -761,9 +761,9 @@ public class RBRFinal extends LinearOpMode {
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
             else{
-                finalDropPos = 3;
-                telemetry.addData("Pixel Position:", "Failsafe: 3");
+                finalDropPos =3;
             }
+
         }   // end for() loop
 
     }   // end method telemetryTfod()
