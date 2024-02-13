@@ -283,9 +283,6 @@ public class MecanumRefined extends OpMode {
                     SlideR.setPower(-0.3);
                     SlideL.setPower(-0.3);
             }
-
-
-
                 boardAdjust = false;
 
             }
