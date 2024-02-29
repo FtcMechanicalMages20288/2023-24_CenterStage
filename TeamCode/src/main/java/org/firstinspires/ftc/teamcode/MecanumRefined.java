@@ -122,12 +122,15 @@ public class MecanumRefined extends OpMode {
 
         if (LimitSwitch.isPressed()) {
             telemetry.addData("Intake", "Ready");
-            if (Rumbled = false) {
-                gamepad2.rumble(200);
+            if (!Rumbled) {
+                gamepad2.rumble(500);
+                gamepad2.rumble(500);
                 Rumbled = true;
+
             }
         } else {
             Rumbled = false;
+            gamepad2.stopRumble();
             telemetry.addData("Intake", " Not Ready");;;
         }
 

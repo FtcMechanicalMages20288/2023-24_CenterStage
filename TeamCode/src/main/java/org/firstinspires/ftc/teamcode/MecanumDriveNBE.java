@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
+import android.graphics.Color;
 import android.os.SystemClock;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -16,6 +17,9 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.w8wjb.ftc.AdafruitNeoDriver;
+
+
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -31,10 +35,12 @@ public class MecanumDriveNBE extends OpMode {
     //Slide Motors
     private DcMotor SlideR, SlideL, Intake;
 
-    private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL;
+    private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL, Grabber;
+
+    private CRServo IntakeRoller;
 
     private DcMotor LeadScrew;
-    private CRServo Hook;
+
 
     RevBlinkinLedDriver blinkinLedDriver;
     RevBlinkinLedDriver.BlinkinPattern pattern;
@@ -53,7 +59,9 @@ public class MecanumDriveNBE extends OpMode {
 
 
 
+    private static final int NUM_PIXELS = 60;
 
+    AdafruitNeoDriver neopixels;
     int Pixels = 0;
 
     boolean IntakeDelay = true;
@@ -94,18 +102,24 @@ public class MecanumDriveNBE extends OpMode {
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
+        Grabber = hardwareMap.get(Servo.class, "Grab");
+
+        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
 
         LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
-        Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
-        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
+
+        neopixels = hardwareMap.get(AdafruitNeoDriver.class, "neopixels");
+
+        neopixels.setNumberOfPixels(NUM_PIXELS);
 
 
         HangR.setPosition(0.5);
-        HangL.setPosition(0.5);
+        HangL.setPosition(0.4);
         //O position for Servos Default
 /*
         BucketR.setPosition(0);
@@ -199,92 +213,47 @@ public class MecanumDriveNBE extends OpMode {
 
 
         if(Pixels == 0 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.RED;
-            blinkinLedDriver.setPattern(pattern);
+           showRed();
         }
 
         if(Pixels == 1 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.BLUE;
-            blinkinLedDriver.setPattern(pattern);
+            showGreen();
         }
 
         if(Pixels==2 && endTime < 85000){
-            pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-            blinkinLedDriver.setPattern(pattern);
+           showPurple();
         }
 
         if(endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2){
 
-            /*switch((int)endTime){
-                case 85500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 86000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 86500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 87000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 87500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 88000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                case 88500:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                    blinkinLedDriver.setPattern(pattern);
-                case 89000:
-                    pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                    blinkinLedDriver.setPattern(pattern);
-                    break;
-
-
-            } */
-
-            if(endTime > 90000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
-            }
 
 
 
             if(endTime > 80100 && endTime < 80500 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
+                showGold();
             }
             if(endTime >80500  && endTime <  81000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
+               showPurple();
             }
             if(endTime >81500  && endTime <82000  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
+                showGold();
 
             }
             if(endTime > 82000  && endTime < 82500  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
+              showPurple();
             }
             if(endTime > 82500  && endTime < 83000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
+                showGold();
             }
             if(endTime >83500  && endTime <84000  ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
+              showPurple();
             }
             if(endTime >84000  && endTime < 84500 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.WHITE;
-                blinkinLedDriver.setPattern(pattern);
+              showGold();
 
             }
             if(endTime > 85000 ){
-                pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
-                blinkinLedDriver.setPattern(pattern);
+             showPurple();
             }
 
 
@@ -316,8 +285,8 @@ public class MecanumDriveNBE extends OpMode {
 
         } else {
             StopSlides();
-            IntakeReady = true;
             OpenBox();
+            IntakeReady = true;
             AutoHold = true;
 
             if (Pixels == 2) {
@@ -391,17 +360,22 @@ public class MecanumDriveNBE extends OpMode {
         }
 
         //intake
-        if(gamepad2.a) {
+        if(gamepad2.a && IntakeReady) {
             Intake.setPower(.9);
+            IntakeRoller.setPower(-0.8);
 
         }
         // outtake
         else if(gamepad2.b){
             Intake.setPower(-0.6);
+            IntakeRoller.setPower(0.8);
 
         }
 
-        else Intake.setPower(0);
+        else {
+            Intake.setPower(0);
+            IntakeRoller.setPower(0);
+        }
 
         //drone launching and resetting
         if (gamepad2.back) {
@@ -431,16 +405,6 @@ public class MecanumDriveNBE extends OpMode {
             LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        if(gamepad2.dpad_down){
-            Hook.setPower(0.5);
-        }
-        else if(gamepad2.dpad_up){
-            Hook.setPower(-0.5);
-
-        }
-        else{
-            Hook.setPower(0);
-        }
 
 
 
@@ -457,9 +421,18 @@ public class MecanumDriveNBE extends OpMode {
         BucketHold.setPosition(0.7); //close
 
     }
+
+
+    private void useGrabber(){
+        Grabber.setPosition(0.7);
+    }
+
+    private void setGrabber(){
+        Grabber.setPosition(0.35);
+    }
     private void BoardDropBox(){
-        BucketR.setPosition(0.15);
-        BucketL.setPosition(0.15);
+        BucketR.setPosition(0.21);
+        BucketL.setPosition(0.25);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);
@@ -470,7 +443,64 @@ public class MecanumDriveNBE extends OpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.5);
-        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.59);
+        BucketL.setPosition(0.63);
+    }
+
+    private void showPurple(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(new float[] {278 , 89, 66 });
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+    private void showGreen(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(new float[] {101 , 42, 66 });
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+    private void showGold(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(new float[] {247 , 98, 66});
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+
+    private void showRed(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(new float[] {6 , 100, 66});
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+    private void colorOff(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(new float[] {0 , 0, 0 });
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
     }
 }

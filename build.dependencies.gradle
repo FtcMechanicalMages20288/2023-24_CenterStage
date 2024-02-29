@@ -2,6 +2,9 @@ repositories {
     mavenCentral()
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' } //RoadRunner
+    maven {
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' //Adafruit
+    }
 }
 
 dependencies {
@@ -20,5 +23,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
 
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.12' //Roadrunner
+
+    implementation 'com.w8wjb.ftc:ftc-neodriver:1.0-SNAPSHOT' // Adafruit
 }
 

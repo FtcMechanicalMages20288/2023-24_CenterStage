@@ -12,7 +12,8 @@ public class BucketTuner extends OpMode{
 //drop 0.2
 //Intake 0.5
 
-    double temp = 0;
+    double tempR = 0;
+    double tempL = 0;
     double tempHold = 0;
 
     private Servo BucketHold, BucketR, BucketL, HangR, HangL;
@@ -26,6 +27,10 @@ public class BucketTuner extends OpMode{
         HangL = hardwareMap.servo.get("HangL");
 
 
+        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.4);
+        tempR = 0.46;
+        tempL = 0.5;
         HangR.setPosition(0.5);
         HangL.setPosition(0.5);
         HangR.setDirection((Servo.Direction.REVERSE));
@@ -36,33 +41,37 @@ public class BucketTuner extends OpMode{
     @Override
     public void loop() {
         if(gamepad2.a){
-            BucketR.setPosition(temp + 0.05);
-            BucketL.setPosition(temp + 0.05);
-            temp =  BucketL.getPosition();
-            telemetry.addData("Servo Pos", HangL.getPosition());
+            BucketR.setPosition(tempR + 0.05);
+            BucketL.setPosition(tempL + 0.05);
+            tempR =  BucketR.getPosition();
+            tempL =  BucketL.getPosition();
+            telemetry.addData("Servo PosL", BucketL.getPosition());
+            telemetry.addData("Servo PosR", BucketR.getPosition());
             telemetry.update();
            sleep(1000);
 
         }
         if(gamepad2.b) {
-            BucketR.setPosition(temp - 0.05);
-            BucketL.setPosition(temp - 0.05);
-            temp =  BucketL.getPosition();
-            telemetry.addData("Servo Pos", BucketR.getPosition());
+            BucketR.setPosition(tempR - 0.05);
+            BucketL.setPosition(tempL - 0.05);
+            tempR=  BucketR.getPosition();
+            tempL =  BucketL.getPosition();
+            telemetry.addData("Servo PosL", BucketL.getPosition());
+            telemetry.addData("Servo PosR", BucketR.getPosition());
             telemetry.update();
             sleep(1000);
         }
         if(gamepad2.y){
             BucketHold.setPosition(tempHold - 0.05);
             tempHold =  BucketHold.getPosition();
-            telemetry.addData("Servo Pos", BucketHold.getPosition());
+            telemetry.addData("Servo Pos Hold", BucketHold.getPosition());
             telemetry.update();
             sleep(1000);
         }
         if(gamepad2.x){
             BucketHold.setPosition(tempHold + 0.05);
             tempHold =  BucketHold.getPosition();
-            telemetry.addData("Servo Pos", BucketHold.getPosition());
+            telemetry.addData("Servo Pos Hold", BucketHold.getPosition());
             telemetry.update();
             sleep(1000);
         }
