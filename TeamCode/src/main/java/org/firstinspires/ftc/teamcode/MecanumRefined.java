@@ -77,28 +77,36 @@ public class MecanumRefined extends OpMode {
 
     @Override
     public void init() {
+
+        //DRIVE MOTORS
         left_drive = hardwareMap.dcMotor.get("lm");
         right_drive = hardwareMap.dcMotor.get("rm");
         back_right_drive = hardwareMap.dcMotor.get("brm");
         back_left_drive = hardwareMap.dcMotor.get("blm");
+
+        //EXPANSION HUB MOTORS
         SlideR = hardwareMap.dcMotor.get("SlideR");
         SlideL = hardwareMap.dcMotor.get("SlideL");
+        Intake = hardwareMap.dcMotor.get("Intake");
+        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
+
+        //MOTOR DIRECTION SWITCHING
         left_drive.setDirection(DcMotor.Direction.REVERSE);
         back_left_drive.setDirection(DcMotor.Direction.REVERSE);
+
+        //SENSORS
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
         Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
+
+        //SERVOS
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         Drone = hardwareMap.get(Servo.class, "Drone");
-        Intake = hardwareMap.dcMotor.get("Intake");
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
-
-        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
         Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
@@ -214,7 +222,7 @@ public class MecanumRefined extends OpMode {
             blinkinLedDriver.setPattern(pattern);
         }
 
-        if(Pixels==2 && endTime < 85000){
+        if(Pixels == 2 && endTime < 85000){
             pattern =  RevBlinkinLedDriver.BlinkinPattern.VIOLET;
             blinkinLedDriver.setPattern(pattern);
         }
