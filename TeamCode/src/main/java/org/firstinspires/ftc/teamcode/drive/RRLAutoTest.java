@@ -26,6 +26,7 @@ import java.util.List;
 @Config
 @Autonomous(group = "R RL  Auto")
 public class RRLAutoTest extends LinearOpMode {
+
     int dropPos1;
     int dropPos2;
     int dropPos3;
@@ -60,82 +61,63 @@ public class RRLAutoTest extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+
+
+
+
+
+    // Tfod Stuff Above
+
     private Servo BucketHold, BucketR, BucketL;
     private DcMotor SlideR, SlideL, Intake;
 
     public static double slidePower = 0.45;
-    /*int xValue = 19;
+    int xValue = 19;
     int yValue = -10;
 
-    public static int x2Value = 26;
-    public static int y2Value = 4 ;
+    public static int x2Value = 20;
+    public static int y2Value = 8 ;
+
+    public static int x22Value = 19;
+    public static int y22Value = 25;
+
+    public static int turn1 = 100;
+    public static int turn2 = 95;
+
+    public static int turn3_3 = -50;
+    public static int turn3_5 = 90;
+
+    public static int strafetox = 0;
+
+    public static int strafetoy = 28;
 
 
-    public static int x3Value = 19;
-    public static int y3Value = 14 ;
+    public static int x3Value = 28;
+    public static int y3Value = 0;
 
-    public static double x3Value2 = 31.5;
-    public static int y3Value2 = -30 ;
-
-    public static int bw = 10;
-
-    public static int turn3 = 110;
-
-    public static int waitTime = 750;
-    public static int waitTimev2 = 750;
-
-    public static double FwBw = 8;*/
-
-    int xValue = 10;
-    int yValue = -3;
-    public static double gate2x = 49;
-    public static double gate2y = 73.5;
-
-    public static double gate2y2 = 100;
+    public static int x33Value = 25;
+    public static int y33Value = 25;
 
 
-    public static double gate2x3 = 60;
-    public static double gate2y3 = 80   ;
+    public static int x4Value = 20;
+    public static int y4Value = 0 ;
 
-    public static int gatex = 49 ;
-    public static int gatex1 = 51 ;
-
-    public static double gatey =-.75 ;
-    public static double gatey1 = -5 ;
+    public static int x44Value = 34;
+    public static int y44Value = 25;
 
 
-
-    public static double srd  = 17.6;
-
-    public static double srd2  = 39 ;
-
-
-
-    public static double boardx = -15;
-    public static double boardy = 73.5;
-
-    public static int x2Value = 26;
-    public static int y2Value = -4 ;
-
-
-    public static int x3Value = 23;
-    public static double y3Value = -3.5;
 
     public static double x3Value2 = -22;
     public static int y3Value2 = 34 ;
 
     public static int bw = 10;
-    public static int turn4 = 18;
 
-    public static int turn5 = 27;
 
-    public static int turn3 = -89;
 
-    public static int waitTime = 1300;
+    public static int waitTime = 535;
     public static int waitTimev2 = 750;
 
-    public static double FwBw = 8;
-
+    public static double FwBw = 10;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -143,6 +125,8 @@ public class RRLAutoTest extends LinearOpMode {
         initCode();
         initTfod();
         CloseBox();
+
+
 
 
         Pose2d sP = new Pose2d(0,0,0);
@@ -157,17 +141,18 @@ public class RRLAutoTest extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(xValue, yValue))
-                .back(3)
-                .lineTo(new Vector2d(15, -.75))
-                .lineTo(new Vector2d(gatex,gatey))
-                .turn(Math.toRadians(turn3))
-                .lineTo(new Vector2d(gate2x, gate2y))
-                .turn(Math.toRadians(-180))
-                .strafeRight(srd)
-                .turn(Math.toRadians(turn4))
-                .build();
+                .lineToLinearHeading(new Pose2d(x2Value, y2Value))
+                .back(7)
 
+                // akash's add ons (after pixel drop)
+                .lineTo(new Vector2d(18, -4))
+                .lineTo(new Vector2d(51, -2))
+                .turn(Math.toRadians(-94))
+
+                //driving thru the stage door
+                .lineTo(new Vector2d(49, -70))
+
+                .build();
 
 
 
@@ -182,41 +167,6 @@ public class RRLAutoTest extends LinearOpMode {
                 .build();
 
 
-
-
-
-        TrajectorySequence pos1p3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeRight(15)
-
-
-                .build();
-
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x3Value, y3Value))
-                .back(bw)
-                .lineTo(new Vector2d(x3Value2, y3Value2))
-                .turn(Math.toRadians(turn3))
-                .build();
-
-
-
-        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineTo(new Vector2d(x2Value, y2Value))
-                .back(bw)
-                .lineTo(new Vector2d(28.4, -30))
-                .turn(Math.toRadians(110))
-                .build();
-
-
-
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -226,10 +176,96 @@ public class RRLAutoTest extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .strafeTo(new Vector2d(45,-26))
+                .lineToLinearHeading(new Pose2d(strafetox,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+        TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
+                .lineToLinearHeading(new Pose2d(x3Value, -2))
+                .back(5)
+                .strafeLeft(6)
+                .forward(12)
+
+                .lineToLinearHeading(new Pose2d(-2,51,Math.toRadians(-95)))
+                .build();
+
+
+
+        TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
 
 
                 .build();
+
+
+        TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(traj2_2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+
+                .lineTo(new Vector2d(20, -2))
+                .turn(Math.toRadians(turn3_3))
+                .forward(6)
+                .back(8)
+                .back(7)
+                .turn(Math.toRadians(50))
+
+                // akash's add ons (after pixel push)
+                .lineTo(new Vector2d(18, 0))
+                .lineTo(new Vector2d(52, -2))
+                .turn(Math.toRadians(-95)) //
+                .lineTo(new Vector2d(45, -70)) // 52
+
+                .build();
+
+
+
+        TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+
+                .build();
+
+
+        TrajectorySequence traj3_3 = drive.trajectorySequenceBuilder(traj3_2.end())
+                .back(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .addDisplacementMarker(() -> {
+                    IntakeBox();
+                })
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -244,34 +280,73 @@ public class RRLAutoTest extends LinearOpMode {
 
         waitForStart();
 
+        telemetryTfod();
+        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
+            finalDropPos = 1;
+
+        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
+            finalDropPos = 2;
+        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
+            finalDropPos = 3;
+        } else {
+            finalDropPos = 3;
+            telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
+        }
+
+        telemetry.addData("Final Pixel Position: ", finalDropPos);
+
+        telemetry.update();
+
         if(!isStopRequested()){
-           /* drive.followTrajectorySequence(pos1);
+            if(finalDropPos == 1 ) {
+                drive.followTrajectorySequence(pos1);
 
-            IntakeBox();
-            SlidePower(slidePower);
-            sleep(waitTime);
-            HoldSlides();
-            BoardDropBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj2);
-            OpenBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj3);
+                IntakeBox();
+                SlidePower(slidePower);
+                sleep(waitTime);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2);
+                OpenBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj3);
 
-            */
 
-            drive.followTrajectorySequence(pos2);
+            }
+            if(finalDropPos == 2 ) {
+                drive.followTrajectorySequence(pos2);
 
-            IntakeBox();
-            SlidePower(slidePower);
-            sleep(waitTime);
-            HoldSlides();
-            BoardDropBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj2);
-            OpenBox();
-            sleep(waitTimev2);
-            drive.followTrajectorySequence(traj3);
+                IntakeBox();
+                SlidePower(slidePower);
+                sleep(waitTime);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2_2);
+                OpenBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2_3);
+
+
+            }
+            if(finalDropPos == 3) {
+
+                drive.followTrajectorySequence(pos3);
+
+                IntakeBox();
+                SlidePower(slidePower);
+                sleep(waitTime);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj3_2);
+                OpenBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj3_3);
+
+
+            }
 
         }
 
@@ -301,14 +376,14 @@ public class RRLAutoTest extends LinearOpMode {
 
     }
     private void CloseBox(){
-        BucketHold.setPosition(0.7); //close
-    }
-    private void OpenBox(){
         BucketHold.setPosition(0); //close
     }
+    private void OpenBox(){
+        BucketHold.setPosition(0.7); //close
+    }
     private void BoardDropBox(){
-        BucketR.setPosition(0.85);
-        BucketL.setPosition(0.85);
+        BucketR.setPosition(0.15);
+        BucketL.setPosition(0.15);
     }
     private void HoldSlides(){
         SlideR.setPower(0.1);
@@ -323,6 +398,9 @@ public class RRLAutoTest extends LinearOpMode {
         BucketL.setPosition(0.5);
     }
 
+    /**
+     * Initialize the TensorFlow Object Detection processor.
+     */
     private void initTfod() {
 
      /*   // Create the AprilTag processor by using a builder.
@@ -416,7 +494,7 @@ public class RRLAutoTest extends LinearOpMode {
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 
-        // Step through the list of recognitions and display info for each  one.
+        // Step through the list of recognitions and display info for each one.
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
             double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
@@ -428,19 +506,18 @@ public class RRLAutoTest extends LinearOpMode {
             //telemetry.addData("X value: ", x);
 
 
-            if(x>=0 && x<=350){
+            if(x>=0 && x<=300){
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=351 && x<=750){
+            if(x>=301 && x<=891){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=751 && x<=900){
+            if(x>=891 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
-            telemetry.update();
         }   // end for() loop
 
     }   // end method telemetryTfod()
@@ -448,4 +525,3 @@ public class RRLAutoTest extends LinearOpMode {
 
 
 }
-

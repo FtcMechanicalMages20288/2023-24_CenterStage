@@ -210,20 +210,20 @@ public class MecanumDriveState extends OpMode {
 
         if (rightbumper) {
 
-            left_drive.setPower(-1); // left drive is 0
-            right_drive.setPower(1); // right drive is 2
-            back_left_drive.setPower(1); // back left drive is 1
-            back_right_drive.setPower(-1); // back right drive is 3
+            left_drive.setPower(1); // left drive is 0
+            right_drive.setPower(-1); // right drive is 2
+            back_left_drive.setPower(-1); // back left drive is 1
+            back_right_drive.setPower(1); // back right drive is 3
 
 
 
 
         } else if (leftbumper) {
 
-            left_drive.setPower(1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(1);
+            left_drive.setPower(-1);
+            right_drive.setPower(1);
+            back_left_drive.setPower(1);
+            back_right_drive.setPower(-1);
 
 
 
@@ -352,7 +352,7 @@ public class MecanumDriveState extends OpMode {
 
 
         //Drop Box on Board
-        if(gamepad2.y && Pixels == 2 || gamepad2.y && Pixels == 1){
+        if(gamepad2.y){
             yPressed = true;
             BoardDropBox();
 
@@ -427,13 +427,13 @@ public class MecanumDriveState extends OpMode {
         // Hanging / LeadScrew Binds
 
          if(gamepad2.dpad_up){
-            HangR.setPosition(0.7);
-            HangL.setPosition(0.7);
+            HangR.setPosition(0.2); // correct
+            HangL.setPosition(0.6);
 
         }
          else  if(gamepad2.dpad_down){
-             HangR.setPosition(0.3);
-             HangL.setPosition(0.3);
+             HangR.setPosition(0.25);
+             HangL.setPosition(0.75); //correct
 
          }
         else{
@@ -477,8 +477,10 @@ public class MecanumDriveState extends OpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.59);
-        BucketL.setPosition(0.63);
+        BucketR.setPosition(0.58);
+        BucketL.setPosition(0.62);
+//        BucketR.setPosition(0.59);
+//        BucketL.setPosition(0.63);
     }
 
     private void showPurple(){
