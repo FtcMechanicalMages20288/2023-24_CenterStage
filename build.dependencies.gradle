@@ -3,7 +3,7 @@ repositories {
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' } //RoadRunner
     maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' //Adafruit
+        url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' //Adafruit
     }
 }
 

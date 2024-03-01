@@ -33,6 +33,8 @@ public class MecanumRefined extends OpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL;
+    private CRServo IntakeRoller;
+
 
     private DcMotor LeadScrew;
     private CRServo Hook;
@@ -73,7 +75,7 @@ public class MecanumRefined extends OpMode {
     double fLeftPow, fRightPow, bLeftPow, bRightPow;
 
 
-
+    boolean IntakeReady = false;
 
     @Override
     public void init() {
@@ -89,6 +91,7 @@ public class MecanumRefined extends OpMode {
         SlideL = hardwareMap.dcMotor.get("SlideL");
         Intake = hardwareMap.dcMotor.get("Intake");
         LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
+
 
         //MOTOR DIRECTION SWITCHING
         left_drive.setDirection(DcMotor.Direction.REVERSE);
@@ -108,13 +111,14 @@ public class MecanumRefined extends OpMode {
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
         Hook = hardwareMap.get(CRServo.class, "Hook");
+        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
 
         blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
 
 
-        HangR.setPosition(0.5);
-        HangL.setPosition(0.5);
+       // HangR.setPosition(0.5);
+      //  HangL.setPosition(0.5);
         //O position for Servos Default
 /*
         BucketR.setPosition(0);
@@ -306,6 +310,7 @@ public class MecanumRefined extends OpMode {
         } else {
             StopSlides();
             OpenBox();
+            IntakeReady = true;
 
 
             if (Pixels == 2) {
@@ -320,7 +325,7 @@ public class MecanumRefined extends OpMode {
         }
 
         if (UpSlideBumper && !yPressed && !boardAdjust ) {
-
+            IntakeReady = false;
             CloseBox();
             IntakeBox();
             SlideR.setPower(0.8);
@@ -329,6 +334,7 @@ public class MecanumRefined extends OpMode {
 
         }
         else if (UpSlideBumper){
+            IntakeReady = false;
             SlideR.setPower(0.7);
             SlideL.setPower(0.7);
         }
@@ -388,14 +394,15 @@ public class MecanumRefined extends OpMode {
         }
 
         //intake
-        if(gamepad2.a) {
+        if(gamepad2.a && IntakeReady) {
             Intake.setPower(.9);
+            IntakeRoller.setPower(-0.8);
 
         }
         // outtake
-        else if(gamepad2.b){
+        else if(gamepad2.b) {
             Intake.setPower(-0.6);
-
+            IntakeRoller.setPower(0.8);
         }
 
         else Intake.setPower(0);

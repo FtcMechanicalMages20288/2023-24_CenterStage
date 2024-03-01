@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
-import android.graphics.Color;
 import android.os.SystemClock;
 
 import com.acmerobotics.dashboard.config.Config;
@@ -17,17 +16,16 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.Range;
 import com.w8wjb.ftc.AdafruitNeoDriver;
-
-
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Disabled
-@TeleOp(name = "MecanumDriveNBE", group = "TeleOp")
 
-public class MecanumDriveNBE extends OpMode {
+@TeleOp(name = "MecanumState", group = "TeleOp")
+
+public class MecanumDriveState extends OpMode {
 
 
     //DriveTrain Motors
@@ -36,10 +34,10 @@ public class MecanumDriveNBE extends OpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL, Grabber;
-
     private CRServo IntakeRoller;
 
-    private DcMotor LeadScrew;
+
+
 
 
     RevBlinkinLedDriver blinkinLedDriver;
@@ -58,49 +56,71 @@ public class MecanumDriveNBE extends OpMode {
     long startTime = System.currentTimeMillis();
 
 
-
-    private static final int NUM_PIXELS = 60;
-
-    AdafruitNeoDriver neopixels;
-    int Pixels = 0;
-
-    boolean IntakeDelay = true;
-    boolean AutoHold = true;
-    boolean Rumbled = false;
-    boolean frontDrive = true;
-    boolean IntakeReady = false;
-
-    boolean colorSwitch = false;
-    //Motor Power
-
-    double SlidePower;
     double left_drivePower;
     double right_drivePower;
     double back_right_drivePower;
     double back_left_drivePower;
 
+    int Pixels = 0;
+
+    private static final int NUM_PIXELS = 60;
+
+    AdafruitNeoDriver neopixels;
 
 
+    boolean Rumbled = false;
+
+    boolean yPressed = false;
+
+    boolean boardAdjust = false;
+    //Motor Power
+
+
+    double drive;
+    double turn;
+    double strafe;
+    double SlidePower;
+    double fLeftPow, fRightPow, bLeftPow, bRightPow;
+
+
+    boolean IntakeReady = false;
 
     @Override
     public void init() {
+
+        //DRIVE MOTORS
         left_drive = hardwareMap.dcMotor.get("lm");
         right_drive = hardwareMap.dcMotor.get("rm");
         back_right_drive = hardwareMap.dcMotor.get("brm");
         back_left_drive = hardwareMap.dcMotor.get("blm");
+
+        //EXPANSION HUB MOTORS
         SlideR = hardwareMap.dcMotor.get("SlideR");
         SlideL = hardwareMap.dcMotor.get("SlideL");
-        right_drive.setDirection(DcMotor.Direction.REVERSE);
-        back_right_drive.setDirection(DcMotor.Direction.REVERSE);
+        Intake = hardwareMap.dcMotor.get("Intake");
+
+
+        //MOTOR DIRECTION SWITCHING
+        left_drive.setDirection(DcMotor.Direction.REVERSE);
+        back_left_drive.setDirection(DcMotor.Direction.REVERSE);
+
+        //SENSORS
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
         Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
+
+        //SERVOS
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         Drone = hardwareMap.get(Servo.class, "Drone");
-        Intake = hardwareMap.dcMotor.get("Intake");
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        HangR = hardwareMap.servo.get("HangR");
+        HangL = hardwareMap.servo.get("HangL");
+
+
+        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+
 
         Grabber = hardwareMap.get(Servo.class, "Grab");
 
@@ -109,7 +129,7 @@ public class MecanumDriveNBE extends OpMode {
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
 
-        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
+
 
 
 
@@ -117,9 +137,8 @@ public class MecanumDriveNBE extends OpMode {
 
         neopixels.setNumberOfPixels(NUM_PIXELS);
 
-
-       // HangR.setPosition(0.5);
-       // HangL.setPosition(0.4);
+        // HangR.setPosition(0.5);
+        //  HangL.setPosition(0.5);
         //O position for Servos Default
 /*
         BucketR.setPosition(0);
@@ -135,12 +154,15 @@ public class MecanumDriveNBE extends OpMode {
 
         if (LimitSwitch.isPressed()) {
             telemetry.addData("Intake", "Ready");
-            if (Rumbled = false) {
-                gamepad2.rumble(200);
+            if (!Rumbled) {
+                gamepad2.rumble(500);
+                gamepad2.rumble(500);
                 Rumbled = true;
+
             }
         } else {
             Rumbled = false;
+            gamepad2.stopRumble();
             telemetry.addData("Intake", " Not Ready");;;
         }
 
@@ -155,12 +177,13 @@ public class MecanumDriveNBE extends OpMode {
 
 
 
-
         //Movement Controller
-        right_drivePower = gamepad1.right_stick_y;
-        back_left_drivePower = gamepad1.left_stick_y;
-        left_drivePower = gamepad1.left_stick_y;
-        back_right_drivePower = gamepad1.right_stick_y;
+
+
+        right_drivePower = gamepad1.right_stick_y*-1;
+        back_left_drivePower = gamepad1.left_stick_y*-1;
+        left_drivePower = gamepad1.left_stick_y*-1;
+        back_right_drivePower = gamepad1.right_stick_y*-1;
 
 
 
@@ -213,7 +236,7 @@ public class MecanumDriveNBE extends OpMode {
 
 
         if(Pixels == 0 && endTime < 85000){
-           showRed();
+            showRed();
         }
 
         if(Pixels == 1 && endTime < 85000){
@@ -221,7 +244,7 @@ public class MecanumDriveNBE extends OpMode {
         }
 
         if(Pixels==2 && endTime < 85000){
-           showPurple();
+            showPurple();
         }
 
         if(endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2){
@@ -233,27 +256,27 @@ public class MecanumDriveNBE extends OpMode {
                 showGold();
             }
             if(endTime >80500  && endTime <  81000 ){
-               showPurple();
+                showPurple();
             }
             if(endTime >81500  && endTime <82000  ){
                 showGold();
 
             }
             if(endTime > 82000  && endTime < 82500  ){
-              showPurple();
+                showPurple();
             }
             if(endTime > 82500  && endTime < 83000 ){
                 showGold();
             }
             if(endTime >83500  && endTime <84000  ){
-              showPurple();
+                showPurple();
             }
             if(endTime >84000  && endTime < 84500 ){
-              showGold();
+                showGold();
 
             }
             if(endTime > 85000 ){
-             showPurple();
+                showPurple();
             }
 
 
@@ -269,17 +292,20 @@ public class MecanumDriveNBE extends OpMode {
         if (!LimitSwitch.isPressed()) {
 
 
-            if (DownSlideBumper) {
+            if (DownSlideBumper && !yPressed) {
+
 
                 IntakeBox();
-                SlideR.setPower(-0.3);
-                SlideL.setPower(-0.3);
+                while (!LimitSwitch.isPressed()){
+                    SlideR.setPower(-0.3);
+                    SlideL.setPower(-0.3);
+                }
+                boardAdjust = false;
 
             }
-            else if (DownSlideBumper && SlideL.getCurrentPosition() > -70){
-                IntakeBox();
-                SlideR.setPower(-1);
-                SlideL.setPower(-1);
+            else if(DownSlideBumper){
+                SlideR.setPower(-0.1);
+                SlideL.setPower(-0.1);
             }
 
 
@@ -287,24 +313,20 @@ public class MecanumDriveNBE extends OpMode {
             StopSlides();
             OpenBox();
             IntakeReady = true;
-            AutoHold = true;
+
 
             if (Pixels == 2) {
                 CloseBox();
             }
 
 
-            if (Pixels < 2) {
-                if (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) {
-                    Pixels++;
-                    sleep(350);
-                }
+            if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25)) {
+                Pixels++;
+                sleep(350);
             }
         }
 
-        if (UpSlideBumper ) {
-
-
+        if (UpSlideBumper && !yPressed && !boardAdjust ) {
             IntakeReady = false;
             CloseBox();
             IntakeBox();
@@ -312,7 +334,14 @@ public class MecanumDriveNBE extends OpMode {
             SlideL.setPower(0.8);
 
 
-        } else if (!DownSlideBumper && !LimitSwitch.isPressed()){
+        }
+        else if (UpSlideBumper){
+            IntakeReady = false;
+            SlideR.setPower(0.7);
+            SlideL.setPower(0.7);
+        }
+
+        else if (!DownSlideBumper && !LimitSwitch.isPressed()){
 
             HoldSlides();
 
@@ -323,9 +352,9 @@ public class MecanumDriveNBE extends OpMode {
 
 
         //Drop Box on Board
-        if(gamepad2.y){
+        if(gamepad2.y && Pixels == 2 || gamepad2.y && Pixels == 1){
+            yPressed = true;
             BoardDropBox();
-            Pixels = 0;
 
         }
 
@@ -337,7 +366,14 @@ public class MecanumDriveNBE extends OpMode {
         }
 
         // close
-        if(gamepad2.right_trigger > 0.3) {
+        if(gamepad2.right_trigger > 0.3 && yPressed) {
+            OpenBox();
+            boardAdjust = true;
+            Pixels = 0;
+            yPressed = false;
+
+        }
+        else if(gamepad2.right_trigger > 0.3){
             OpenBox();
         }
 
@@ -366,10 +402,9 @@ public class MecanumDriveNBE extends OpMode {
 
         }
         // outtake
-        else if(gamepad2.b){
+        else if(gamepad2.b) {
             Intake.setPower(-0.6);
             IntakeRoller.setPower(0.8);
-
         }
 
         else {
@@ -390,21 +425,20 @@ public class MecanumDriveNBE extends OpMode {
 
 
         // Hanging / LeadScrew Binds
-        if(gamepad2.dpad_right) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(1);
+
+         if(gamepad2.dpad_up){
+            HangR.setPosition(0.7);
+            HangL.setPosition(0.7);
 
         }
-        else if (gamepad2.dpad_left) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(-1);
+         else  if(gamepad2.dpad_down){
+             HangR.setPosition(0.3);
+             HangL.setPosition(0.3);
 
-        }
+         }
         else{
-            LeadScrew.setPower(0);
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
 
+        }
 
 
 
