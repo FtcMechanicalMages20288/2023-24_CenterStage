@@ -40,13 +40,7 @@ public class MecanumDriveState extends OpMode {
 
 
 
-    RevBlinkinLedDriver blinkinLedDriver;
-    RevBlinkinLedDriver.BlinkinPattern pattern;
 
-    protected enum DisplayKind {
-        MANUAL,
-        AUTO
-    }
 
     //limitswitch
     private TouchSensor LimitSwitch;
@@ -232,6 +226,30 @@ public class MecanumDriveState extends OpMode {
         telemetry.addData("Slides", SlideL.getCurrentPosition());
         telemetry.update();
 
+        //Fwd Bckwd
+
+        //Auto Forward and Backward
+
+       /* if(gamepad1.right_trigger > 0.3){
+            left_drive.setPower(1);
+            right_drive.setPower(1);
+            back_left_drive.setPower(1);
+            back_right_drive.setPower(1);
+        }
+        else if(gamepad1.left_trigger > 0.3){
+            left_drive.setPower(-1);
+            right_drive.setPower(-1);
+            back_left_drive.setPower(-1);
+            back_right_drive.setPower(-1);
+
+
+
+        }
+        else{
+
+        } */
+
+
         //Led code
 
 
@@ -378,22 +396,7 @@ public class MecanumDriveState extends OpMode {
         }
 
 
-        //Auto Forward and Backward
 
-        if(gamepad1.right_trigger > 0.3){
-            left_drive.setPower(-1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(-1);
-        }
-        if(gamepad1.left_trigger > 0.3){
-
-            left_drive.setPower(1);
-            right_drive.setPower(1);
-            back_left_drive.setPower(1);
-            back_right_drive.setPower(1);
-
-        }
 
         //intake
         if(gamepad2.a && IntakeReady) {
@@ -414,7 +417,7 @@ public class MecanumDriveState extends OpMode {
 
         //drone launching and resetting
         if (gamepad2.back) {
-            Drone.setPosition(0.3);
+            Drone.setPosition(0.75);
         }
         else{
             Drone.setPosition(0.55);
@@ -436,9 +439,7 @@ public class MecanumDriveState extends OpMode {
              HangL.setPosition(0.75); //correct
 
          }
-        else{
 
-        }
 
 
 
