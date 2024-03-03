@@ -85,8 +85,8 @@ public class RBLfeb1 extends LinearOpMode {
     int xValue = 19;
     int yValue = -10;
 
-    public static int x2Value = 20;
-    public static int y2Value = 8 ;
+    public static int x2Value = 22;
+    public static int y2Value = 4 ;
 
     public static int x22Value = 19;
     public static int y22Value = 25;
@@ -94,8 +94,8 @@ public class RBLfeb1 extends LinearOpMode {
     public static int turn1 = 100;
     public static int turn2 = 95;
 
-    public static int turn3_3 = -50;
-    public static int turn3_5 = 90;
+    public static int turn3_3 = -55;
+    public static int turn3_5 = 95;
 
     public static int strafetox = 0;
 
@@ -103,7 +103,7 @@ public class RBLfeb1 extends LinearOpMode {
 
 
     public static int x3Value = 28;
-    public static int y3Value = 0;
+    public static int y3Value = 10;
 
     public static int x33Value = 25;
     public static int y33Value = 25;
@@ -221,7 +221,7 @@ public class RBLfeb1 extends LinearOpMode {
                 .back(8)
                 .back(7)
                 .turn(Math.toRadians(turn3_5))
-                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(85)))
                 .build();
 
 
@@ -232,7 +232,6 @@ public class RBLfeb1 extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
-
 
                 .build();
 
@@ -248,18 +247,6 @@ public class RBLfeb1 extends LinearOpMode {
                 })
                 .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .build();
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -374,8 +361,8 @@ public class RBLfeb1 extends LinearOpMode {
         BucketHold.setPosition(0.7); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.15);
-        BucketL.setPosition(0.15);
+        BucketR.setPosition(0.23);
+        BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
         SlideR.setPower(0.1);
@@ -386,8 +373,8 @@ public class RBLfeb1 extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.5);
-        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.58);
+        BucketL.setPosition(0.62);
     }
 
     /**
