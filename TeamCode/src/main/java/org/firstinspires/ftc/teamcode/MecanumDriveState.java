@@ -67,11 +67,15 @@ public class MecanumDriveState extends OpMode {
     boolean yPressed = false;
 
     boolean boardAdjust = false;
+
+    boolean pixelGap = false;
     //Motor Power
 
 
     double drive;
     double turn;
+
+    long pixelTime;
     double strafe;
     double SlidePower;
     double fLeftPow, fRightPow, bLeftPow, bRightPow;
@@ -113,7 +117,7 @@ public class MecanumDriveState extends OpMode {
         HangL = hardwareMap.servo.get("HangL");
 
 
-        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+
 
 
         Grabber = hardwareMap.get(Servo.class, "Grab");
@@ -337,10 +341,18 @@ public class MecanumDriveState extends OpMode {
                 CloseBox();
             }
 
-
-            if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25)) {
+            //if 0 pixels
+            if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (!pixelGap))) {
                 Pixels++;
-                sleep(350);
+                 pixelTime = System.currentTimeMillis();
+                 pixelGap = true;
+            }
+            //if one pixel, wait to make sure that were not scanning the same pixel
+            else if(Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (pixelGap))){
+                if( System.currentTimeMillis()  > pixelTime + 350 ){
+                    Pixels++;
+                    pixelGap = false;
+                }
             }
         }
 
