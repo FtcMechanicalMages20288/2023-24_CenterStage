@@ -378,6 +378,8 @@ public class MecanumDriveState extends OpMode {
 
 
 
+
+
         // open
         if(gamepad2.left_trigger > 0.3) {
             CloseBox();
@@ -393,6 +395,8 @@ public class MecanumDriveState extends OpMode {
         }
         else if(gamepad2.right_trigger > 0.3){
             OpenBox();
+
+
         }
 
 
@@ -400,7 +404,7 @@ public class MecanumDriveState extends OpMode {
 
         //intake
         if(gamepad2.a && IntakeReady) {
-            Intake.setPower(.9);
+            Intake.setPower(1); // was 0.9 until 3/1
             IntakeRoller.setPower(-0.8);
 
         }
@@ -430,20 +434,15 @@ public class MecanumDriveState extends OpMode {
         // Hanging / LeadScrew Binds
 
          if(gamepad2.dpad_up){
-            HangR.setPosition(0.2); // correct
-            HangL.setPosition(0.6);
+            HangR.setPosition(0.5); // correct
+            HangL.setPosition(0.1);
 
         }
-         else  if(gamepad2.dpad_down){
-             HangR.setPosition(0.25);
-             HangL.setPosition(0.75); //correct
+         if(gamepad2.dpad_down){
+             HangR.setPosition(0);
+             HangL.setPosition(0.6); //correct
 
          }
-
-
-
-
-
 
 
     }
@@ -466,8 +465,8 @@ public class MecanumDriveState extends OpMode {
         Grabber.setPosition(0.35);
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.21);
-        BucketL.setPosition(0.25);
+        BucketR.setPosition(0.23);
+        BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);
