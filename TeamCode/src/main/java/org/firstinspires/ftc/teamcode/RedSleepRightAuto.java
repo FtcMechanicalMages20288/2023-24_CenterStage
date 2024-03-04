@@ -51,9 +51,9 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@Autonomous(name = "RedLeftAuto", group = "Auto")
+@Autonomous(name = "RedRightAuto", group = "Auto")
 
-public class RedLeftAuto extends LinearOpMode {
+public class RedSleepRightAuto extends LinearOpMode {
 
 
     int dropPos1;
@@ -99,6 +99,7 @@ public class RedLeftAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         leftDrive  = hardwareMap.get(DcMotor.class, "lm");
         rightDrive = hardwareMap.get(DcMotor.class, "rm");
         back_right_drive = hardwareMap.get(DcMotor.class, "brm");
@@ -152,7 +153,13 @@ public class RedLeftAuto extends LinearOpMode {
 
         telemetry.update();*/
 
+        while(opModeInInit()){
 
+            telemetry.addData("DropPos1: ",dropPos1);
+            telemetry.addData("DropPos2: ", dropPos2);
+            telemetry.addData("DropPos3: ", dropPos3);
+            telemetry.update();
+        }
         waitForStart();
 
 
@@ -160,8 +167,8 @@ public class RedLeftAuto extends LinearOpMode {
         if (opModeIsActive()) {
             while (opModeIsActive()) {
                 //AprilTelemetry();
-
                 telemetryTfod();
+
 
                 // Push telemetry to the Driver Station.
                 telemetry.update();
@@ -193,9 +200,16 @@ public class RedLeftAuto extends LinearOpMode {
                     turnLeft(0.6);
                     driveForward(0.35);
                     //after deposition
-                    driveBackward(0.75);
+                    driveBackward(0.55);
                     turnRight(0.6);
-
+                    driveBackward(0.9);
+                    // execute 90 degree turn
+                    turnRight(1);
+                    sleep(250);
+                    driveForward(1.4);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -209,7 +223,13 @@ public class RedLeftAuto extends LinearOpMode {
                     telemetry.update();
                     driveForward(1.35);
                     driveBackward(1);
-
+                    // execute 90 degree turn
+                    turnRight(1);
+                    sleep(250);
+                    driveForward(1.6);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();
@@ -226,9 +246,16 @@ public class RedLeftAuto extends LinearOpMode {
                     turnRight(0.6);
                     driveForward(0.35);
                     //after deposition
-                    driveBackward(0.75);
+                    driveBackward(0.25);
                     turnLeft(0.6);
-
+                    driveBackward(0.9);
+                    // execute 90 degree turn
+                    turnRight(1);
+                    sleep(250);
+                    driveForward(1.6);
+                    // strafes to align with pixel board
+                    // strafeRight(0.6);
+                    // insert slide/bucket code to deposit pixel
 
                     telemetry.addData("Route Completed ", finalDropPos);
                     telemetry.update();

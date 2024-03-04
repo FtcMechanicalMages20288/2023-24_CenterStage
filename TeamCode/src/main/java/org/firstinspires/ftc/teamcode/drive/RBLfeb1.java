@@ -78,7 +78,7 @@ public class RBLfeb1 extends LinearOpMode {
 
     // Tfod Stuff Above
 
-    private Servo BucketHold, BucketR, BucketL;
+    private Servo BucketHold, BucketR, BucketL, PixelPusher;
     private DcMotor SlideR, SlideL, Intake;
 
     public static double slidePower = 0.45;
@@ -92,7 +92,7 @@ public class RBLfeb1 extends LinearOpMode {
     public static int y22Value = 25;
 
     public static int turn1 = 100;
-    public static int turn2 = 95;
+    public static int turn2 = 85;
 
     public static int turn3_3 = -55;
     public static int turn3_5 = 95;
@@ -103,7 +103,7 @@ public class RBLfeb1 extends LinearOpMode {
 
 
     public static int x3Value = 28;
-    public static int y3Value = 10;
+    public static int y3Value = -5;
 
     public static int x33Value = 25;
     public static int y33Value = 25;
@@ -135,6 +135,7 @@ public class RBLfeb1 extends LinearOpMode {
         initCode();
         initTfod();
         CloseBox();
+        PixelPusher.setPosition(0.45); // locks pixel
 
 
 
@@ -151,15 +152,21 @@ public class RBLfeb1 extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x2Value, y2Value))
-                .back(7)
-                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
+                .lineToLinearHeading(new Pose2d(x2Value+2, y2Value+2))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(800);
+                })
+                .back(9)
+                .lineToLinearHeading(new Pose2d(x22Value-3,y22Value,Math.toRadians(90)))
                 .build();
 
 
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw,
+                .forward(FwBw+1,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -183,15 +190,21 @@ public class RBLfeb1 extends LinearOpMode {
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x3Value, y3Value))
-                .back(7)
-                .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2)))
+                .lineToLinearHeading(new Pose2d(x3Value, y3Value, Math.toRadians(-5))) // added to make robot more straight
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(800);
+                })
+                .back(4)
+                .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2+5))) //90
                 .build();
 
 
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
-                .forward(FwBw,
+                .forward(FwBw+2,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -217,8 +230,14 @@ public class RBLfeb1 extends LinearOpMode {
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x4Value, y4Value))
                 .turn(Math.toRadians(turn3_3))
-                .forward(8)
-                .back(8)
+                .forward(10)
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(800);
+                })
+                .back(10)
                 .back(7)
                 .turn(Math.toRadians(turn3_5))
                 .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(85)))
@@ -339,11 +358,13 @@ public class RBLfeb1 extends LinearOpMode {
 
 
 
+        PixelPusher = hardwareMap.get(Servo.class, "Pixel Pusher");
 
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         BucketR.setDirection(Servo.Direction.REVERSE);
+
     }
     private void SlidePower(double p){
         SlideR.setPower(p);
@@ -354,6 +375,11 @@ public class RBLfeb1 extends LinearOpMode {
 
 
     }
+
+    private void ReleasePixel() {
+        PixelPusher.setPosition(0.15);
+    }
+
     private void CloseBox(){
         BucketHold.setPosition(0); //close
     }

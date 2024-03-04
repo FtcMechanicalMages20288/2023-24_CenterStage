@@ -17,7 +17,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name = "Single Stick Mecanum", group = "TeleOp")
-
+@Disabled
 public class SingStick extends OpMode {
 
 

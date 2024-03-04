@@ -61,7 +61,7 @@ public class RRRAutoFinal extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
-    private Servo BucketHold, BucketR, BucketL;
+    private Servo BucketHold, BucketR, BucketL, PixelPusher;
     private DcMotor SlideR, SlideL, Intake;
 
     public static double slidePower = 0.45;
@@ -87,7 +87,7 @@ public class RRRAutoFinal extends LinearOpMode {
 
 
     public static int x3Value = 28;
-    public static int y3Value = 0;
+    public static int y3Value = -4;
 
     public static int x33Value = 25;
     public static int y33Value = -25;
@@ -133,17 +133,24 @@ public class RRRAutoFinal extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x2Value, y2Value))
-                .back(7)
+                .lineToLinearHeading(new Pose2d(x2Value, y2Value-5))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1000);
+                })
+                .back(9)
 
                 //going to board
-                .lineToLinearHeading(new Pose2d(x44Value,y44Value,Math.toRadians(-95)))
+
+                .lineToLinearHeading(new Pose2d(x44Value-2,y44Value,Math.toRadians(-95)))
                 .build();
 
 
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw+2,
+                .forward(FwBw+3,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -162,21 +169,27 @@ public class RRRAutoFinal extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .lineToLinearHeading(new Pose2d(strafetox+1,strafetoy,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(strafetox,strafetoy-3,Math.toRadians(-100)))
                 .build();
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x3Value, y3Value))
+                .lineToLinearHeading(new Pose2d(x3Value+1, y3Value))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1000);
+                })
                 .back(7)
                 //going to board
-                .lineToLinearHeading(new Pose2d(x33Value,y33Value,Math.toRadians(turn2)))
+                .lineToLinearHeading(new Pose2d(x33Value-3,y33Value,Math.toRadians(turn2)))
                 .build();
 
 
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
-                .forward(FwBw,
+                .forward(FwBw+2,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -195,26 +208,32 @@ public class RRRAutoFinal extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(strafetox+1,strafetoy-3,Math.toRadians(-100)))
                 .build();
 
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x4Value, y4Value))
-                .turn(Math.toRadians(turn3_3))
+                .turn(Math.toRadians(turn3_3-11))
                 .forward(8)
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1000);
+                })
                 .back(8)
                 .back(7)
 
                 //goes to board
-                .turn(Math.toRadians(turn3_5))
-                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(turn1)))
+                .turn(Math.toRadians(turn3_5+11))
+                .lineToLinearHeading(new Pose2d(x22Value+2,y22Value,Math.toRadians(turn1+5)))
                 .build();
 
 
 
         TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw,
+                .forward(FwBw+1,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -233,7 +252,7 @@ public class RRRAutoFinal extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .lineToLinearHeading(new Pose2d(strafetox,strafetoy,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy-3,Math.toRadians(-100)))
                 .build();
 
 
@@ -321,6 +340,7 @@ public class RRRAutoFinal extends LinearOpMode {
 
 
 
+        PixelPusher = hardwareMap.get(Servo.class, "Pixel Pusher");
 
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
@@ -336,6 +356,11 @@ public class RRRAutoFinal extends LinearOpMode {
 
 
     }
+
+    private void ReleasePixel() {
+        PixelPusher.setPosition(0.15);
+    }
+
     private void CloseBox(){
         BucketHold.setPosition(0); //close
     }
@@ -344,8 +369,8 @@ public class RRRAutoFinal extends LinearOpMode {
 
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.15);
-        BucketL.setPosition(0.15);
+        BucketR.setPosition(0.23);
+        BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
         SlideR.setPower(0.1);
@@ -356,8 +381,8 @@ public class RRRAutoFinal extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.5);
-        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.58);
+        BucketL.setPosition(0.62);
     }
     /**
      * Initialize the TensorFlow Object Detection processor.
@@ -471,11 +496,11 @@ public class RRRAutoFinal extends LinearOpMode {
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=201 && x<=400){
+            if(x>=201 && x<=700){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=401 && x<=900){
+            if(x>=701 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
