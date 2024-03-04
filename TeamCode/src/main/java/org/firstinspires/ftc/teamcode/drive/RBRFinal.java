@@ -115,7 +115,7 @@ public class RBRFinal extends LinearOpMode {
 
     // Tfod Stuff Above
 
-    private Servo BucketHold, BucketR, BucketL;
+    private Servo BucketHold, BucketR, BucketL, PixelPusher;
     private DcMotor SlideR, SlideL, Intake;
 
     public static double slidePower = 0.45;
@@ -168,15 +168,22 @@ public class RBRFinal extends LinearOpMode {
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
+
                 .lineToLinearHeading(new Pose2d(20, 0))
-                .turn(Math.toRadians(50))
+                .turn(Math.toRadians(50-11))
                 .forward(8)
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1500);
+                })
                 .back(8)
                 .back(7)
-                .turn(Math.toRadians(-50))
+                .turn(Math.toRadians(50))
                 //.lineTo(new Vector2d(18, 2))
                 .lineTo(new Vector2d(53, 2))
-                .turn(Math.toRadians(90))
+                .turn(Math.toRadians(-40))
                 //.turn(Math.toRadians(-88))
                 .lineTo(new Vector2d(53, 70))
                 //.turn(Math.toRadians(200))
@@ -217,8 +224,15 @@ public class RBRFinal extends LinearOpMode {
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineTo(new Vector2d(24, -10))
-                .lineTo(new Vector2d(18, -10))
+                .lineToLinearHeading(new Pose2d(x2Value, y2Value-5))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1500);
+                })
+                .back(9)
+
                 .lineTo(new Vector2d(18, 2))
                 .lineTo(new Vector2d(50, 2))
                 .turn(Math.toRadians(-93))
@@ -249,7 +263,13 @@ public class RBRFinal extends LinearOpMode {
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(30, 0))
+                .lineToLinearHeading(new Pose2d(x3Value+1, y3Value))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(1500);
+                })
                 .back(7)
                 .lineToLinearHeading(new Pose2d(30,-14, Math.toRadians(0)))
                 .lineToLinearHeading(new Pose2d(53,-14, Math.toRadians(70)))
@@ -305,14 +325,14 @@ public class RBRFinal extends LinearOpMode {
         visionPortal.setProcessorEnabled(aprilTag, false);
         visionPortal.setProcessorEnabled(tfod, true);
 
-        while (opModeInInit()) {
+
+
+        waitForStart();
+        for (int i = 0; i <  10; i++) {
             telemetryTfod();
             telemetry.addData(" Pixel Position: ", finalDropPos);
             telemetry.update();
         }
-
-
-        waitForStart();
         //finalDropPos = 3;
         visionPortal.setProcessorEnabled(tfod, false);
         visionPortal.setProcessorEnabled(aprilTag, true);
@@ -575,6 +595,7 @@ public class RBRFinal extends LinearOpMode {
         bleftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         brightDrive.setDirection(DcMotor.Direction.FORWARD);
+        PixelPusher = hardwareMap.get(Servo.class, "Pixel Pusher");
 
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
@@ -590,6 +611,10 @@ public class RBRFinal extends LinearOpMode {
 
 
     }
+    private void ReleasePixel() {
+        PixelPusher.setPosition(0.15);
+    }
+
     private void CloseBox(){
         BucketHold.setPosition(0); //close
     }
@@ -597,8 +622,8 @@ public class RBRFinal extends LinearOpMode {
         BucketHold.setPosition(0.7); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.15);
-        BucketL.setPosition(0.15);
+        BucketR.setPosition(0.23);
+        BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
         SlideR.setPower(0.1);
@@ -609,8 +634,8 @@ public class RBRFinal extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.5);
-        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.58);
+        BucketL.setPosition(0.62);
     }
 
     /**
