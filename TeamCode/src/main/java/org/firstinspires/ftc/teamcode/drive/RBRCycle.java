@@ -497,6 +497,9 @@ public class RBRCycle extends LinearOpMode {
                 sleep(300);
                 IntakeBox();
 
+
+                drive.followTrajectorySequence(splinetostack);
+
               //  drive.followTrajectorySequence(boardtostack);
 
                // drive.followTrajectorySequence(grabp1);
