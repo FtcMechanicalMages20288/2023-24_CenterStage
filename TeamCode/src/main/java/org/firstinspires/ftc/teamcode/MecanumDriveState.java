@@ -342,7 +342,7 @@ public class MecanumDriveState extends OpMode {
             }
 
             //if 0 pixels
-            if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (!pixelGap))) {
+            else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (!pixelGap))) {
                 Pixels++;
                  pixelTime = System.currentTimeMillis();
                  pixelGap = true;
