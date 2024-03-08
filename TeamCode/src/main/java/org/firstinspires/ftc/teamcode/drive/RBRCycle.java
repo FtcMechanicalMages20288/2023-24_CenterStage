@@ -168,13 +168,51 @@ public class RBRCycle extends LinearOpMode {
 
         Pose2d sP = new Pose2d(0,0,0);
         Pose2d eel = drive.getPoseEstimate();
-
         drive.setPoseEstimate(sP);
 
 
 
 
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
+                .lineToLinearHeading(new Pose2d(23, -14.2))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(500);
+                })
+                .back(9)
+                .strafeLeft(17)
+                .lineToLinearHeading(new Pose2d(48, 0.5, Math.toRadians(84)))
+
+                //.turn(Math.toRadians(-88))
+                .lineToConstantHeading(new Vector2d(55, 70))
+
+                .addDisplacementMarker(() -> {
+
+                    IntakeBox();
+                    SlidePower(slidePower);
+                    sleep(waitTime+100);
+                    HoldSlides();
+                    BoardDropBox();
+                    // sleep(waitTimev2);
+
+                })
+                .lineTo(new Vector2d(54, 75))
+               /* .addDisplacementMarker(() -> {
+                    OpenBox();
+                    sleep(1000);
+                    backwardRobot();
+                    sleep(500);
+                    stopRobot();
+                })
+                .waitSeconds(1.6)*/
+                //.turn(Math.toRadians(200))
+                //.turn(Math.toRadians(-15.5))
+
+
+                .build();
 
 
 
@@ -193,115 +231,36 @@ public class RBRCycle extends LinearOpMode {
                 .back(8)
 
                 //.lineTo(new Vector2d(18, 2))
-                .lineToLinearHeading(new Pose2d(48, -2, Math.toRadians(69)))
+                .lineToLinearHeading(new Pose2d(48, -2, Math.toRadians(85)))
 
                 //.turn(Math.toRadians(-88))
-                .lineToConstantHeading(new Vector2d(60, 70))
+                .lineToConstantHeading(new Vector2d(55, 70))
 
                 .addDisplacementMarker(() -> {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime);
+                    sleep(waitTime+175);
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
 
                 })
                 .lineTo(new Vector2d(54, 75))
-                //.turn(Math.toRadians(200))
-                //.turn(Math.toRadians(-15.5))
-
-                .build();
-
-
-
-
-
-
-        TrajectorySequence boardtostack = drive.trajectorySequenceBuilder(new Pose2d())
-                .strafeRight(18)
-                .lineToConstantHeading(new Vector2d(-60,-15))
-                .lineToConstantHeading(new Vector2d(-90,-8))
-                .turn(Math.toRadians(-10))
-
-                .build();
-
-
-
-
-
-
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-
-                .build();
-
-
-
-
-
-        TrajectorySequence pos1p3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .strafeRight(15)
-
-
-                .build();
-
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-
-                .lineToLinearHeading(new Pose2d(x2Value, -1))
-                .addDisplacementMarker(() -> {
-                    ReleasePixel();
-                })
-                .addDisplacementMarker(() -> {
+                /*.addDisplacementMarker(() -> {
+                    OpenBox();
+                    sleep(1000);
+                    backwardRobot();
                     sleep(500);
+                    stopRobot();
                 })
-                .back(9)
-                .strafeLeft(5)
-                .lineToLinearHeading(new Pose2d(48, -1, Math.toRadians(88)))
-
-                //.turn(Math.toRadians(-88))
-                .lineToConstantHeading(new Vector2d(60, 70))
-
-                .addDisplacementMarker(() -> {
-
-                    IntakeBox();
-                    SlidePower(slidePower);
-                    sleep(waitTime);
-                    HoldSlides();
-                    BoardDropBox();
-                    // sleep(waitTimev2);
-
-                })
-                .lineTo(new Vector2d(54, 75))
+                .waitSeconds(1.6)*/
                 //.turn(Math.toRadians(200))
                 //.turn(Math.toRadians(-15.5))
 
-
                 .build();
 
-        TrajectorySequence traj2v3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
-                )
-
-
-                .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(pos2startx, pos2starty))
@@ -315,58 +274,38 @@ public class RBRCycle extends LinearOpMode {
                 .turn(Math.toRadians(88))
 
 
-                .lineToLinearHeading(new Pose2d(30, 32, Math.toRadians(78)))
+                .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
                 .waitSeconds(0) // Change depending on teammate speed
-                .lineToLinearHeading(new Pose2d(33, 75, Math.toRadians(78)))
+                .lineToLinearHeading(new Pose2d(26.4, 75, Math.toRadians(88)))
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime);
+                    sleep(waitTime+95);
                     HoldSlides();
                     BoardDropBox();
                 })
-                .waitSeconds(0.5)
+                .waitSeconds(0.8)
+                .strafeRight(3)
 
                 .forward(13,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-
-
-                .build();
-
-
-
-        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                //.lineTo(new Vector2d(1,1))
-
-
-                .build();
-
-        TrajectorySequence traj3v3 = drive.trajectorySequenceBuilder(traj2v3.end())
-                .back(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
 
 
 
 
                 .build();
+
+
+
+
+
+
+
+
+
 
 
 
@@ -474,7 +413,7 @@ public class RBRCycle extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(1250);
+                sleep(600);
                 stopRobot();
 
                 OpenBox();
@@ -482,8 +421,10 @@ public class RBRCycle extends LinearOpMode {
 
                 backwardRobot();
                 sleep(300);
+                stopRobot();
                 IntakeBox();
-                sleep(300);
+
+
 
 
 
@@ -502,7 +443,7 @@ public class RBRCycle extends LinearOpMode {
                             SlideL.setPower(0);
                         })
 
-                        .lineToLinearHeading(new Pose2d(-29,-31, Math.toRadians(-20)))
+                        .lineToConstantHeading(new Vector2d(-29,-31))
 
                         .back(75.5)
 
@@ -559,7 +500,6 @@ public class RBRCycle extends LinearOpMode {
 
                 drive.followTrajectorySequence(splinetostack);
 
-              //  drive.followTrajectorySequence(boardtostack);
 
                 drive.followTrajectorySequence(grabp1);
 
@@ -571,17 +511,17 @@ public class RBRCycle extends LinearOpMode {
             if(finalDropPos == 2 ) {
 
                 drive.followTrajectorySequence(pos2);
-                OpenBox();
-                sleep(1000);
-                backwardRobot();
-                sleep(500);
-                stopRobot();
 
+                    OpenBox();
+                    sleep(1000);
+                    backwardRobot();
+                    sleep(500);
+                    stopRobot();
+                    IntakeBox();
 
-
-                IntakeBox();
-                eel = new Pose2d(0,0,0); //drive.getPoseEstimate();
+                 eel = new Pose2d(0,0,0); //drive.getPoseEstimate();
                 drive.setPoseEstimate(eel);
+
 
                 TrajectorySequence splinetostack = drive.trajectorySequenceBuilder(eel)
                         // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
@@ -595,9 +535,10 @@ public class RBRCycle extends LinearOpMode {
                             SlideL.setPower(0);
                         })
 
-                        .lineToLinearHeading(new Pose2d(-29,-21, Math.toRadians(-8)))
 
-                        .lineToLinearHeading(new Pose2d(-100,-18, Math.toRadians(-8)))
+                        .lineToConstantHeading(new Vector2d(-29,-21))
+
+                        .lineToLinearHeading(new Pose2d(-100,-18, Math.toRadians(0)))
 
 
                         .addDisplacementMarker( () -> {
@@ -663,9 +604,11 @@ public class RBRCycle extends LinearOpMode {
 
 
                         .build();
-
+                telemetry.addData("Got here???", "?");
+                telemetry.update();
                 drive.followTrajectorySequence(splinetostack);
-
+                telemetry.addData("Got here???", "2");
+                telemetry.update();
                 //  drive.followTrajectorySequence(boardtostack);
 
                 drive.followTrajectorySequence(grabp1);
@@ -677,12 +620,6 @@ public class RBRCycle extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos3);
 
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
 
                 DESIRED_TAG_ID = 3;
                 strafeLeft();
@@ -747,24 +684,26 @@ public class RBRCycle extends LinearOpMode {
                 stopRobot();
 
 
-                eel = new Pose2d(0,0,0); //drive.getPoseEstimate();
+
+
+                 eel = new Pose2d(0,0, Math.toRadians(0)); //drive.getPoseEstimate();
                 drive.setPoseEstimate(eel);
 
                 TrajectorySequence splinetostack = drive.trajectorySequenceBuilder(eel)
                         // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
                         .addDisplacementMarker( () -> {
-
-                            while (!LimitSwitch.isPressed()){
+                            if (!LimitSwitch.isPressed()){
                                 SlideR.setPower(-0.3);
                                 SlideL.setPower(-0.3);
+                            } else {
+                                SlideR.setPower(0);
+                                SlideL.setPower(0);
                             }
-                            SlideR.setPower(0);
-                            SlideL.setPower(0);
                         })
 
-                        .lineToLinearHeading(new Pose2d(-29,-8, Math.toRadians(-1)))
+                        .lineToLinearHeading(new Pose2d(-22,-23, Math.toRadians(2)))
 
-                        .lineToLinearHeading(new Pose2d(-102,-8, Math.toRadians(-1)))
+                        .lineToLinearHeading(new Pose2d(-102,-23, Math.toRadians(2)))
 
                         .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
@@ -944,10 +883,10 @@ public class RBRCycle extends LinearOpMode {
     }   // end initDoubleVision()
 
     public void strafeLeft(){
-        leftDrive.setPower(-0.5);
+        leftDrive.setPower(-0.52);
         bleftDrive.setPower(0.5);
-        rightDrive.setPower(0.5);
-        brightDrive.setPower(-0.45);
+        rightDrive.setPower(0.54);
+        brightDrive.setPower(-0.5);
     }
 
     public void stopRobot(){
@@ -961,15 +900,15 @@ public class RBRCycle extends LinearOpMode {
         leftDrive.setPower(0.34);
         bleftDrive.setPower(0.34);
         rightDrive.setPower(0.34);
-        brightDrive.setPower(0.29);
+        brightDrive.setPower(0.34);
     }
 
     public void backwardRobot(){
 
         leftDrive.setPower(-0.34);
         bleftDrive.setPower(-0.34);
-        rightDrive.setPower(-0.343);
-        brightDrive.setPower(-0.29);
+        rightDrive.setPower(-0.34);
+        brightDrive.setPower(-0.34);
     }
 
 
@@ -1074,6 +1013,8 @@ public class RBRCycle extends LinearOpMode {
     }
 
 }   // end method telemetryTfod()
+
+
 
 
 
