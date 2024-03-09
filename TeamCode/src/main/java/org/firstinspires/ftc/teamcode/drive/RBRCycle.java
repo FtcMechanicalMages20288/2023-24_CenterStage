@@ -175,7 +175,7 @@ public class RBRCycle extends LinearOpMode {
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(23, -14.2))
+                .lineToLinearHeading(new Pose2d(23, -14))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
@@ -184,7 +184,7 @@ public class RBRCycle extends LinearOpMode {
                 })
                 .back(9)
                 .strafeLeft(17)
-                .lineToLinearHeading(new Pose2d(48, 0.5, Math.toRadians(84)))
+                .lineToLinearHeading(new Pose2d(48, 0.3, Math.toRadians(84)))
 
                 //.turn(Math.toRadians(-88))
                 .lineToConstantHeading(new Vector2d(55, 70))
@@ -193,7 +193,7 @@ public class RBRCycle extends LinearOpMode {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+100);
+                    sleep(waitTime+200);
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
@@ -692,21 +692,32 @@ public class RBRCycle extends LinearOpMode {
                 TrajectorySequence splinetostack = drive.trajectorySequenceBuilder(eel)
                         // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
                         .addDisplacementMarker( () -> {
-                            if (!LimitSwitch.isPressed()){
+                            while (!LimitSwitch.isPressed()){
                                 SlideR.setPower(-0.3);
                                 SlideL.setPower(-0.3);
-                            } else {
-                                SlideR.setPower(0);
-                                SlideL.setPower(0);
                             }
+                            SlideR.setPower(0);
+                            SlideL.setPower(0);
                         })
 
-                        .lineToLinearHeading(new Pose2d(-22,-23, Math.toRadians(2)))
+                        .lineToLinearHeading(new Pose2d(-26,-26, Math.toRadians(8)))
 
-                        .lineToLinearHeading(new Pose2d(-102,-23, Math.toRadians(2)))
+                        .lineToConstantHeading(new Vector2d(-100,-26))
+
+                        .strafeRight(10)
+
+
+
+
+
+
+                        .build();
+
+
+                TrajectorySequence grabp1 = drive.trajectorySequenceBuilder(splinetostack.end())
 
                         .addDisplacementMarker( () -> {
-                            // This marker runs 20 inches into the trajectory
+
 
                             // Run your action in here!
                             IntakeBox();
@@ -715,17 +726,8 @@ public class RBRCycle extends LinearOpMode {
 
                         })
 
-                        .build();
-                TrajectorySequence grabp1 = drive.trajectorySequenceBuilder(splinetostack.end())
-
                         .forward(DISTANCE+6,
                                 SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                        )
-
-                        .back(DISTANCE+6,
-                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                         )
@@ -738,14 +740,19 @@ public class RBRCycle extends LinearOpMode {
                             IntakeRoller.setPower(-0.8);
 
                         })
-                        .waitSeconds(1)
 
-                        .forward(105)
+                        .back(DISTANCE+6,
+                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                        )
+
+
+                        .lineToConstantHeading(new Vector2d(0,-26))
                         .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
 
                             // Run your action in here!
-                            setGrabber();
                             Intake.setPower(-1);
                             IntakeRoller.setPower(0.8);
 

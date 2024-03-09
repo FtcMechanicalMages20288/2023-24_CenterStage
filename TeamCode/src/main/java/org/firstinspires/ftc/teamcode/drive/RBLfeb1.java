@@ -152,7 +152,7 @@ public class RBLfeb1 extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x2Value+2, y2Value+2))
+                .lineToLinearHeading(new Pose2d(24, 6))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })

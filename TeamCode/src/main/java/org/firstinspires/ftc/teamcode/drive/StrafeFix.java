@@ -22,6 +22,13 @@ public class StrafeFix extends LinearOpMode {
     public static double righty = 0.54;
 
     public static double brighty = -0.5;
+
+    public static double Rlefty = 0.5;
+    public static double Rblefty = -0.5;
+
+    public static double Rrighty = -0.5;
+
+    public static double Rbrighty = 0.5;
     @Override
     public void runOpMode() throws InterruptedException {
         bleftDrive  = hardwareMap.get(DcMotor.class, "rm");
@@ -36,11 +43,22 @@ public class StrafeFix extends LinearOpMode {
 
         waitForStart();
 
-        strafeLeft(lefty, blefty, righty,brighty);
+        /*strafeLeft(lefty, blefty, righty, brighty);
         sleep(3000);
-        strafeLeft(0,0,0,0);
+        strafeLeft(0, 0, 0,0); */
+
+       strafeRight(Rlefty, Rblefty, Rrighty,Rbrighty);
+        sleep(3000);
+        strafeRight(0, 0, 0,0);
     }
     public void strafeLeft(double left, double backleft, double right, double backright){
+        leftDrive.setPower(left);
+        bleftDrive.setPower(backleft);
+        rightDrive.setPower(right);
+        brightDrive.setPower(backright);
+    }
+
+    public void strafeRight(double left, double backleft, double right, double backright){
         leftDrive.setPower(left);
         bleftDrive.setPower(backleft);
         rightDrive.setPower(right);

@@ -46,7 +46,7 @@ public class AdafruitOnCommand extends OpMode {
         }
         if (gamepad2.x) {
 
-            showGold();
+            Prowler();
 
         }
         if (gamepad2.y) {
@@ -63,6 +63,30 @@ public class AdafruitOnCommand extends OpMode {
             int color = Color.HSVToColor(new float[] {278 , 89, 66 });
             colors[i] = color;
         }
+
+
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+    private void Prowler(){
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < colors.length; i++) {
+            if(i % 5 == 0) {
+                //Green
+                int color = Color.HSVToColor(new float[] {101 , 42, 66 });
+                colors[i] = color;
+
+            }
+            else{
+                //purple
+                int color = Color.HSVToColor(new float[]{278, 89, 66});
+                colors[i] = color;
+            }
+        }
+
+
 
         neopixels.setPixelColors(colors);
         neopixels.show();
