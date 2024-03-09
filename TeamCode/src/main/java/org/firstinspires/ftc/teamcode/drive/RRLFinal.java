@@ -247,7 +247,7 @@ public class RRLFinal extends LinearOpMode {
                 //.turn(Math.toRadians(200))
                 //.lineTo(new Vector2d(49, -70))
                 .forward(80)
-                .forward(10)
+                .forward(15)
 
                 .build();
 
@@ -334,15 +334,6 @@ public class RRLFinal extends LinearOpMode {
                 })
                 .lineToLinearHeading(new Pose2d(5,28,Math.toRadians(90)))
                 .build();
-
-
-
-
-
-
-
-
-
 
 
         visionPortal.setProcessorEnabled(aprilTag, false);
