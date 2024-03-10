@@ -138,7 +138,7 @@ public class RRRAutoFinal extends LinearOpMode {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(1500);
+                    sleep(500);
                 })
                 .back(9)
 
@@ -179,7 +179,7 @@ public class RRRAutoFinal extends LinearOpMode {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(1500);
+                    sleep(500);
                 })
                 .back(7)
                 //going to board
@@ -220,7 +220,7 @@ public class RRRAutoFinal extends LinearOpMode {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(1500);
+                    sleep(500);
                 })
                 .back(8)
                 .back(7)

@@ -390,7 +390,7 @@ public class RRLFinal extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+175);
+                sleep(waitTime+500);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -470,7 +470,7 @@ public class RRLFinal extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime);
+                sleep(waitTime+500);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -548,7 +548,7 @@ public class RRLFinal extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+175);
+                sleep(waitTime+500);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);

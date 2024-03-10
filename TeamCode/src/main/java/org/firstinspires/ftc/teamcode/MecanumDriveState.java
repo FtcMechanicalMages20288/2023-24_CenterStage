@@ -5,8 +5,10 @@ import static android.os.SystemClock.sleep;
 import android.os.SystemClock;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.message.redux.StopOpMode;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -20,10 +22,11 @@ import com.qualcomm.robotcore.util.Range;
 import com.w8wjb.ftc.AdafruitNeoDriver;
 
 
+import org.apache.commons.math3.geometry.euclidean.twod.Line;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-
-@TeleOp(name = "MecanumState", group = "TeleOp")
+@Disabled
+@TeleOp(name = "nMecanumState", group = "TeleOp")
 
 public class MecanumDriveState extends OpMode {
 
@@ -150,6 +153,9 @@ public class MecanumDriveState extends OpMode {
     @Override
     public void loop() {
 
+
+
+
         if (LimitSwitch.isPressed()) {
             telemetry.addData("Intake", "Ready");
             if (!Rumbled) {
@@ -183,13 +189,22 @@ public class MecanumDriveState extends OpMode {
         left_drivePower = gamepad1.left_stick_y*-1;
         back_right_drivePower = gamepad1.right_stick_y*-1;
 
+        //zero Power
+
+
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+            left_drive.setPower(left_drivePower);
+            right_drive.setPower(right_drivePower);
+            back_left_drive.setPower(left_drivePower);
+            back_right_drive.setPower(right_drivePower);
 
 
 
-        left_drive.setPower(left_drivePower);
-        right_drive.setPower(right_drivePower);
-        back_left_drive.setPower(left_drivePower);
-        back_right_drive.setPower(right_drivePower);
 
 
         boolean rightbumper = gamepad1.right_bumper; //Strafe Right
