@@ -162,7 +162,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
                 .forward(FwBw+3,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -173,7 +173,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
                 .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -200,7 +200,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
                 .forward(FwBw+1,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -211,7 +211,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(traj2_2.end())
                 .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -242,7 +242,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
                 .forward(FwBw+3,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -252,7 +252,7 @@ public class RBL_State extends LinearOpMode {
 
         TrajectorySequence traj3_3 = drive.trajectorySequenceBuilder(traj3_2.end())
                 .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -296,7 +296,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+210);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -312,7 +312,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+210);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -329,7 +329,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+210);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);

@@ -176,7 +176,7 @@ public class RBRCycle extends LinearOpMode {
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(23, -13.8))
+                .lineToLinearHeading(new Pose2d(23, -13.5))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
@@ -184,7 +184,7 @@ public class RBRCycle extends LinearOpMode {
                     sleep(500);
                 })
                 .back(9)
-                .strafeLeft(16.8)
+                .strafeLeft(16.3)
                 .lineToLinearHeading( new Pose2d(48, 0.5))
                 .turn(Math.toRadians(88))
 
@@ -277,7 +277,7 @@ public class RBRCycle extends LinearOpMode {
 
 
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
-                .waitSeconds(0) // Change depending on teammate speed
+                .waitSeconds(2) // Change depending on teammate speed
                 .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
                 .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
                     IntakeBox();

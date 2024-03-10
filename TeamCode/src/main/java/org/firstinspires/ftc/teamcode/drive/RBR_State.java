@@ -173,7 +173,7 @@ public class RBR_State extends LinearOpMode {
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(23, -14))
+                .lineToLinearHeading(new Pose2d(23, -13.3))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
@@ -181,7 +181,7 @@ public class RBR_State extends LinearOpMode {
                     sleep(500);
                 })
                 .back(9)
-                .strafeLeft(17)
+                .strafeLeft(16.3)
                 .lineToLinearHeading( new Pose2d(48, 0.5))
                 .turn(Math.toRadians(84))
 
@@ -192,7 +192,7 @@ public class RBR_State extends LinearOpMode {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+250);
+                    sleep(waitTime+500); //higher 500
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
@@ -239,7 +239,7 @@ public class RBR_State extends LinearOpMode {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+250);
+                    sleep(waitTime+500);
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
@@ -274,18 +274,18 @@ public class RBR_State extends LinearOpMode {
 
 
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
-                .waitSeconds(0) // Change depending on teammate speed
+                .waitSeconds(4) // Change depending on teammate speed
                 .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
                 .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+180);
+                    sleep(waitTime+400);
                     HoldSlides();
                     BoardDropBox();
                 })
 
                 .waitSeconds(0.3)
-                //.strafeRight(1.5)
+                .strafeRight(.5)
 
                 .forward(14,
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -395,7 +395,7 @@ public class RBR_State extends LinearOpMode {
                     if (targetFound) {
 
                         strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -15){
+                        if(desiredTag.ftcPose.bearing < -8){
                             aprilAdjust = false;
                         }
 

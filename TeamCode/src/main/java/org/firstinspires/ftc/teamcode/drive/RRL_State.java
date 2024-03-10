@@ -193,7 +193,7 @@ public class RRL_State extends LinearOpMode {
         //pos1
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
                 .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )

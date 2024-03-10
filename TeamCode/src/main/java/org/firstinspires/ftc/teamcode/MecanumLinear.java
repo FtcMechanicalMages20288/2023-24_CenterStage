@@ -245,13 +245,10 @@ public class MecanumLinear extends LinearOpMode {
 
                     IntakeBox();
                     boardAdjust = false;
-                    while (!LimitSwitch.isPressed()) {
+
                         SlideR.setPower(-0.3);
                         SlideL.setPower(-0.3);
-                        if(UpSlideBumper){
-                            break;
-                        }
-                    }
+
 
 
                 } else if (DownSlideBumper) {
