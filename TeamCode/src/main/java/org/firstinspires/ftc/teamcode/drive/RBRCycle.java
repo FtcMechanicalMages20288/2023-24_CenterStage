@@ -162,6 +162,7 @@ public class RBRCycle extends LinearOpMode {
         initDoubleVision();
         sleep(3000);
         CloseBox();
+        PixelPusher.setPosition(0.45);
 
 
 

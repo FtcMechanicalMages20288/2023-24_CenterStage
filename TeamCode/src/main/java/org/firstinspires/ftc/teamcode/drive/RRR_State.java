@@ -118,6 +118,7 @@ public class RRR_State extends LinearOpMode {
         initCode();
         initTfod();
         CloseBox();
+        PixelPusher.setPosition(0.45);
 
 
 
@@ -227,7 +228,7 @@ public class RRR_State extends LinearOpMode {
 
                 //goes to board
                 .turn(Math.toRadians(turn3_5+11))
-                .lineToLinearHeading(new Pose2d(x22Value+2,y22Value,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(-90)))
                 .build();
 
 
@@ -288,7 +289,7 @@ public class RRR_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-110);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -304,7 +305,7 @@ public class RRR_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-110);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -319,7 +320,7 @@ public class RRR_State extends LinearOpMode {
                 drive.followTrajectorySequence(pos1);
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-110);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);

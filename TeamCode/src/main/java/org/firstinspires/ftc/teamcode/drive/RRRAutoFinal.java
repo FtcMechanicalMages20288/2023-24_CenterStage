@@ -24,8 +24,8 @@ import java.util.List;
  */
 
 @Config
-@Disabled
 
+@Disabled
 @Autonomous(group = "RRR Final")
 public class RRRAutoFinal extends LinearOpMode {
 
@@ -123,6 +123,7 @@ public class RRRAutoFinal extends LinearOpMode {
         CloseBox();
 
 
+        PixelPusher.setPosition(0.45);
 
 
         Pose2d sP = new Pose2d(0,0,0);

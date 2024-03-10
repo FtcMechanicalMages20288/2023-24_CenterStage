@@ -158,6 +158,8 @@ public class RBR_State extends LinearOpMode {
         initDoubleVision();
         sleep(3000);
         CloseBox();
+        PixelPusher.setPosition(0.45);
+
 
 
 

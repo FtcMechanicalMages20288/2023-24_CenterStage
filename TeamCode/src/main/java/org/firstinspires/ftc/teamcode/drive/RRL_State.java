@@ -732,6 +732,7 @@ public class RRL_State extends LinearOpMode {
         brightDrive.setPower(-0.5);
     }
 
+    // GOTTA ADJUST THIS STRAFE RIGHT METHOD TO FIX BOARD ALIGNMENT
     public void strafeRight(){
         leftDrive.setPower(0.52);
         bleftDrive.setPower(-0.5);

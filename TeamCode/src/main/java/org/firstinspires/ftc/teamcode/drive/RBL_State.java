@@ -296,7 +296,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-80);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -312,7 +312,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-80);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -329,7 +329,7 @@ public class RBL_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime-80);
+                sleep(waitTime+100);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 @Config
-@Disabled
 
 @Autonomous(group = "RBR Final")
 public class StrafeFix extends LinearOpMode {
