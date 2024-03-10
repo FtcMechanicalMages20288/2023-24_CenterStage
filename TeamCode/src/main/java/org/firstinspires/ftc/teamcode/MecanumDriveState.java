@@ -283,6 +283,7 @@ public class MecanumDriveState extends OpMode {
         if(Pixels==2 && endTime < 85000){
             showPurple();
         }
+        /*
 
         if(endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2){
 
@@ -319,6 +320,8 @@ public class MecanumDriveState extends OpMode {
 
 
         }
+
+         */
 
         // CLAW ROTATION
 
@@ -393,17 +396,12 @@ public class MecanumDriveState extends OpMode {
 
         }
 
-
-
-
         //Drop Box on Board
         if(gamepad2.y){
             yPressed = true;
             BoardDropBox();
 
         }
-
-
 
 
 
@@ -425,8 +423,6 @@ public class MecanumDriveState extends OpMode {
 
 
         }
-
-
 
 
         //intake
@@ -454,9 +450,6 @@ public class MecanumDriveState extends OpMode {
             Drone.setPosition(0.55);
 
         }
-
-
-
 
         // Hanging / LeadScrew Binds
 
