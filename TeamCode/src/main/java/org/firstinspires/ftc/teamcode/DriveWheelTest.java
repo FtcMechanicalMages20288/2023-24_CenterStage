@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp(name = "DriveWheelTest", group = "TeleOp")
+@Disabled
+
 public class DriveWheelTest extends OpMode {
 
     private DcMotor right_drive, left_drive, back_right_drive, back_left_drive;

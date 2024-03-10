@@ -23,6 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "Mecanum Refined", group = "TeleOp")
+@Disabled
+
 
 public class MecanumRefined extends OpMode {
 

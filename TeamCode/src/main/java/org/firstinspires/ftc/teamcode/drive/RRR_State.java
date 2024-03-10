@@ -23,8 +23,8 @@ import java.util.List;
  */
 
 @Config
-@Autonomous(group = "TEST RED SIDE")
-public class TESTREDSIDE extends LinearOpMode {
+@Autonomous(group = "RRR_State")
+public class RRR_State extends LinearOpMode {
 
 
     int dropPos1;

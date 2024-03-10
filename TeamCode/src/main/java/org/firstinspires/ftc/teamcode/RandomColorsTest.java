@@ -3,10 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 //import com.w8wjb.ftc.AdafruitNeoDriver;
 
 import java.util.Random;
+@Disabled
 
 @Autonomous
 public class RandomColorsTest extends OpMode {

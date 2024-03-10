@@ -1,17 +1,15 @@
 package org.firstinspires.ftc.teamcode.drive;
 
-import android.util.Size;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -32,15 +30,13 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Config
-@Disabled
-
-@Autonomous(group = "RBR Final")
-public class RBRFinal extends LinearOpMode {
+@Autonomous(group = "RBR_State")
+public class RBR_State extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
     int dropPos3;
-    int finalDropPos = 3;
+    int finalDropPos;
 
     // private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     // private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -110,6 +106,11 @@ public class RBRFinal extends LinearOpMode {
 
 
 
+    private TouchSensor LimitSwitch;
+
+    private Servo Grabber;
+
+    private CRServo IntakeRoller;
 
 
 
@@ -128,16 +129,21 @@ public class RBRFinal extends LinearOpMode {
     public static int x2Value = 26;
     public static int y2Value = 4 ;
 
+    public static int pos2startx = 30;
+    public static int pos2starty = 2 ;
 
-    public static int x3Value = 23;
-    public static int y3Value = 5;
+    public static int strafecorrect = 8 ;
 
-    public static double x3Value2 = -22;
-    public static int y3Value2 = 34 ;
+    public static int fwdDistancep1 = 30;
+    public static int fwdDistancep2 = 50;
 
-    public static int bw = 10;
+    public static int cycleX = 30;
+    public static int cycleY = 30;
 
-    public static int turn3 = 110;
+
+
+
+    public static double DISTANCE = 8; // in
 
     public static int waitTime = 700;
     public static int waitTimev2 = 750;
@@ -157,15 +163,53 @@ public class RBRFinal extends LinearOpMode {
 
 
         Pose2d sP = new Pose2d(0,0,0);
-
-        Pose2d AprilAdjust = new Pose2d(0,0,0);
-
+        Pose2d eel = drive.getPoseEstimate();
         drive.setPoseEstimate(sP);
 
 
 
 
+        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
+                .lineToLinearHeading(new Pose2d(23, -14))
+                .addDisplacementMarker(() -> {
+                    ReleasePixel();
+                })
+                .addDisplacementMarker(() -> {
+                    sleep(500);
+                })
+                .back(9)
+                .strafeLeft(17)
+                .lineToLinearHeading( new Pose2d(48, 0.5))
+                .turn(Math.toRadians(84))
+
+                //.turn(Math.toRadians(-88))
+                .lineToConstantHeading(new Vector2d(55, 70))
+
+                .addDisplacementMarker(() -> {
+
+                    IntakeBox();
+                    SlidePower(slidePower);
+                    sleep(waitTime+250);
+                    HoldSlides();
+                    BoardDropBox();
+                    // sleep(waitTimev2);
+
+                })
+                .lineTo(new Vector2d(54, 75))
+                /* .addDisplacementMarker(() -> {
+                     OpenBox();
+                     sleep(1000);
+                     backwardRobot();
+                     sleep(500);
+                     stopRobot();
+                 })
+                 .waitSeconds(1.6)*/
+                //.turn(Math.toRadians(200))
+                //.turn(Math.toRadians(-15.5))
+
+
+                .build();
 
 
 
@@ -179,141 +223,88 @@ public class RBRFinal extends LinearOpMode {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(1500);
+                    sleep(500);
                 })
                 .back(8)
-                .back(7)
-                .turn(Math.toRadians(50))
+
                 //.lineTo(new Vector2d(18, 2))
-                .lineTo(new Vector2d(53, 2))
-                .turn(Math.toRadians(-40))
+                .lineToLinearHeading(new Pose2d(48, -2, Math.toRadians(85)))
+
                 //.turn(Math.toRadians(-88))
-                .lineTo(new Vector2d(53, 70))
-                //.turn(Math.toRadians(200))
-                .lineTo(new Vector2d(35, 70))
-                //.turn(Math.toRadians(-15.5))
-                .build();
+                .lineToConstantHeading(new Vector2d(55, 70))
 
-
-
-
-        TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-
-                .build();
-
-
-
-
-
-        TrajectorySequence pos1p3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
                 .addDisplacementMarker(() -> {
+
                     IntakeBox();
-                })
-                .strafeRight(15)
+                    SlidePower(slidePower);
+                    sleep(waitTime+250);
+                    HoldSlides();
+                    BoardDropBox();
+                    // sleep(waitTimev2);
 
+                })
+                .lineTo(new Vector2d(54, 75))
+                /*.addDisplacementMarker(() -> {
+                    OpenBox();
+                    sleep(1000);
+                    backwardRobot();
+                    sleep(500);
+                    stopRobot();
+                })
+                .waitSeconds(1.6)*/
+                //.turn(Math.toRadians(200))
+                //.turn(Math.toRadians(-15.5))
 
                 .build();
 
-        TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(x2Value, y2Value-5))
-                .addDisplacementMarker(() -> {
-                    ReleasePixel();
-                })
-                .addDisplacementMarker(() -> {
-                    sleep(1500);
-                })
-                .back(9)
-
-                .lineTo(new Vector2d(18, 2))
-                .lineTo(new Vector2d(50, 2))
-                .turn(Math.toRadians(-93))
-                .lineTo(new Vector2d(52.5, 70))
-                .lineTo(new Vector2d(45,70))
-                .turn(Math.toRadians(200))
-                .lineTo(new Vector2d(40, 80))
-                .turn(Math.toRadians(-16.5))
-                /*.lineTo(new Vector2d(11.24, 37.22))
-                .lineTo(new Vector2d(54.54, 35.55))*/
-
-
-                /*.lineTo(new Vector2d(x3Value, y3Value))
-                .turn(Math.toRadians(-90))
-                .back(3)
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(x3Value2, y3Value2))*/
-                .build();
-
-        TrajectorySequence traj2v3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-
-                .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x3Value+1, y3Value))
+                .lineToLinearHeading(new Pose2d(pos2startx, pos2starty))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(1500);
+                    sleep(500);
                 })
-                .back(7)
-                .lineToLinearHeading(new Pose2d(30,-14, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(53,-14, Math.toRadians(70)))
-                //.turn(Math.toRadians(90))
-                //.lineTo(new Vector2d(53, 80))
-                //.lineToLinearHeading(new Pose2d(53,80, Math.toRadians(70)))
-                //.turn(Math.toRadians(200))
-                .forward(90)
-
-                .build();
+                .back(4)
+                .turn(Math.toRadians(88))
 
 
+                .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
+                .waitSeconds(0) // Change depending on teammate speed
+                .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
+                .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
+                    IntakeBox();
+                    SlidePower(slidePower);
+                    sleep(waitTime+180);
+                    HoldSlides();
+                    BoardDropBox();
+                })
 
-        TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(1, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .waitSeconds(0.3)
+                //.strafeRight(1.5)
+
+                .forward(14,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                //.lineTo(new Vector2d(1,1))
-
-
-                .build();
-
-        TrajectorySequence traj3v3 = drive.trajectorySequenceBuilder(traj2v3.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
 
 
 
 
                 .build();
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -333,15 +324,26 @@ public class RBRFinal extends LinearOpMode {
         waitForStart();
         for (int i = 0; i <  10; i++) {
             telemetryTfod();
-            telemetry.addData(" Pixel Position: ", finalDropPos);
-            telemetry.update();
+
         }
-        //finalDropPos = 3;
-        visionPortal.setProcessorEnabled(tfod, false);
-        visionPortal.setProcessorEnabled(aprilTag, true);
+        if (dropPos1 > dropPos2 && dropPos1 > dropPos3) {
+            finalDropPos = 1;
+
+        } else if (dropPos2 > dropPos1 && dropPos2 > dropPos3) {
+            finalDropPos = 2;
+        } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
+            finalDropPos = 3;
+        } else {
+            finalDropPos = 3;
+            telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
+        }
         telemetry.addData("Final Pixel Position: ", finalDropPos);
         telemetry.update();
-        sleep(3000);
+
+        visionPortal.setProcessorEnabled(tfod, false);
+        visionPortal.setProcessorEnabled(aprilTag, true);
+
+        sleep(500);
         setManualExposure(6, 250);
         targetFound = false;// Desired turning power/speed (-1 to +1) +ve is CounterClockwise
 
@@ -356,12 +358,7 @@ public class RBRFinal extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos1);
 
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
+
 
                 DESIRED_TAG_ID = 1;
                 strafeLeft();
@@ -410,10 +407,11 @@ public class RBRFinal extends LinearOpMode {
 
                 }
 
+
                 stopRobot();
 
                 forwardRobot();
-                sleep(1250);
+                sleep(600);
                 stopRobot();
 
                 OpenBox();
@@ -421,9 +419,10 @@ public class RBRFinal extends LinearOpMode {
 
                 backwardRobot();
                 sleep(300);
-                IntakeBox();
-                sleep(250);
                 stopRobot();
+                IntakeBox();
+
+
 
             }
 
@@ -431,74 +430,13 @@ public class RBRFinal extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos2);
 
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
-
-                DESIRED_TAG_ID = 2;
-                strafeLeft();
-
-
-                while(aprilAdjust) {
-                    targetFound = false;
-                    desiredTag  = null;
-
-                    // Step through the list of detected tags and look for a matching tag
-                    List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-                    for (AprilTagDetection detection : currentDetections) {
-                        // Look to see if we have size info on this tag.
-                        if (detection.metadata != null) {
-                            //  Check to see if we want to track towards this tag.
-                            if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                                // Yes, we want to use this tag.
-                                targetFound = true;
-                                desiredTag = detection;
-                                break;  // don't look any further.
-                            } else {
-                                // This tag is in the library, but we do not want to track it right now.
-                                telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                            }
-                        } else {
-                            // This tag is NOT in the library, so we don't have enough information to track to it.
-                            telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-                        }
-                    }
-
-                    // Tell the driver what we see, and what to do.
-                    if (targetFound) {
-
-                        strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -15){
-                            aprilAdjust = false;
-                        }
-
-                    }
-                    telemetry.update();
-
-                    // Apply desired axes motions to the drivetrain.
-                    // moveRobot(drive, turn);
-                    sleep(10);
-
-
-                }
-
-                stopRobot();
-
-                forwardRobot();
-                sleep(1000);
-                stopRobot();
-
                 OpenBox();
-                sleep(waitTimev3);
-
+                sleep(1000);
                 backwardRobot();
-                sleep(300);
-                IntakeBox();
-                sleep(250);
+                sleep(500);
                 stopRobot();
+                IntakeBox();
+
 
             }
             if(finalDropPos == 3) {
@@ -506,12 +444,6 @@ public class RBRFinal extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos3);
 
-                IntakeBox();
-                SlidePower(slidePower);
-                sleep(waitTime);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
 
                 DESIRED_TAG_ID = 3;
                 strafeLeft();
@@ -575,11 +507,9 @@ public class RBRFinal extends LinearOpMode {
                 sleep(250);
                 stopRobot();
 
-
             }
 
         }
-
 
 
 
@@ -588,6 +518,7 @@ public class RBRFinal extends LinearOpMode {
         SlideR = hardwareMap.dcMotor.get("SlideR");
         SlideL = hardwareMap.dcMotor.get("SlideL");
 
+        LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
 
         bleftDrive  = hardwareMap.get(DcMotor.class, "rm");
         brightDrive = hardwareMap.get(DcMotor.class, "lm");
@@ -604,6 +535,12 @@ public class RBRFinal extends LinearOpMode {
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         BucketR.setDirection(Servo.Direction.REVERSE);
+
+
+        Intake = hardwareMap.get(DcMotor.class, "Intake");
+
+        Grabber = hardwareMap.get(Servo.class, "Grab");
+        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
     }
     private void SlidePower(double p){
         SlideR.setPower(p);
@@ -692,9 +629,9 @@ public class RBRFinal extends LinearOpMode {
     }   // end initDoubleVision()
 
     public void strafeLeft(){
-        leftDrive.setPower(-0.5);
+        leftDrive.setPower(-0.52);
         bleftDrive.setPower(0.5);
-        rightDrive.setPower(0.5);
+        rightDrive.setPower(0.54);
         brightDrive.setPower(-0.5);
     }
 
@@ -706,18 +643,18 @@ public class RBRFinal extends LinearOpMode {
     }
 
     public void forwardRobot(){
-        leftDrive.setPower(0.25);
-        bleftDrive.setPower(0.25);
-        rightDrive.setPower(0.25);
-        brightDrive.setPower(0.25);
+        leftDrive.setPower(0.34);
+        bleftDrive.setPower(0.34);
+        rightDrive.setPower(0.34);
+        brightDrive.setPower(0.34);
     }
 
     public void backwardRobot(){
 
-            leftDrive.setPower(-0.25);
-            bleftDrive.setPower(-0.25);
-            rightDrive.setPower(-0.25);
-            brightDrive.setPower(-0.25);
+        leftDrive.setPower(-0.34);
+        bleftDrive.setPower(-0.34);
+        rightDrive.setPower(-0.34);
+        brightDrive.setPower(-0.34);
     }
 
 
@@ -775,26 +712,24 @@ public class RBRFinal extends LinearOpMode {
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y);
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+            //telemetry.addData("X value: ", x);
 
-            if(x>=0 && x<=300){
-                finalDropPos = 1;
+
+            if(x>=0 && x<=200){
+                dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=301 && x<=891){
-                finalDropPos = 2;
+            if(x>=201 && x<=700){
+                dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=891 && x<=900){
-                finalDropPos = 3;
+            if(x>=701 && x<=900){
+                dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
-            else{
-                finalDropPos =3;
-            }
-
         }   // end for() loop
 
-    }   // end method telemetryTfod()
+    }   // end method
 
     public void moveRobot(double x, double yaw) {
         // Calculate left and right wheel powers.
@@ -815,7 +750,21 @@ public class RBRFinal extends LinearOpMode {
         brightDrive.setPower(rightPower);
     }
 
-    }   // end method telemetryTfod()
+    private void useGrabber(){
+        Grabber.setPosition(0.9);
+    }
+
+    private void midGrabber(){
+        Grabber.setPosition(0.7);
+    }
+
+    private void setGrabber(){
+        Grabber.setPosition(0.35);
+    }
+
+}   // end method telemetryTfod()
+
+
 
 
 

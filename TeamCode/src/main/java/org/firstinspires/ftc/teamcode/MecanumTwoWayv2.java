@@ -20,6 +20,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @TeleOp(name = "MecanumSlow", group = "TeleOp")
+@Disabled
+
 
 public class MecanumTwoWayv2 extends OpMode {
 

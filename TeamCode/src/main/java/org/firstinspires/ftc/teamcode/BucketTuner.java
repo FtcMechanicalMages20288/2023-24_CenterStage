@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @TeleOp(name = "ServoTuner", group = "TeleOp")
+@Disabled
+
 public class BucketTuner extends OpMode{
 //drop 0.2
 //Intake 0.5

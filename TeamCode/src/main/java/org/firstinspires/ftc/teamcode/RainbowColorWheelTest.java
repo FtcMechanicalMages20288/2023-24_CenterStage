@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 //import com.w8wjb.ftc.AdafruitNeoDriver;
+@Disabled
 
 @Autonomous
 public class RainbowColorWheelTest extends OpMode {
+
 
     private static final int NUM_PIXELS = 30;
 

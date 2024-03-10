@@ -88,6 +88,8 @@ import java.util.concurrent.TimeUnit;
 
 
 @TeleOp(name="Strafe 2 April", group = "Concept")
+@Disabled
+
 public class Strafe2April extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.

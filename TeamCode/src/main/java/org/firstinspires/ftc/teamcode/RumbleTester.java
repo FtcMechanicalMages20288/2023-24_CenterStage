@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 @TeleOp(name="Rumble Testing", group ="OpMode")
+@Disabled
+
 public class RumbleTester extends LinearOpMode {
     Gamepad.RumbleEffect customRumbleEffect;    // Use to build a custom rumble sequence.
     @Override

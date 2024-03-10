@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
@@ -11,6 +12,8 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 
 
 @Autonomous(name = "FirstYearAuto", group = "Auto")
+@Disabled
+
 public class FirstYearAuto extends LinearOpMode {
     public DcMotor right_drive, left_drive, back_right_drive, back_left_drive;
     //Slide Motors
