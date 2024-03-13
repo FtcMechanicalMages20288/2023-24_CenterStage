@@ -289,7 +289,7 @@ public class RRR_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+220);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -305,7 +305,7 @@ public class RRR_State extends LinearOpMode {
 
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+220);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);
@@ -320,7 +320,7 @@ public class RRR_State extends LinearOpMode {
                 drive.followTrajectorySequence(pos1);
                 IntakeBox();
                 SlidePower(slidePower);
-                sleep(waitTime+100);
+                sleep(waitTime+220);
                 HoldSlides();
                 BoardDropBox();
                 sleep(waitTimev2);

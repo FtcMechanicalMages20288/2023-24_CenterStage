@@ -117,10 +117,10 @@ public class MecanumLinear extends LinearOpMode {
             //Movement Controller
 
 
-            right_drivePower = gamepad1.right_stick_y * -1;
+            right_drivePower = gamepad1.right_stick_y ;
             back_left_drivePower = gamepad1.left_stick_y * -1;
             left_drivePower = gamepad1.left_stick_y * -1;
-            back_right_drivePower = gamepad1.right_stick_y * -1;
+            back_right_drivePower = gamepad1.right_stick_y;
 
 
             left_drive.setPower(left_drivePower);

@@ -16,12 +16,12 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-@Disabled
-@TeleOp(name = "LeadScrewTest", group = "TeleOp")
+
+@TeleOp(name = "SlideToPos", group = "TeleOp")
 
 public class LeadScrewTest extends OpMode {
 
-
+    static final double ticks = 537.7;
     //DriveTrain Motors
     private DcMotor right_drive, left_drive, back_right_drive, back_left_drive;
     //Slide Motors
@@ -29,28 +29,8 @@ public class LeadScrewTest extends OpMode {
 
     private Servo BucketHold, BucketR, BucketL, Drone;
 
-    private DcMotor LeadScrew;
-    private CRServo Hook;
-
-
-    //limitswitch
     private TouchSensor LimitSwitch;
-    //BoxColorSensor
-    private NormalizedColorSensor Color;
 
-    int Pixels = 0;
-
-    boolean IntakeDelay = true;
-    boolean AutoHold = true;
-    boolean Rumbled = false;
-    boolean frontDrive = true;
-    boolean IntakeReady = false;
-
-    //Motor Power
-    double left_drivePower;
-    double right_drivePower;
-    double back_right_drivePower;
-    double back_left_drivePower;
 
 
     @Override
@@ -64,7 +44,7 @@ public class LeadScrewTest extends OpMode {
         right_drive.setDirection(DcMotor.Direction.REVERSE);
         back_right_drive.setDirection(DcMotor.Direction.REVERSE);
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
-        Color = hardwareMap.get(NormalizedColorSensor.class, "Color");
+
         BucketL = hardwareMap.get(Servo.class, "BucketL");
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
@@ -73,9 +53,6 @@ public class LeadScrewTest extends OpMode {
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-
-        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
-        Hook = hardwareMap.get(CRServo.class, "Hook");
 
 
 
@@ -93,30 +70,35 @@ public class LeadScrewTest extends OpMode {
 
     @Override
     public void loop() {
-        if(gamepad2.dpad_right) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(1);
+      if(gamepad1.a ){
+          SlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+          SlideR.setTargetPosition((int)(ticks/2));
+          SlideR.setPower(0.5);
+          SlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        }
-        else if (gamepad2.dpad_left) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(-1);
+          while (SlideR.isBusy()){
+              SlideL.setPower(0.5);
+          }
 
-        }
-        else{
-            LeadScrew.setPower(0);
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
+              SlideL.setPower(0.3);
+              SlideR.setPower(0.3);
 
-        if(gamepad2.dpad_down){
-            Hook.setPower(0.5);
-        }
-        else if(gamepad2.dpad_up){
-            Hook.setPower(-0.5);
+      }
+      if(gamepad1.b){
+          SlideR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+          SlideL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+          SlideR.setTargetPosition((int)(ticks/2));
+          SlideL.setTargetPosition((int)(ticks/2));
+          SlideR.setPower(0.5);
+          SlideL.setPower(0.5);
+          SlideR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+          SlideL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         while (SlideR.isBusy() && SlideL.isBusy()){
 
-        }
-        else{
-            Hook.setPower(0);
-        }
+          }
+
+          SlideR.setPower(0);
+          SlideL.setPower(0);
+      }
     }
 }

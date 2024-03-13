@@ -2,9 +2,8 @@ repositories {
     mavenCentral()
     google() // Needed for androidx
     maven { url = 'https://maven.brott.dev/' } //RoadRunner
-    maven {
-        url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/' //Adafruit
-    }
+    maven {url = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'} //Adafruit
+    maven {url = 'https://maven.brott.dev/'}//ftclib
 }
 
 dependencies {
