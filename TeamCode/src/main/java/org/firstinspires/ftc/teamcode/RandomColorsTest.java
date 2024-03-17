@@ -5,7 +5,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-//import com.w8wjb.ftc.AdafruitNeoDriver;
+import com.w8wjb.ftc.AdafruitNeoDriver;
 
 import java.util.Random;
 @Disabled

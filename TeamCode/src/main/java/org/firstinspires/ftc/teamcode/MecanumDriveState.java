@@ -273,15 +273,15 @@ public class MecanumDriveState extends OpMode {
 
 
         if(Pixels == 0 && endTime < 85000){
-            showRed();
+            showPurple();
         }
 
         if(Pixels == 1 && endTime < 85000){
-            showGreen();
+            showRed();
         }
 
         if(Pixels==2 && endTime < 85000){
-            showPurple();
+            showGreen();
         }
         /*
 
@@ -541,7 +541,7 @@ public class MecanumDriveState extends OpMode {
         int[] colors = new int[NUM_PIXELS];
 
         for (int i=0; i < colors.length; i++) {
-            int color = android.graphics.Color.HSVToColor(new float[] {6 , 100, 66});
+            int color = android.graphics.Color.HSVToColor(new float[] {255 , 1, 1});
             colors[i] = color;
         }
 
