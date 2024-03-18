@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @TeleOp(name = "ServoTuner", group = "TeleOp")
-@Disabled
+
 
 public class BucketTuner extends OpMode{
 //drop 0.2
@@ -16,7 +16,7 @@ public class BucketTuner extends OpMode{
 
     double tempR = 0;
     double tempL = 0;
-    double tempHold = 0;
+    double tempHold = 0.5;
 
     private Servo BucketHold, BucketR, BucketL, HangR, HangL;
     @Override
@@ -29,24 +29,25 @@ public class BucketTuner extends OpMode{
         HangL = hardwareMap.servo.get("HangL");
 
 
-        BucketL.setPosition(0.5);
-        BucketR.setPosition(0.4);
+      /*  BucketL.setPosition(0.5);
+        BucketR.setPosition(0.4); */
         tempR = 0.46;
         tempL = 0.5;
-        HangR.setPosition(0.5);
+       /* HangR.setPosition(0.5);
         HangL.setPosition(0.5);
         HangR.setDirection((Servo.Direction.REVERSE));
-        BucketR.setDirection(Servo.Direction.REVERSE);
+        BucketR.setDirection(Servo.Direction.REVERSE); */
+        BucketHold.setPosition(0.5);
 
     }
 
     @Override
     public void loop() {
         if(gamepad2.a){
-            BucketR.setPosition(tempR + 0.05);
+            /*BucketR.setPosition(tempR + 0.05);
             BucketL.setPosition(tempL + 0.05);
             tempR =  BucketR.getPosition();
-            tempL =  BucketL.getPosition();
+            tempL =  BucketL.getPosition();*/
             telemetry.addData("Servo PosL", BucketL.getPosition());
             telemetry.addData("Servo PosR", BucketR.getPosition());
             telemetry.update();
@@ -54,10 +55,10 @@ public class BucketTuner extends OpMode{
 
         }
         if(gamepad2.b) {
-            BucketR.setPosition(tempR - 0.05);
+           /* BucketR.setPosition(tempR - 0.05);
             BucketL.setPosition(tempL - 0.05);
             tempR=  BucketR.getPosition();
-            tempL =  BucketL.getPosition();
+            tempL =  BucketL.getPosition();*/
             telemetry.addData("Servo PosL", BucketL.getPosition());
             telemetry.addData("Servo PosR", BucketR.getPosition());
             telemetry.update();
