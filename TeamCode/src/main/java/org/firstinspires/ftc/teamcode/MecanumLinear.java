@@ -27,7 +27,7 @@ public class MecanumLinear extends LinearOpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL, Grabber;
-    private CRServo IntakeRoller;
+    private CRServo IntakeRoller, GrabRoller;
 
 
 
@@ -86,7 +86,9 @@ public class MecanumLinear extends LinearOpMode {
         }
         waitForStart();
 
-        while(opModeIsActive()){
+        while(opModeIsActive()) {
+
+
 
             if (LimitSwitch.isPressed()) {
                 telemetry.addData("Intake", "Ready");
@@ -100,8 +102,6 @@ public class MecanumLinear extends LinearOpMode {
                 Rumbled = false;
                 gamepad2.stopRumble();
                 telemetry.addData("Intake", " Not Ready");
-                ;
-                ;
             }
 
             telemetry.addData("ServoR", HangR.getPosition());
@@ -327,6 +327,14 @@ public class MecanumLinear extends LinearOpMode {
 
 
             }
+            if (gamepad2.x) {
+                //GrabRoller.setPower(-1);
+                Intake.setPower(1); // was 0.9 until 3/1
+                IntakeRoller.setPower(-0.8);
+            }
+            else {
+                //GrabRoller.setPower(0);
+            }
 
 
             //intake
@@ -516,12 +524,12 @@ public class MecanumLinear extends LinearOpMode {
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
+        GrabRoller = hardwareMap.get(CRServo.class, "GrabRoller");
 
 
 
 
-
-        Grabber = hardwareMap.get(Servo.class, "Grab");
+        // Grabber = hardwareMap.get(Servo.class, "Grab");
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
@@ -544,7 +552,7 @@ public class MecanumLinear extends LinearOpMode {
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        GrabRoller.setPower(0);
         HangR.setPosition(0.5); // correct
         HangL.setPosition(0.1);
         // HangR.setPosition(0.5);
