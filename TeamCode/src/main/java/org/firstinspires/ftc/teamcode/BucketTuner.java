@@ -79,6 +79,19 @@ public class BucketTuner extends OpMode{
             sleep(1000);
         }
 
+        if(gamepad1.a){
+            BucketHold.setPosition(0.5);
+        }
+        if(gamepad1.b){
+            BucketHold.setPosition(0.55);
+        }
+        if(gamepad1.x){
+            BucketHold.setPosition(0.5);
+            sleep(25);
+            BucketHold.setPosition(0.65);
+
+        }
+
     }
 }
 
