@@ -61,7 +61,7 @@ public class MecanumDriveNBE extends OpMode {
 
 
 
-    private static final int NUM_PIXELS = 60;
+    private static final int NUM_PIXELS = 100;
 
     AdafruitNeoDriver neopixels;
     int Pixels = 0;
@@ -487,7 +487,7 @@ public class MecanumDriveNBE extends OpMode {
         int[] colors = new int[NUM_PIXELS];
 
         for (int i=0; i < colors.length; i++) {
-            int color = android.graphics.Color.HSVToColor(new float[] {6 , 100, 66});
+            int color = android.graphics.Color.HSVToColor(new float[] {255 , 1, 1});
             colors[i] = color;
         }
 

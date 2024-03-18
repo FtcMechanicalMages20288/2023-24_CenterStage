@@ -162,7 +162,6 @@ public class RBRCycle extends LinearOpMode {
         initDoubleVision();
         sleep(3000);
         CloseBox();
-        PixelPusher.setPosition(0.45);
 
 
 
@@ -176,7 +175,7 @@ public class RBRCycle extends LinearOpMode {
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(23, -13.5))
+                .lineToLinearHeading(new Pose2d(23, -14.2))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
@@ -184,24 +183,23 @@ public class RBRCycle extends LinearOpMode {
                     sleep(500);
                 })
                 .back(9)
-                .strafeLeft(16.3)
-                .lineToLinearHeading( new Pose2d(48, 0.5))
-                .turn(Math.toRadians(88))
+                .strafeLeft(17)
+                .lineToLinearHeading(new Pose2d(48, 0.5, Math.toRadians(84)))
 
                 //.turn(Math.toRadians(-88))
-                .lineToConstantHeading(new Vector2d(50, 70))
+                .lineToConstantHeading(new Vector2d(55, 70))
 
                 .addDisplacementMarker(() -> {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+250);
+                    sleep(waitTime+100);
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
 
                 })
-                .lineTo(new Vector2d(50, 75))
+                .lineTo(new Vector2d(54, 75))
                /* .addDisplacementMarker(() -> {
                     OpenBox();
                     sleep(1000);
@@ -242,13 +240,13 @@ public class RBRCycle extends LinearOpMode {
 
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+280);
+                    sleep(waitTime+175);
                     HoldSlides();
                     BoardDropBox();
                     // sleep(waitTimev2);
 
                 })
-                .lineTo(new Vector2d(50, 75))
+                .lineTo(new Vector2d(54, 75))
                 /*.addDisplacementMarker(() -> {
                     OpenBox();
                     sleep(1000);
@@ -277,21 +275,20 @@ public class RBRCycle extends LinearOpMode {
 
 
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
-                .waitSeconds(2) // Change depending on teammate speed
-                .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
-                .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
+                .waitSeconds(0) // Change depending on teammate speed
+                .lineToLinearHeading(new Pose2d(26.4, 75, Math.toRadians(88)))
+                .addDisplacementMarker(() -> {
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+180);
+                    sleep(waitTime+95);
                     HoldSlides();
                     BoardDropBox();
                 })
+                .waitSeconds(0.8)
+                .strafeRight(3)
 
-                .waitSeconds(0.3)
-                //.strafeRight(1.5)
-
-                .forward(14,
-                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(13,
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
@@ -416,7 +413,7 @@ public class RBRCycle extends LinearOpMode {
                 stopRobot();
 
                 forwardRobot();
-                sleep(800);
+                sleep(600);
                 stopRobot();
 
                 OpenBox();
@@ -424,10 +421,8 @@ public class RBRCycle extends LinearOpMode {
 
                 backwardRobot();
                 sleep(300);
-                IntakeBox();
-                sleep(300);
                 stopRobot();
-
+                IntakeBox();
 
 
 
@@ -436,9 +431,8 @@ public class RBRCycle extends LinearOpMode {
                 eel = new Pose2d(0,0,0); //drive.getPoseEstimate();
                 drive.setPoseEstimate(eel);
 
-
                 TrajectorySequence splinetostack = drive.trajectorySequenceBuilder(eel)
-                        // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
+                       // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
                         .addDisplacementMarker( () -> {
 
                             while (!LimitSwitch.isPressed()){
@@ -447,14 +441,11 @@ public class RBRCycle extends LinearOpMode {
                             }
                             SlideR.setPower(0);
                             SlideL.setPower(0);
-                            midGrabber();
                         })
 
+                        .lineToConstantHeading(new Vector2d(-29,-31))
 
-                        .lineToLinearHeading(new Pose2d(-22,-40, Math.toRadians(8)))
-
-                        .lineToLinearHeading(new Pose2d(-103.5,-40, Math.toRadians(8)))
-
+                        .back(75.5)
 
                         .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
@@ -469,11 +460,14 @@ public class RBRCycle extends LinearOpMode {
                         .build();
                 TrajectorySequence grabp1 = drive.trajectorySequenceBuilder(splinetostack.end())
 
-
-
-
-                        .forward(15,
+                        .forward(DISTANCE+3,
                                 SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                        )
+
+                        .back(DISTANCE+6,
+                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                         )
@@ -488,37 +482,24 @@ public class RBRCycle extends LinearOpMode {
                         })
 
 
-                        .back(DISTANCE+6,
-                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                        )
-
-
-
-
-                        .lineTo(new Vector2d(0,-35))
-                        .addSpatialMarker( new Vector2d(-60,35), () -> {
+                        .forward(105)
+                        .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
 
                             // Run your action in here!
                             setGrabber();
-                            Intake.setPower(0);
-                            IntakeRoller.setPower(0);
+                            Intake.setPower(-1);
+                            IntakeRoller.setPower(0.8);
 
                         })
 
 
 
 
-
                         .build();
-                telemetry.addData("Got here???", "?");
-                telemetry.update();
+
                 drive.followTrajectorySequence(splinetostack);
-                telemetry.addData("Got here???", "2");
-                telemetry.update();
-                //  drive.followTrajectorySequence(boardtostack);
+
 
                 drive.followTrajectorySequence(grabp1);
 
@@ -552,13 +533,12 @@ public class RBRCycle extends LinearOpMode {
                             }
                             SlideR.setPower(0);
                             SlideL.setPower(0);
-                            midGrabber();
                         })
 
 
-                        .lineToConstantHeading(new Vector2d(-29,-22))
+                        .lineToConstantHeading(new Vector2d(-29,-21))
 
-                        .lineToLinearHeading(new Pose2d(-103.5,-21, Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(-100,-18, Math.toRadians(0)))
 
 
                         .addDisplacementMarker( () -> {
@@ -593,26 +573,32 @@ public class RBRCycle extends LinearOpMode {
                         })
 
 
-                        .back(DISTANCE+6,
+                        .back(DISTANCE+3,
                                 SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                         )
-
-
-
-
-                        .lineTo(new Vector2d(0,-23))
-                        .addSpatialMarker( new Vector2d(-60,21), () -> {
+                        .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
 
                             // Run your action in here!
                             setGrabber();
-                            Intake.setPower(0);
-                            IntakeRoller.setPower(0);
+                            Intake.setPower(1);
+                            IntakeRoller.setPower(-0.8);
 
                         })
 
+
+
+                        .lineTo(new Vector2d(0,-30))
+                        .addDisplacementMarker( () -> {
+                            // This marker runs 20 inches into the trajectory
+
+                            // Run your action in here!
+                            Intake.setPower(-0.6);
+                            IntakeRoller.setPower(0.8);
+
+                        })
 
 
 
@@ -668,7 +654,7 @@ public class RBRCycle extends LinearOpMode {
                     if (targetFound) {
 
                         strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -6){
+                        if(desiredTag.ftcPose.bearing < -10){
                             aprilAdjust = false;
                         }
 
@@ -706,36 +692,21 @@ public class RBRCycle extends LinearOpMode {
                 TrajectorySequence splinetostack = drive.trajectorySequenceBuilder(eel)
                         // .splineToConstantHeading(new Vector2d(60, -20), Math.toRadians(69))
                         .addDisplacementMarker( () -> {
-                            while (!LimitSwitch.isPressed()){
+                            if (!LimitSwitch.isPressed()){
                                 SlideR.setPower(-0.3);
                                 SlideL.setPower(-0.3);
+                            } else {
+                                SlideR.setPower(0);
+                                SlideL.setPower(0);
                             }
-                            SlideR.setPower(0);
-                            SlideL.setPower(0);
-                            midGrabber();
                         })
 
-                        .lineToLinearHeading(new Pose2d(-26,-25.3, Math.toRadians(0)))
+                        .lineToLinearHeading(new Pose2d(-22,-23, Math.toRadians(2)))
 
-
-                        .lineToConstantHeading(new Vector2d(-100,-25.3))
-
-                        .strafeLeft(2)
-
-
-
-
-
-
-
-
-                        .build();
-
-
-                TrajectorySequence grabp1 = drive.trajectorySequenceBuilder(splinetostack.end())
+                        .lineToLinearHeading(new Pose2d(-102,-23, Math.toRadians(2)))
 
                         .addDisplacementMarker( () -> {
-
+                            // This marker runs 20 inches into the trajectory
 
                             // Run your action in here!
                             IntakeBox();
@@ -744,8 +715,17 @@ public class RBRCycle extends LinearOpMode {
 
                         })
 
+                        .build();
+                TrajectorySequence grabp1 = drive.trajectorySequenceBuilder(splinetostack.end())
+
                         .forward(DISTANCE+6,
                                 SampleMecanumDrive.getVelocityConstraint(20, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                        )
+
+                        .back(DISTANCE+6,
+                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                         )
@@ -758,19 +738,14 @@ public class RBRCycle extends LinearOpMode {
                             IntakeRoller.setPower(-0.8);
 
                         })
+                        .waitSeconds(1)
 
-                        .back(DISTANCE+6,
-                                SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                        )
-
-
-                        .lineToConstantHeading(new Vector2d(-5,-35))
+                        .forward(105)
                         .addDisplacementMarker( () -> {
                             // This marker runs 20 inches into the trajectory
 
                             // Run your action in here!
+                            setGrabber();
                             Intake.setPower(-1);
                             IntakeRoller.setPower(0.8);
 
@@ -845,8 +820,8 @@ public class RBRCycle extends LinearOpMode {
         BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.3);
-        SlideL.setPower(0.3);
+        SlideR.setPower(0.1);
+        SlideL.setPower(0.1);
     }
     private void StopSlides(){
         SlideR.setPower(0);
@@ -1030,11 +1005,7 @@ public class RBRCycle extends LinearOpMode {
     }
 
     private void useGrabber(){
-        Grabber.setPosition(0.9);
-    }
-
-    private void midGrabber(){
-        Grabber.setPosition(0.7);
+        Grabber.setPosition(0.8);
     }
 
     private void setGrabber(){
