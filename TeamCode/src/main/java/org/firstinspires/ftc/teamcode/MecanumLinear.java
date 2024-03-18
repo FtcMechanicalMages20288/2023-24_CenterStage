@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static android.os.SystemClock.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -41,6 +43,7 @@ public class MecanumLinear extends LinearOpMode {
     private NormalizedColorSensor Color;
 
     long startTime = System.currentTimeMillis();
+
 
 
     double left_drivePower;
@@ -317,13 +320,14 @@ public class MecanumLinear extends LinearOpMode {
 
             // close
             if (gamepad2.right_trigger > 0.3 && yPressed) {
-                OpenBox();
+                dropBox();
+
                 boardAdjust = true;
                 Pixels = 0;
                 yPressed = false;
 
             } else if (gamepad2.right_trigger > 0.3) {
-                OpenBox();
+                dropBox();
 
 
             }
@@ -396,11 +400,21 @@ public class MecanumLinear extends LinearOpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0); //close
+        //BucketHold.setPosition(0); //close
+        BucketHold.setPosition(0.65);
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.7); //close
+      //  BucketHold.setPosition(0.7); //close
 
+
+
+        BucketHold.setPosition(0.55);
+
+    }
+    private void dropBox(){
+        BucketHold.setPosition(0.5);
+        sleep(100);
+        BucketHold.setPosition(0.65);
     }
 
 
@@ -525,8 +539,7 @@ public class MecanumLinear extends LinearOpMode {
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
-        HangR = hardwareMap.servo.get("HangR");
-        HangL = hardwareMap.servo.get("HangL");
+
 
 
 
