@@ -320,14 +320,14 @@ public class MecanumLinear extends LinearOpMode {
 
             // close
             if (gamepad2.right_trigger > 0.3 && yPressed) {
-                dropBox();
+                OpenBox();
 
                 boardAdjust = true;
                 Pixels = 0;
                 yPressed = false;
 
             } else if (gamepad2.right_trigger > 0.3) {
-                dropBox();
+                OpenBox();
 
 
             }
@@ -398,8 +398,19 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
+    private void CloseBox() {
+        BucketHold.setPosition(0); //close
+    }
 
-    private void CloseBox(){
+    private void OpenBox(){
+         BucketHold.setPosition(0.7); //close
+
+
+
+
+
+    }
+    /*private void CloseBox(){
         //BucketHold.setPosition(0); //close
         BucketHold.setPosition(0.65);
     }
@@ -410,7 +421,7 @@ public class MecanumLinear extends LinearOpMode {
 
         BucketHold.setPosition(0.55);
 
-    }
+    }*/
     private void dropBox(){
         BucketHold.setPosition(0.5);
         sleep(100);
@@ -418,20 +429,15 @@ public class MecanumLinear extends LinearOpMode {
     }
 
 
-    private void useGrabber(){
-        Grabber.setPosition(0.7);
-    }
 
-    private void setGrabber(){
-        Grabber.setPosition(0.35);
-    }
+
     private void BoardDropBox(){
         BucketR.setPosition(0.23);
         BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.35);
-        SlideL.setPower(0.35);
+        SlideR.setPower(0.3);
+        SlideL.setPower(0.3);
     }
     private void StopSlides(){
         SlideR.setPower(0);
@@ -535,7 +541,6 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-        Grabber = hardwareMap.get(Servo.class, "Grab");
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
