@@ -29,7 +29,7 @@ public class MecanumLinear extends LinearOpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone, HangR, HangL, Grabber;
-    private CRServo IntakeRoller;
+    private CRServo IntakeRoller, GrabRoller;
 
 
 
@@ -53,7 +53,7 @@ public class MecanumLinear extends LinearOpMode {
 
     int Pixels = 0;
 
-    private static final int NUM_PIXELS = 60;
+    public static final int NUM_PIXELS = 60;
 
     AdafruitNeoDriver neopixels;
 
@@ -89,7 +89,9 @@ public class MecanumLinear extends LinearOpMode {
         }
         waitForStart();
 
-        while(opModeIsActive()){
+        while(opModeIsActive()) {
+
+
 
             if (LimitSwitch.isPressed()) {
                 telemetry.addData("Intake", "Ready");
@@ -103,8 +105,6 @@ public class MecanumLinear extends LinearOpMode {
                 Rumbled = false;
                 gamepad2.stopRumble();
                 telemetry.addData("Intake", " Not Ready");
-                ;
-                ;
             }
 
             telemetry.addData("ServoR", HangR.getPosition());
@@ -320,16 +320,24 @@ public class MecanumLinear extends LinearOpMode {
 
             // close
             if (gamepad2.right_trigger > 0.3 && yPressed) {
-                OpenBox();
+                dropBox();
 
                 boardAdjust = true;
                 Pixels = 0;
                 yPressed = false;
 
             } else if (gamepad2.right_trigger > 0.3) {
-                OpenBox();
+                dropBox();
 
 
+            }
+            if (gamepad2.x) {
+                //GrabRoller.setPower(-1);
+                Intake.setPower(1); // was 0.9 until 3/1
+                IntakeRoller.setPower(-0.8);
+            }
+            else {
+                //GrabRoller.setPower(0);
             }
 
 
@@ -398,54 +406,48 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-    private void CloseBox() {
-        BucketHold.setPosition(0); //close
-    }
 
-    private void OpenBox(){
-         BucketHold.setPosition(0.7); //close
-
-
-
-
-
-    }
-    /*private void CloseBox(){
+    private void CloseBox(){
         //BucketHold.setPosition(0); //close
-        BucketHold.setPosition(0.65);
+        BucketHold.setPosition(0.15);
     }
     private void OpenBox(){
       //  BucketHold.setPosition(0.7); //close
 
 
 
-        BucketHold.setPosition(0.55);
+        BucketHold.setPosition(0.1);
 
-    }*/
+    }
     private void dropBox(){
-        BucketHold.setPosition(0.5);
+        BucketHold.setPosition(0.1);
         sleep(100);
-        BucketHold.setPosition(0.65);
+        BucketHold.setPosition(0.15);
     }
 
 
+    private void useGrabber(){
+        Grabber.setPosition(0.7);
+    }
 
-
+    private void setGrabber(){
+        Grabber.setPosition(0.35);
+    }
     private void BoardDropBox(){
         BucketR.setPosition(0.23);
         BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.3);
-        SlideL.setPower(0.3);
+        SlideR.setPower(0.35);
+        SlideL.setPower(0.35);
     }
     private void StopSlides(){
         SlideR.setPower(0);
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
+        BucketR.setPosition(0.59);
+        BucketL.setPosition(0.63);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }
@@ -536,11 +538,12 @@ public class MecanumLinear extends LinearOpMode {
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");
+        GrabRoller = hardwareMap.get(CRServo.class, "GrabRoller");
 
 
 
 
-
+        // Grabber = hardwareMap.get(Servo.class, "Grab");
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
@@ -562,7 +565,7 @@ public class MecanumLinear extends LinearOpMode {
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
+        GrabRoller.setPower(0);
         HangR.setPosition(0.5); // correct
         HangL.setPosition(0.1);
         // HangR.setPosition(0.5);
