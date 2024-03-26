@@ -249,14 +249,14 @@ public class MecanumLinear extends LinearOpMode {
                     IntakeBox();
                     boardAdjust = false;
 
-                        SlideR.setPower(-0.3);
-                        SlideL.setPower(-0.3);
+                        SlideR.setPower(-0.8);
+                        SlideL.setPower(-0.8);
 
 
 
                 } else if (DownSlideBumper) {
-                    SlideR.setPower(-0.1);
-                    SlideL.setPower(-0.1);
+                    SlideR.setPower(-0.8);
+                    SlideL.setPower(-0.8);
                 }
 
 
@@ -289,14 +289,14 @@ public class MecanumLinear extends LinearOpMode {
                 IntakeReady = false;
                 CloseBox();
                 IntakeBox();
-                SlideR.setPower(0.8);
-                SlideL.setPower(0.8);
+                SlideR.setPower(1);
+                SlideL.setPower(1);
 
 
             } else if (UpSlideBumper) {
                 IntakeReady = false;
-                SlideR.setPower(0.7);
-                SlideL.setPower(0.7);
+                SlideR.setPower(1);
+                SlideL.setPower(1);
             } else if (!DownSlideBumper && !LimitSwitch.isPressed()) {
 
                 HoldSlides();
@@ -332,12 +332,14 @@ public class MecanumLinear extends LinearOpMode {
 
             }
             if (gamepad2.x) {
-                //GrabRoller.setPower(-1);
-                Intake.setPower(1); // was 0.9 until 3/1
-                IntakeRoller.setPower(-0.8);
+                GrabRoller.setPower(0.95);
+                useGrabber();
+                //Intake.setPower(1); // was 0.9 until 3/1
+                //IntakeRoller.setPower(-0.8);
             }
             else {
-                //GrabRoller.setPower(0);
+                setGrabber();
+                GrabRoller.setPower(0);
             }
 
 
@@ -427,27 +429,27 @@ public class MecanumLinear extends LinearOpMode {
 
 
     private void useGrabber(){
-        Grabber.setPosition(0.7);
+        Grabber.setPosition(0.60);
     }
 
     private void setGrabber(){
-        Grabber.setPosition(0.35);
+        Grabber.setPosition(0.2);
     }
     private void BoardDropBox(){
         BucketR.setPosition(0.23);
         BucketL.setPosition(0.27);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.35);
-        SlideL.setPower(0.35);
+        SlideR.setPower(0.1);
+        SlideL.setPower(0.1);
     }
     private void StopSlides(){
         SlideR.setPower(0);
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.59);
-        BucketL.setPosition(0.63);
+        BucketR.setPosition(0.595);
+        BucketL.setPosition(0.635);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }
@@ -543,7 +545,7 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-        // Grabber = hardwareMap.get(Servo.class, "Grab");
+         Grabber = hardwareMap.get(Servo.class, "Grab");
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 
@@ -565,7 +567,7 @@ public class MecanumLinear extends LinearOpMode {
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        GrabRoller.setPower(0);
+      //  GrabRoller.setPower(0);
         HangR.setPosition(0.5); // correct
         HangL.setPosition(0.1);
         // HangR.setPosition(0.5);
