@@ -332,7 +332,7 @@ public class MecanumLinear extends LinearOpMode {
 
             }
             if (gamepad2.x) {
-                GrabRoller.setPower(0.95);
+                GrabRoller.setPower(0.85);
                 useGrabber();
                 //Intake.setPower(1); // was 0.9 until 3/1
                 //IntakeRoller.setPower(-0.8);
