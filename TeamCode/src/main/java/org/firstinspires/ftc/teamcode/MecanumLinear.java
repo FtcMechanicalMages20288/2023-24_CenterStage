@@ -40,7 +40,7 @@ public class MecanumLinear extends LinearOpMode {
     //limitswitch
     private TouchSensor LimitSwitch;
     //BoxColorSensor
-    private NormalizedColorSensor Color;
+    private NormalizedColorSensor Color, ColorFront;
 
     long startTime = System.currentTimeMillis();
 
@@ -263,6 +263,8 @@ public class MecanumLinear extends LinearOpMode {
             } else {
                 StopSlides();
                 OpenBox();
+                telemetry.addData("Hold Position: ", BucketHold.getPosition());
+                telemetry.update();
                 IntakeReady = true;
 
 
@@ -271,18 +273,16 @@ public class MecanumLinear extends LinearOpMode {
                 }
 
                 //if 0 pixels
-                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (!pixelGap))) {
+                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 1.6)) {
                     Pixels++;
                     pixelTime = System.currentTimeMillis();
                     pixelGap = true;
                 }
-                //if one pixel, wait to make sure that were not scanning the same pixel
-                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2.25 && (pixelGap))) {
-                    if (System.currentTimeMillis() > pixelTime + 350) {
-                        Pixels++;
-                        pixelGap = false;
-                    }
+                else if(Pixels < 2 && (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.8)){
+
                 }
+                //if one pixel, wait to make sure that were not scanning the same pixel
+
             }
 
             if (UpSlideBumper && !yPressed && !boardAdjust) {
@@ -418,11 +418,11 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-        BucketHold.setPosition(0.1);
+        BucketHold.setPosition(0.05);
 
     }
     private void dropBox(){
-        BucketHold.setPosition(0.1);
+        BucketHold.setPosition(0.05);
         sleep(100);
         BucketHold.setPosition(0.15);
     }
@@ -448,8 +448,8 @@ public class MecanumLinear extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.595);
-        BucketL.setPosition(0.635);
+        BucketR.setPosition(0.61);
+        BucketL.setPosition(0.65);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }
@@ -530,6 +530,7 @@ public class MecanumLinear extends LinearOpMode {
         //SENSORS
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
         Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
+        ColorFront = hardwareMap.get(NormalizedColorSensor.class,"Color2");
 
         //SERVOS
         BucketL = hardwareMap.get(Servo.class, "BucketL");
@@ -546,6 +547,7 @@ public class MecanumLinear extends LinearOpMode {
 
 
          Grabber = hardwareMap.get(Servo.class, "Grab");
+
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
 

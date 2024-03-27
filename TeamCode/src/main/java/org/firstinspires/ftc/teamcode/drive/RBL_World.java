@@ -180,7 +180,12 @@ public class RBL_World extends LinearOpMode {
               /*  .addDisplacementMarker(() -> {
                     IntakeBox();
                 })*/
-                .lineToLinearHeading(new Pose2d(strafetox,strafetoy,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .turn(Math.toRadians(5))
+                .build();
+
+        TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj3.end())
+                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
                 .build();
 
 
@@ -294,7 +299,7 @@ public class RBL_World extends LinearOpMode {
             if(finalDropPos == 1 ) {
                 drive.followTrajectorySequence(pos1);
 
-                /*IntakeBox();
+               /* IntakeBox();
                 SlidePower(slidePower);
                 sleep(waitTime+210);
                 HoldSlides();
@@ -302,8 +307,9 @@ public class RBL_World extends LinearOpMode {
                 sleep(waitTimev2);*/
                 drive.followTrajectorySequence(traj2);
                 /*OpenBox();
-                sleep(waitTimev2); */
+                sleep(waitTimev2);*/
                 drive.followTrajectorySequence(traj3);
+                drive.followTrajectorySequence(traj4);
 
 
             }
@@ -376,10 +382,21 @@ public class RBL_World extends LinearOpMode {
     }
 
     private void CloseBox(){
-        BucketHold.setPosition(0); //close
+        //BucketHold.setPosition(0); //close
+        BucketHold.setPosition(0.15);
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.7); //close
+        //  BucketHold.setPosition(0.7); //close
+
+
+
+        BucketHold.setPosition(0.05);
+
+    }
+    private void dropBox(){
+        BucketHold.setPosition(0.05);
+        sleep(100);
+        BucketHold.setPosition(0.15);
     }
     private void BoardDropBox(){
         BucketR.setPosition(0.23);
@@ -394,8 +411,10 @@ public class RBL_World extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
+        BucketR.setPosition(0.61);
+        BucketL.setPosition(0.65);
+//        BucketR.setPosition(0.59);
+//        BucketL.setPosition(0.63);
     }
 
     /**

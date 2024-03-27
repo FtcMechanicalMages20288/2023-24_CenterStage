@@ -37,7 +37,7 @@ public class BucketTuner extends OpMode{
         HangL.setPosition(0.5);
         HangR.setDirection((Servo.Direction.REVERSE));
         BucketR.setDirection(Servo.Direction.REVERSE); */
-        BucketHold.setPosition(0.5);
+        BucketHold.setPosition(0.1);
 
     }
 
