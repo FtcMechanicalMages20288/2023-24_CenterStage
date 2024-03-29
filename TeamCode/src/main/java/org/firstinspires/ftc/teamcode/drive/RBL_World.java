@@ -4,6 +4,7 @@ import android.util.Size;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -180,13 +181,23 @@ public class RBL_World extends LinearOpMode {
               /*  .addDisplacementMarker(() -> {
                     IntakeBox();
                 })*/
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
-                .turn(Math.toRadians(5))
+                .lineToLinearHeading(new Pose2d(5, 10, Math.toRadians(90)))
+                //  .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .build();
 
-        TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj3.end())
+        TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj2.end())
                 .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(15, -75, Math.toRadians(145)))
                 .build();
+        TrajectorySequence traj5 = drive.trajectorySequenceBuilder(traj4.end())
+                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(28,25, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .build();
+
+
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
@@ -226,6 +237,20 @@ public class RBL_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(90)))
                 .build();
 
+        TrajectorySequence traj2_4 = drive.trajectorySequenceBuilder(traj2_3.end())
+                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(15, -77, Math.toRadians(140)))
+                .build();
+
+        TrajectorySequence traj2_5 = drive.trajectorySequenceBuilder(traj2_3.end())
+                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(28,25, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .build();
+
+
+
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(x4Value, y4Value))
@@ -237,9 +262,9 @@ public class RBL_World extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     sleep(800);
                 })
-                .back(10)
-                .back(4)
-                .turn(Math.toRadians(turn3_5))
+                .back(14)
+                // .back(4)
+                // .turn(Math.toRadians(turn3_5))
                 .lineToLinearHeading(new Pose2d(x44Value-2,y44Value,Math.toRadians(85)))
                 .build();
 
@@ -266,6 +291,8 @@ public class RBL_World extends LinearOpMode {
                 })
                 .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .build();
+
+
 
 
 
@@ -308,24 +335,29 @@ public class RBL_World extends LinearOpMode {
                 drive.followTrajectorySequence(traj2);
                 /*OpenBox();
                 sleep(waitTimev2);*/
-                drive.followTrajectorySequence(traj3);
+               // drive.followTrajectorySequence(traj3);
                 drive.followTrajectorySequence(traj4);
+                drive.followTrajectorySequence(traj5);
 
 
             }
             if(finalDropPos == 2 ) {
                 drive.followTrajectorySequence(pos2);
 
-                IntakeBox();
+             /*   IntakeBox();
                 SlidePower(slidePower);
                 sleep(waitTime+210);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
+                sleep(waitTimev2);*/
                 drive.followTrajectorySequence(traj2_2);
-                OpenBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj2_3);
+               /* OpenBox();
+                sleep(waitTimev2);*/
+
+               // drive.followTrajectorySequence(traj2_3);
+                drive.followTrajectorySequence(traj4);
+                drive.followTrajectorySequence(traj5);
+
 
 
             }
@@ -333,16 +365,21 @@ public class RBL_World extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos3);
 
-                IntakeBox();
+              /*  IntakeBox();
                 SlidePower(slidePower);
                 sleep(waitTime+210);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
+                sleep(waitTimev2); */
                 drive.followTrajectorySequence(traj3_2);
-                OpenBox();
-                sleep(waitTimev2);
-                drive.followTrajectorySequence(traj3_3);
+               /* OpenBox();
+                sleep(waitTimev2); */
+             // drive.followTrajectorySequence(traj3_3);
+                drive.followTrajectorySequence(traj4);
+                drive.followTrajectorySequence(traj5);
+
+
+
 
 
             }

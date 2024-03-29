@@ -64,7 +64,15 @@ public class MecanumLinear extends LinearOpMode {
 
     boolean boardAdjust = false;
 
-    boolean pixelGap = false;
+
+
+    boolean pixelBack = false;
+
+
+    boolean currentPress = false;
+    boolean pastPress = false;
+
+    boolean dropPress = true;
     //Motor Power
 
 
@@ -273,13 +281,12 @@ public class MecanumLinear extends LinearOpMode {
                 }
 
                 //if 0 pixels
-                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 1.6)) {
+                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 1.6) && !pixelBack) {
                     Pixels++;
-                    pixelTime = System.currentTimeMillis();
-                    pixelGap = true;
+                    pixelBack = true;
                 }
-                else if(Pixels < 2 && (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.8)){
-
+                else if(Pixels < 2 && (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.8) && pixelBack){
+                    Pixels++;
                 }
                 //if one pixel, wait to make sure that were not scanning the same pixel
 
@@ -318,19 +325,48 @@ public class MecanumLinear extends LinearOpMode {
                 CloseBox();
             }
 
-            // close
+
+
+
             if (gamepad2.right_trigger > 0.3 && yPressed) {
                 dropBox();
 
                 boardAdjust = true;
                 Pixels = 0;
                 yPressed = false;
+                pixelBack = false;
+
+
 
             } else if (gamepad2.right_trigger > 0.3) {
                 dropBox();
+                pixelBack = false;
 
 
             }
+
+            /*
+             pastPress = currentPress;
+            currentPress = gamepad2.right_trigger > 3;
+            if(currentPress && !pastPress) {
+                dropPress = !dropPress;
+                if (gamepad2.right_trigger > 0.3 && yPressed && dropPress) {
+                    dropBox();
+
+                    boardAdjust = true;
+                    Pixels = 0;
+                    yPressed = false;
+                    pixelBack = false;
+
+
+
+                } else if (gamepad2.right_trigger > 0.3 && dropPress) {
+                    dropBox();
+                    pixelBack = false;
+
+
+                }
+            }*/
             if (gamepad2.x) {
                 GrabRoller.setPower(0.85);
                 useGrabber();
@@ -448,8 +484,8 @@ public class MecanumLinear extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.61);
-        BucketL.setPosition(0.65);
+        BucketR.setPosition(0.58);
+        BucketL.setPosition(0.62);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }
