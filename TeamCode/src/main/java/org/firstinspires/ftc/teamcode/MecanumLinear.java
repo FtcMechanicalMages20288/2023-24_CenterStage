@@ -465,11 +465,11 @@ public class MecanumLinear extends LinearOpMode {
 
 
     private void useGrabber(){
-        Grabber.setPosition(0.60);
+        Grabber.setPosition(0.55);
     }
 
     private void setGrabber(){
-        Grabber.setPosition(0.2);
+        Grabber.setPosition(0.15);
     }
     private void BoardDropBox(){
         BucketR.setPosition(0.23);

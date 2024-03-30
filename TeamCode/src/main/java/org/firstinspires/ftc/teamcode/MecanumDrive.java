@@ -2,10 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import static android.os.SystemClock.sleep;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -17,7 +15,6 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@Disabled
 @TeleOp(name = "MecanumDrive", group = "TeleOp")
 
 public class MecanumDrive extends OpMode {
@@ -29,9 +26,6 @@ public class MecanumDrive extends OpMode {
     private DcMotor SlideR, SlideL, Intake;
 
     private Servo BucketHold, BucketR, BucketL, Drone;
-
-    private DcMotor LeadScrew;
-    private CRServo Hook;
 
 
     //limitswitch
@@ -74,9 +68,6 @@ public class MecanumDrive extends OpMode {
         BucketR.setDirection(Servo.Direction.REVERSE);
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-        LeadScrew = hardwareMap.dcMotor.get("LeadScrew");
-        Hook = hardwareMap.get(CRServo.class, "Hook");
-
 
 
 
@@ -94,8 +85,6 @@ public class MecanumDrive extends OpMode {
     public void loop() {
 
 
-
-
             telemetry.addData("SlideL:", SlideL.getCurrentPosition());
         if (Color instanceof DistanceSensor) {
             telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) Color).getDistance(DistanceUnit.CM));
@@ -103,16 +92,16 @@ public class MecanumDrive extends OpMode {
             telemetry.addData("Pixels:", Pixels);
 
             //Movement Controller
-            right_drivePower = gamepad1.left_stick_y  ;
-            back_left_drivePower = gamepad1.right_stick_y ;
-            left_drivePower = gamepad1.right_stick_y ;
-            back_right_drivePower = gamepad1.left_stick_y;
+            right_drivePower = gamepad1.right_stick_y  ;
+            back_left_drivePower = gamepad1.left_stick_y;
+            left_drivePower = gamepad1.left_stick_y;
+            back_right_drivePower = gamepad1.right_stick_y ;
 
 
-            left_drive.setPower(left_drivePower*-1);
-            right_drive.setPower(right_drivePower*-1);
-            back_left_drive.setPower(left_drivePower*-1);
-            back_right_drive.setPower(right_drivePower*-1);
+            left_drive.setPower(left_drivePower);
+            right_drive.setPower(right_drivePower);
+            back_left_drive.setPower(left_drivePower);
+            back_right_drive.setPower(right_drivePower);
 
 
             boolean rightbumper = gamepad1.right_bumper; //Strafe Right
@@ -127,12 +116,7 @@ public class MecanumDrive extends OpMode {
             //attachments
 
 
-            if(gamepad1.a){
-                left_drive.setPower(0.2); // left drive is 0
-                right_drive.setPower(0.2); // right drive is 2
-                back_left_drive.setPower(0.2); // back left drive is 1
-                back_right_drive.setPower(0.2);
-            }
+
 
             if (rightbumper) {
 
@@ -174,7 +158,7 @@ public class MecanumDrive extends OpMode {
             if(!LimitSwitch.isPressed()){
                 if(DownSlideBumper && (SlideL.getCurrentPosition() > -49)){
                     if(IntakeDelay = true){
-                        BucketR.setPosition(0.34);
+                        BucketR.setPosition(0.395);
                         BucketL.setPosition(0.33);
                         SlideR.setPower(-0.1);
                         SlideL.setPower(-0.1);
@@ -192,7 +176,7 @@ public class MecanumDrive extends OpMode {
                 } else if (DownSlideBumper && (SlideL.getCurrentPosition() < -49)){
 
 
-                    BucketR.setPosition(0.45);
+                    BucketR.setPosition(0.515);
                     BucketL.setPosition(0.45);
                     SlideR.setPower(-0.4);
                     SlideL.setPower(-0.4);
@@ -217,7 +201,7 @@ public class MecanumDrive extends OpMode {
             }
             if (UpSlideBumper && (SlideL.getCurrentPosition() > -49)) {
 
-                BucketR.setPosition(0.34);
+                BucketR.setPosition(0.395);
                 BucketL.setPosition(0.33);
                 SlideR.setPower(0.8);
                 SlideL.setPower(0.8);
@@ -230,13 +214,14 @@ public class MecanumDrive extends OpMode {
                 IntakeDelay = true;
                 IntakeReady = false;
                 if (AutoHold = true) {
-                    IntakeBox();
+                    BucketR.setPosition(0.515);
+                    BucketL.setPosition(0.45);
                     SlideR.setPower(0.8);
                     SlideL.setPower(0.8);
                     CloseBox();
                     AutoHold = false;
-                } else {
-                    BucketR.setPosition(0.45);
+                } else{
+                    BucketR.setPosition(0.515);
                     BucketL.setPosition(0.45);
                     SlideR.setPower(0.8);
                     SlideL.setPower(0.8);
@@ -284,42 +269,12 @@ public class MecanumDrive extends OpMode {
 
             else Intake.setPower(0);
 
-            //drone launching and resetting
-            if (gamepad2.x) {
-                Drone.setPosition(0.8);
+            if (gamepad2.dpad_down) {
+                Drone.setPosition(1);
             }
             else{
-                Drone.setPosition(0.4);
+                Drone.setPosition(0.7);
             }
-
-
-           // Hanging / LeadScrew Binds
-        if(gamepad2.dpad_right) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(1);
-
-        }
-        else if (gamepad2.dpad_left) {
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeadScrew.setPower(-1);
-
-        }
-        else{
-            LeadScrew.setPower(0);
-            LeadScrew.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        }
-
-        if(gamepad2.dpad_down){
-            Hook.setPower(0.5);
-        }
-        else if(gamepad2.dpad_up){
-            Hook.setPower(-0.5);
-
-        }
-        else{
-            Hook.setPower(0);
-        }
-
 
 
 
@@ -329,18 +284,14 @@ public class MecanumDrive extends OpMode {
 
 
     private void CloseBox(){
-        BucketHold.setPosition(0.7); //close
+        BucketHold.setPosition(0.1); //close
     }
     private void OpenBox(){
         BucketHold.setPosition(0.3); //close
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.2);
-        BucketL.setPosition(0.2);
-    }
-    private void IntakeBox(){
-        BucketR.setPosition(0.5);
-        BucketL.setPosition(0.5);
+        BucketR.setPosition(0.115);
+        BucketL.setPosition(0.05);
     }
     private void HoldSlides(){
         SlideR.setPower(0.35);
