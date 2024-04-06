@@ -309,7 +309,7 @@ public class Akash_RBR_World extends LinearOpMode {
                 })
                 .back(0.3)
                 .addDisplacementMarker(() -> {
-                    stopRobot();
+                    
                     sleep(1000);
                 })
                 .addDisplacementMarker(() -> { //After First Temporal Marker: Outake Any pixels

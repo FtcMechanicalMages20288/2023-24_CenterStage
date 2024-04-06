@@ -99,6 +99,10 @@ public class MecanumLinear extends LinearOpMode {
 
         while(opModeIsActive()) {
 
+            if(IntakeReady){
+                OpenBox();
+            }
+
 
 
             if (LimitSwitch.isPressed()) {
@@ -120,7 +124,8 @@ public class MecanumLinear extends LinearOpMode {
 
             telemetry.addData("SlideL:", SlideL.getCurrentPosition());
             if (Color instanceof DistanceSensor) {
-                telemetry.addData("Distance (cm)", "%.3f", ((DistanceSensor) Color).getDistance(DistanceUnit.CM));
+                telemetry.addData("Back (cm)", "%.3f", ((DistanceSensor) Color).getDistance(DistanceUnit.CM));
+                telemetry.addData("Front (cm)", "%.3f", ((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM));
             }
             telemetry.addData("Pixels:", Pixels);
 
@@ -257,22 +262,22 @@ public class MecanumLinear extends LinearOpMode {
                     IntakeBox();
                     boardAdjust = false;
 
-                        SlideR.setPower(-0.8);
-                        SlideL.setPower(-0.8);
+                    SlideL.setPower(-.6);
+                    SlideR.setPower(.6);
 
 
 
                 } else if (DownSlideBumper) {
-                    SlideR.setPower(-0.8);
-                    SlideL.setPower(-0.8);
+                    SlideL.setPower(-.6);
+                    SlideR.setPower(.6);
                 }
 
 
             } else {
-                StopSlides();
-                OpenBox();
                 telemetry.addData("Hold Position: ", BucketHold.getPosition());
                 telemetry.update();
+                StopSlides();
+                OpenBox();
                 IntakeReady = true;
 
 
@@ -281,14 +286,14 @@ public class MecanumLinear extends LinearOpMode {
                 }
 
                 //if 0 pixels
-                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 1.6) && !pixelBack) {
+                else if (Pixels < 2 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) && !pixelBack) {
                     Pixels++;
                     pixelBack = true;
                 }
-                else if(Pixels < 2 && (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.8) && pixelBack){
+                else if(Pixels < 2 && (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5) && pixelBack){
                     Pixels++;
                 }
-                //if one pixel, wait to make sure that were not scanning the same pixel
+
 
             }
 
@@ -296,14 +301,14 @@ public class MecanumLinear extends LinearOpMode {
                 IntakeReady = false;
                 CloseBox();
                 IntakeBox();
-                SlideR.setPower(1);
-                SlideL.setPower(1);
+                SlideL.setPower(.75);
+                SlideR.setPower(-.75);
 
 
             } else if (UpSlideBumper) {
                 IntakeReady = false;
-                SlideR.setPower(1);
-                SlideL.setPower(1);
+                SlideL.setPower(.75);
+                SlideR.setPower(-.75);
             } else if (!DownSlideBumper && !LimitSwitch.isPressed()) {
 
                 HoldSlides();
@@ -321,8 +326,19 @@ public class MecanumLinear extends LinearOpMode {
 
 
             // open
-            if (gamepad2.left_trigger > 0.3) {
-                CloseBox();
+            if (gamepad2.left_trigger > 0.3 && yPressed) {
+                OpenBox();
+
+                boardAdjust = true;
+                Pixels = 0;
+                yPressed = false;
+                pixelBack = false;
+
+            }
+           else if(gamepad2.left_trigger > 0.3){
+                Pixels = 0;
+                OpenBox();
+                pixelBack = false;
             }
 
 
@@ -339,6 +355,7 @@ public class MecanumLinear extends LinearOpMode {
 
 
             } else if (gamepad2.right_trigger > 0.3) {
+                Pixels = 0;
                 dropBox();
                 pixelBack = false;
 
@@ -459,35 +476,36 @@ public class MecanumLinear extends LinearOpMode {
     }
     private void dropBox(){
         BucketHold.setPosition(0.05);
-        sleep(100);
+        sleep(50);
         BucketHold.setPosition(0.15);
+        sleep(750);
     }
 
 
     private void useGrabber(){
-        Grabber.setPosition(0.55);
+        Grabber.setPosition(0.82);
     }
 
     private void setGrabber(){
-        Grabber.setPosition(0.15);
+        Grabber.setPosition(0.47);
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.23);
-        BucketL.setPosition(0.27);
+        BucketL.setPosition(0.82);
+        BucketR.setPosition(0.82);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.1);
-        SlideL.setPower(0.1);
+        SlideL.setPower(0.08);
+        SlideR.setPower(-0.08);
     }
     private void StopSlides(){
-        SlideR.setPower(0);
+
         SlideL.setPower(0);
+        SlideR.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
-//        BucketR.setPosition(0.59);
-//        BucketL.setPosition(0.63);
+       BucketL.setPosition(0.4);
+       BucketR.setPosition(0.4);
+
     }
 
     private void showPurple(){
@@ -573,7 +591,7 @@ public class MecanumLinear extends LinearOpMode {
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         Drone = hardwareMap.get(Servo.class, "Drone");
-        BucketR.setDirection(Servo.Direction.REVERSE);
+
         SlideL.setMode(DcMotor.RunMode.RESET_ENCODERS);
         HangR = hardwareMap.servo.get("HangR");
         HangL = hardwareMap.servo.get("HangL");

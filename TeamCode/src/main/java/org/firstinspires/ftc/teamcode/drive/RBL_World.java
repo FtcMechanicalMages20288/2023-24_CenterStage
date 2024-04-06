@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -76,6 +78,11 @@ public class RBL_World extends LinearOpMode {
 
     private Servo BucketHold, BucketR, BucketL, PixelPusher;
     private DcMotor SlideR, SlideL, Intake;
+    private CRServo GrabRoller;
+
+    private Servo Grabber;
+    private CRServo IntakeRoller;
+
 
     public static double slidePower = 0.45;
     int xValue = 19;
@@ -124,6 +131,7 @@ public class RBL_World extends LinearOpMode {
     public static int waitTimev2 = 750;
 
     public static double FwBw = 10;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -188,8 +196,33 @@ public class RBL_World extends LinearOpMode {
         TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj2.end())
                 .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(15, -75, Math.toRadians(145)))
+                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(135)))
+
                 .build();
+
+        TrajectorySequence traj4_p2 = drive.trajectorySequenceBuilder(traj4.end())
+                .addDisplacementMarker(() ->{
+                    useGrabber();
+                    GrabRoller.setPower(0.85);
+
+
+                })
+                .build();
+
+        TrajectorySequence traj4_p3 = drive.trajectorySequenceBuilder(traj4.end())
+                .addDisplacementMarker(() ->{
+
+                    Intake.setPower(0.8);
+                    IntakeRoller.setPower(-0.8);
+                    sleep(1000);
+                    Intake.setPower(0);
+                    IntakeRoller.setPower(0);
+
+
+                })
+                .build();
+
+
         TrajectorySequence traj5 = drive.trajectorySequenceBuilder(traj4.end())
                 .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
@@ -292,9 +325,12 @@ public class RBL_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .build();
 
-
-
-
+        TrajectorySequence traj3_5 = drive.trajectorySequenceBuilder(traj4.end())
+                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(35,25, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .build();
 
 
 
@@ -376,7 +412,7 @@ public class RBL_World extends LinearOpMode {
                 sleep(waitTimev2); */
              // drive.followTrajectorySequence(traj3_3);
                 drive.followTrajectorySequence(traj4);
-                drive.followTrajectorySequence(traj5);
+                drive.followTrajectorySequence(traj3_5);
 
 
 
@@ -402,8 +438,15 @@ public class RBL_World extends LinearOpMode {
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         BucketR.setDirection(Servo.Direction.REVERSE);
+        Grabber = hardwareMap.get(Servo.class, "Grab");
+        GrabRoller = hardwareMap.get(CRServo.class, "GrabRoller");
+        IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+        setGrabber();
+
+
 
     }
+
     private void SlidePower(double p){
         SlideR.setPower(p);
         SlideL.setPower(p);
@@ -429,6 +472,13 @@ public class RBL_World extends LinearOpMode {
 
         BucketHold.setPosition(0.05);
 
+    }
+    private void setGrabber(){
+        Grabber.setPosition(0.15);
+    }
+
+    private void useGrabber(){
+        Grabber.setPosition(0.55);
     }
     private void dropBox(){
         BucketHold.setPosition(0.05);
