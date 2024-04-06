@@ -161,7 +161,6 @@ public class Akash_RBR_World extends LinearOpMode {
         initCode();
         initDoubleVision();
         sleep(3000);
-        CloseBox();
         PixelPusher.setPosition(0.45);
         Grabber.setPosition(0.15);
 
@@ -285,39 +284,45 @@ public class Akash_RBR_World extends LinearOpMode {
                 .build();
 
         TrajectorySequence pos1_p3 = drive.trajectorySequenceBuilder(pos1.end())
+
+
+                .back(2.1)
+
                 .addDisplacementMarker(() -> { //Change Duration
                     // Run action at 2.5 seconds into the path (1.5 seconds after the previous marker)
                     useGrabber();
                     GrabRoller.setPower(0.95);
-                    Intake.setPower(.8);
-                    IntakeRoller.setPower(-0.8);
-
-
                 })
-                .addDisplacementMarker(() -> {
-                    sleep(3000);
-                })
-                .addDisplacementMarker(() -> {//Change Duration
 
-                    Intake.setPower(.8);
-                    IntakeRoller.setPower(-0.8);
+                .addDisplacementMarker(() -> { //Intake N Wrods
+                    stopRobot();
+                    sleep(2000);
                     setGrabber();
                     GrabRoller.setPower(0);
-
-
-
                 })
-                .back(0.3)
+
                 .addDisplacementMarker(() -> {
-                    
-                    sleep(1000);
+                    resetSpeed();
+                    sleep(200);
                 })
+
+                .back(1.8)
+
+                .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
+                    Intake.setPower(1);
+                    IntakeRoller.setPower(-0.8);
+                    sleep(1200);
+                    stopRobot();
+
+                })
+
+                /*
                 .addDisplacementMarker(() -> { //After First Temporal Marker: Outake Any pixels
                     Intake.setPower(-1);
                     IntakeRoller.setPower(0.8);
 
                 })
-
+                */
                 .build();
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
@@ -628,6 +633,9 @@ public class Akash_RBR_World extends LinearOpMode {
 
         Grabber = hardwareMap.get(Servo.class, "Grab");
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+        IntakeBox();
+        OpenBox();
+
     }
     private void SlidePower(double p){
         SlideR.setPower(p);
@@ -635,12 +643,12 @@ public class Akash_RBR_World extends LinearOpMode {
 
     }
     private void useGrabber(){
-        Grabber.setPosition(0.55);
+        Grabber.setPosition(0.82);
 
     }
 
     private void setGrabber(){
-        Grabber.setPosition(0.15);
+        Grabber.setPosition(0.47);
     }
 
     private void ReleasePixel() {
@@ -652,7 +660,7 @@ public class Akash_RBR_World extends LinearOpMode {
         BucketHold.setPosition(0.15);
     }
     private void OpenBox(){
-        //  BucketHold.setPosition(0.7); //close
+        BucketHold.setPosition(0.6); //close
 
 
 
@@ -672,8 +680,8 @@ public class Akash_RBR_World extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
+        BucketR.setPosition(0.6);
+        BucketL.setPosition(0.6);
     }
 /*
       if (LimitSwitch.isPressed()) {
@@ -763,6 +771,12 @@ public class Akash_RBR_World extends LinearOpMode {
         brightDrive.setPower(-0.34);
     }
 
+    public void resetSpeed(){
+        leftDrive.setPower(0.1);
+        bleftDrive.setPower(0.1);
+        rightDrive.setPower(0.1);
+        brightDrive.setPower(0.1);
+    }
 
 
 
