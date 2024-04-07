@@ -4,11 +4,16 @@ import static android.os.SystemClock.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@TeleOp(name = "PusherTuner", group = "TeleOp")
-@Disabled
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
+@TeleOp(name = "Pusher+RampSenseTuner", group = "TeleOp")
+
 
 
 
@@ -21,14 +26,17 @@ public class PusherTuner extends OpMode{
     double tempHold = 0;
 
     private Servo PixelPusher;
+
+    private NormalizedColorSensor RampSensor;
     @Override
     public void init() {
         PixelPusher = hardwareMap.get(Servo.class, "Pixel Pusher");
+        RampSensor = hardwareMap.get(NormalizedColorSensor.class, "RampSensor");
 
 
 
-        PixelPusher.setPosition(0.5);
-        tempL = 0.5;
+        //PixelPusher.setPosition(0.5);
+        //tempL = 0.5;
 
 
 
@@ -42,7 +50,7 @@ public class PusherTuner extends OpMode{
             tempL =  PixelPusher.getPosition();
             telemetry.addData("Servo PosL", PixelPusher.getPosition());
 
-            telemetry.update();
+
             sleep(100);
 
         }
@@ -52,10 +60,12 @@ public class PusherTuner extends OpMode{
             tempL =  PixelPusher.getPosition();
             telemetry.addData("Servo PosL", PixelPusher.getPosition());
 
-            telemetry.update();
+
             sleep(100);
 
         }
+        telemetry.addData("Ramp Sensor: " , ((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM));
+        telemetry.update();
 
 
     }
