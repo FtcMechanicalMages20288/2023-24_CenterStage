@@ -464,20 +464,21 @@ public class MecanumLinear extends LinearOpMode {
 
     private void CloseBox(){
         //BucketHold.setPosition(0); //close
-        BucketHold.setPosition(0.15);
+        BucketHold.setPosition(0.7);
     }
     private void OpenBox(){
       //  BucketHold.setPosition(0.7); //close
 
 
 
-        BucketHold.setPosition(0.05);
+        BucketHold.setPosition(0.5);
 
     }
     private void dropBox(){
-        BucketHold.setPosition(0.05);
-        sleep(50);
-        BucketHold.setPosition(0.15);
+        BucketHold.setPosition(0.5);
+
+        sleep(100);
+        BucketHold.setPosition(0.7);
         sleep(750);
     }
 
@@ -490,8 +491,8 @@ public class MecanumLinear extends LinearOpMode {
         Grabber.setPosition(0.47);
     }
     private void BoardDropBox(){
-        BucketL.setPosition(0.82);
-        BucketR.setPosition(0.82);
+        BucketL.setPosition(0.76);
+        BucketR.setPosition(0.76);
     }
     private void HoldSlides(){
         SlideL.setPower(0.08);

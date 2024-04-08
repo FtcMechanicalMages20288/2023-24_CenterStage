@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import static java.lang.System.currentTimeMillis;
+
+import android.transition.Slide;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -42,6 +46,7 @@ public class Akash_RBR_World extends LinearOpMode {
     int dropPos3;
     int finalDropPos;
 
+
     // EDIT THIS VARIABLE DEPENDING ON THE OTHER TEAMS' NEEDS
     // THIS CHANGES WHEN THE PIXEL GRABBER IS USED
     double timeAdjust = 0;
@@ -76,17 +81,16 @@ public class Akash_RBR_World extends LinearOpMode {
     private VisionPortal visionPortal;
 
 
-
     final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN =   0.02 ;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double TURN_GAIN  =   0.01 ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    final double SPEED_GAIN = 0.02;   //  Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    final double TURN_GAIN = 0.01;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
     final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
+    final double MAX_AUTO_TURN = 0.25;  //  Clip the turn speed to this max value (adjust for your robot)
 
 
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
@@ -95,16 +99,12 @@ public class Akash_RBR_World extends LinearOpMode {
     boolean targetFound = false;
 
 
-
     boolean aprilAdjust = true;
 
 
-
-
-
-    private DcMotor         leftDrive   = null;
-    private DcMotor         rightDrive  = null;
-    private DcMotor  brightDrive = null;
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+    private DcMotor brightDrive = null;
     private DcMotor bleftDrive = null;
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -120,12 +120,7 @@ public class Akash_RBR_World extends LinearOpMode {
 
     private CRServo IntakeRoller;
 
-    private NormalizedColorSensor RampSensor, Color,ColorFront;
-
-
-
-
-
+    private NormalizedColorSensor RampSensor, Color, ColorFront;
 
 
     // Tfod Stuff Above
@@ -138,20 +133,19 @@ public class Akash_RBR_World extends LinearOpMode {
     int yValue = -10;
 
     public static int x2Value = 26;
-    public static int y2Value = 4 ;
+    public static int y2Value = 4;
 
     public static int pos2startx = 30;
-    public static int pos2starty = 2 ;
+    public static int pos2starty = 2;
 
-    public static int strafecorrect = 8 ;
+    public static int strafecorrect = 8;
 
     public static int fwdDistancep1 = 30;
     public static int fwdDistancep2 = 50;
 
     public static int cycleX = 30;
     public static int cycleY = 30;
-
-
+    public static int elapsedTimevar = 5000;
 
 
     public static double DISTANCE = 8; // in
@@ -159,8 +153,10 @@ public class Akash_RBR_World extends LinearOpMode {
     public static int waitTime = 700;
     public static int waitTimev2 = 750;
     public static int waitTimev3 = 1000;
+    public static int WaitageTimeVar = 0;
 
     public static double FwBw = 8;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -173,19 +169,15 @@ public class Akash_RBR_World extends LinearOpMode {
         Grabber.setPosition(0.15);
 
 
-
-
-
         // 5
 
-        Pose2d sP = new Pose2d(0,0,0);
+        Pose2d sP = new Pose2d(0, 0, 0);
         Pose2d eel = drive.getPoseEstimate();
         drive.setPoseEstimate(sP);
 
 
-
-
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
+
 
                 .lineToLinearHeading(new Pose2d(23, -13.3))
                 .addDisplacementMarker(() -> {
@@ -196,7 +188,7 @@ public class Akash_RBR_World extends LinearOpMode {
                 })
                 .back(9)
                 .strafeLeft(16.3)
-                .lineToLinearHeading( new Pose2d(48, 0.5))
+                .lineToLinearHeading(new Pose2d(48, 0.5))
                 .turn(Math.toRadians(84))
                 .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(90)))
 
@@ -218,7 +210,7 @@ public class Akash_RBR_World extends LinearOpMode {
                     sleep(2000);
                     setGrabber();
                     GrabRoller.setPower(0);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
+                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
                     }
@@ -228,7 +220,7 @@ public class Akash_RBR_World extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     resetSpeed();
                     sleep(200);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ) {
+                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
                     }
@@ -236,15 +228,14 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 .back(1.8)
 
-                .addDisplacementMarker(() ->{
+                .addDisplacementMarker(() -> {
                     boolean switcheroo = true;
-                    while(switcheroo) {
+                    while (switcheroo) {
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                             Intake.setPower(0);
                             IntakeRoller.setPower(0.8);
                             switcheroo = false;
-                        }
-                        else{
+                        } else {
                             Intake.setPower(1);
                             IntakeRoller.setPower(-0.8);
                         }
@@ -280,12 +271,11 @@ public class Akash_RBR_World extends LinearOpMode {
                 .build();
 
 
-
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
 
                 .lineToLinearHeading(new Pose2d(20, 0))
-                .turn(Math.toRadians(50-11))
+                .turn(Math.toRadians(50 - 11))
                 .forward(8)
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
@@ -302,11 +292,10 @@ public class Akash_RBR_World extends LinearOpMode {
                 .build();
 
 
-
         TrajectorySequence pos1_deposit = drive.trajectorySequenceBuilder(pos1.end())
 
 
-                .addDisplacementMarker(()->{
+                .addDisplacementMarker(() -> {
 
                     Intake.setPower(-0.6);
                     IntakeRoller.setPower(0.8);
@@ -315,13 +304,13 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 .lineToConstantHeading(new Vector2d(51, 75))
 
-              /*  .addSpatialMarker(new Vector2d(49,-14), () -> {
-                    Intake.setPower(1);
+                /*  .addSpatialMarker(new Vector2d(49,-14), () -> {
+                      Intake.setPower(1);
 
-                })*/
+                  })*/
 
 
-                .addDisplacementMarker(()->{
+                .addDisplacementMarker(() -> {
                     setGrabber();
 
                 })
@@ -366,17 +355,31 @@ public class Akash_RBR_World extends LinearOpMode {
                     sleep(2000);
                     setGrabber();
                     GrabRoller.setPower(0);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
+                    /*if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
+                    }*/
+
+                    boolean switcheroo = true;
+                    long timeOut = System.currentTimeMillis();
+                    while (switcheroo && timeOut > 5000) { // Loop while switcheroo is true and 5 seconds have not passed
+                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
+                            Intake.setPower(1);
+                            IntakeRoller.setPower(-0.8);
+                            switcheroo = false;
+                        } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
+                            break;
+                        }
                     }
 
                 })
 
+
+
                 .addDisplacementMarker(() -> {
                     resetSpeed();
                     sleep(200);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ) {
+                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
                     }
@@ -384,28 +387,28 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 .back(1.8)
 
-                .addDisplacementMarker(() ->{
+                .addDisplacementMarker(() -> {
                     boolean switcheroo = true;
-                    while(switcheroo) {
+                    while (switcheroo && elapsedTimevar < 5000) { // Loop while switcheroo is true and 5 seconds have not passed
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                             Intake.setPower(0);
                             IntakeRoller.setPower(0.8);
                             switcheroo = false;
-                        }
-                        else{
+                        } else {
                             Intake.setPower(1);
                             IntakeRoller.setPower(-0.8);
+                            break;
                         }
                     }
                 })
 
-               /* .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
-                    Intake.setPower(1);
-                    IntakeRoller.setPower(-0.8);
-                    sleep(1200);
-                    stopRobot();
+                /* .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
+                     Intake.setPower(1);
+                     IntakeRoller.setPower(-0.8);
+                     sleep(1200);
+                     stopRobot();
 
-                }) */
+                 }) */
 
                 /*
                 .addDisplacementMarker(() -> { //After First Temporal Marker: Outake Any pixels
@@ -431,10 +434,10 @@ public class Akash_RBR_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
                 .waitSeconds(4) // Change depending on teammate speed
                 .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
-                .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
+                .addSpatialMarker(new Vector2d(25.7, 73), () -> {
                     IntakeBox();
                     SlidePower(slidePower);
-                    sleep(waitTime+400);
+                    sleep(waitTime + 400);
                     HoldSlides();
                     BoardDropBox();
                 })
@@ -466,7 +469,7 @@ public class Akash_RBR_World extends LinearOpMode {
                     sleep(2000);
                     setGrabber();
                     GrabRoller.setPower(0);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
+                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
                     }
@@ -476,7 +479,7 @@ public class Akash_RBR_World extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     resetSpeed();
                     sleep(200);
-                    if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ) {
+                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                         Intake.setPower(0);
                         IntakeRoller.setPower(0.8);
                     }
@@ -484,15 +487,14 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 .back(1.8)
 
-                .addDisplacementMarker(() ->{
+                .addDisplacementMarker(() -> {
                     boolean switcheroo = true;
-                    while(switcheroo) {
+                    while (switcheroo) {
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                             Intake.setPower(0);
                             IntakeRoller.setPower(0.8);
                             switcheroo = false;
-                        }
-                        else{
+                        } else {
                             Intake.setPower(1);
                             IntakeRoller.setPower(-0.8);
                         }
@@ -517,21 +519,12 @@ public class Akash_RBR_World extends LinearOpMode {
                 .build();
 
 
-
-
-
-
-
-
-
-
         visionPortal.setProcessorEnabled(aprilTag, false);
         visionPortal.setProcessorEnabled(tfod, true);
 
 
-
         waitForStart();
-        for (int i = 0; i <  10; i++) {
+        for (int i = 0; i < 10; i++) {
             telemetryTfod();
 
         }
@@ -561,18 +554,18 @@ public class Akash_RBR_World extends LinearOpMode {
 
         telemetry.update();
 
-        if(!isStopRequested()){
+        if (!isStopRequested()) {
 
-            if(finalDropPos == 1 ) {
+            if (finalDropPos == 1) {
 
                 drive.followTrajectorySequence(pos1);
                 drive.followTrajectorySequence(pos1_intake);
 
                 boolean pixelCheck = false;
-                while(!pixelCheck){
+                while (!pixelCheck) {
                     IntakeRoller.setPower(-0.8);
-                    if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         pixelCheck = true;
                     }
                 }
@@ -580,19 +573,22 @@ public class Akash_RBR_World extends LinearOpMode {
                 drive.followTrajectorySequence(pos1_deposit);
 
                 SlidePower(slidePower);
-                sleep(waitTime+400);
+                sleep(waitTime + 400);
                 HoldSlides();
                 BoardDropBox();
-
+                sleep(waitTimev2);
+                OpenBox();
+                sleep(waitTimev2);
+                SlideDown();
 
 
                 DESIRED_TAG_ID = 1;
                 strafeLeft();
 
 
-                while(aprilAdjust) {
+                while (aprilAdjust) {
                     targetFound = false;
-                    desiredTag  = null;
+                    desiredTag = null;
 
                     // Step through the list of detected tags and look for a matching tag
                     List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -619,7 +615,7 @@ public class Akash_RBR_World extends LinearOpMode {
                     if (targetFound) {
 
                         strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -8){
+                        if (desiredTag.ftcPose.bearing < -8) {
                             aprilAdjust = false;
                         }
 
@@ -651,16 +647,16 @@ public class Akash_RBR_World extends LinearOpMode {
 
             }
 
-            if(finalDropPos == 2 ) {
+            if (finalDropPos == 2) {
 
                 drive.followTrajectorySequence(pos2);
                 drive.followTrajectorySequence(pos2_intake);
 
                 boolean pixelCheck = false;
-                while(!pixelCheck){
+                while (!pixelCheck) {
                     IntakeRoller.setPower(-0.8);
-                    if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         pixelCheck = true;
                     }
                 }
@@ -668,19 +664,22 @@ public class Akash_RBR_World extends LinearOpMode {
                 drive.followTrajectorySequence(pos3_deposit);
 
                 SlidePower(slidePower);
-                sleep(waitTime+400);
+                sleep(waitTime + 400);
                 HoldSlides();
                 BoardDropBox();
-
+                sleep(waitTimev2);
+                OpenBox();
+                sleep(waitTimev2);
+                SlideDown();
 
 
                 DESIRED_TAG_ID = 2;
                 strafeLeft();
 
 
-                while(aprilAdjust) {
+                while (aprilAdjust) {
                     targetFound = false;
-                    desiredTag  = null;
+                    desiredTag = null;
 
                     // Step through the list of detected tags and look for a matching tag
                     List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -707,7 +706,7 @@ public class Akash_RBR_World extends LinearOpMode {
                     if (targetFound) {
 
                         strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -10){
+                        if (desiredTag.ftcPose.bearing < -10) {
                             aprilAdjust = false;
                         }
 
@@ -741,101 +740,97 @@ public class Akash_RBR_World extends LinearOpMode {
         }
 
 
+        if (finalDropPos == 3) {
 
 
+            drive.followTrajectorySequence(pos3);
+            drive.followTrajectorySequence(pos3_intake);
 
-
-            if(finalDropPos == 3) {
-
-
-                drive.followTrajectorySequence(pos3);
-                drive.followTrajectorySequence(pos3_intake);
-
-                boolean pixelCheck = false;
-                while(!pixelCheck){
-                    IntakeRoller.setPower(-0.8);
-                    if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
-                        pixelCheck = true;
-                    }
+            boolean pixelCheck = false;
+            while (!pixelCheck) {
+                IntakeRoller.setPower(-0.8);
+                if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                        (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
+                    pixelCheck = true;
                 }
-
-                drive.followTrajectorySequence(pos3_deposit);
-
-                SlidePower(slidePower);
-                sleep(waitTime+400);
-                HoldSlides();
-                BoardDropBox();
-
-
-
-                DESIRED_TAG_ID = 2;
-                strafeLeft();
-
-
-                while(aprilAdjust) {
-                    targetFound = false;
-                    desiredTag  = null;
-
-                    // Step through the list of detected tags and look for a matching tag
-                    List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-                    for (AprilTagDetection detection : currentDetections) {
-                        // Look to see if we have size info on this tag.
-                        if (detection.metadata != null) {
-                            //  Check to see if we want to track towards this tag.
-                            if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                                // Yes, we want to use this tag.
-                                targetFound = true;
-                                desiredTag = detection;
-                                break;  // don't look any further.
-                            } else {
-                                // This tag is in the library, but we do not want to track it right now.
-                                telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                            }
-                        } else {
-                            // This tag is NOT in the library, so we don't have enough information to track to it.
-                            telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-                        }
-                    }
-
-                    // Tell the driver what we see, and what to do.
-                    if (targetFound) {
-
-                        strafeLeft();
-                        if(desiredTag.ftcPose.bearing < -10){
-                            aprilAdjust = false;
-                        }
-
-                    }
-                    telemetry.update();
-
-                    // Apply desired axes motions to the drivetrain.
-                    // moveRobot(drive, turn);
-                    sleep(10);
-
-
-                }
-
-
-                stopRobot();
-
-                forwardRobot();
-                sleep(300); //600
-                stopRobot();
-
-                OpenBox();
-                sleep(waitTimev3);
-
-                backwardRobot();
-                sleep(300);
-                IntakeBox();
-                stopRobot();
             }
 
+            drive.followTrajectorySequence(pos3_deposit);
+
+            SlidePower(slidePower);
+            sleep(waitTime + 400);
+            HoldSlides();
+            BoardDropBox();
+            sleep(waitTimev2);
+            OpenBox();
+            sleep(waitTimev2);
+            SlideDown();
+
+
+            DESIRED_TAG_ID = 2;
+            strafeLeft();
+
+
+            while (aprilAdjust) {
+                targetFound = false;
+                desiredTag = null;
+
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+                if (targetFound) {
+
+                    strafeLeft();
+                    if (desiredTag.ftcPose.bearing < -10) {
+                        aprilAdjust = false;
+                    }
+
+                }
+                telemetry.update();
+
+                // Apply desired axes motions to the drivetrain.
+                // moveRobot(drive, turn);
+                sleep(10);
+
+
+            }
+
+
+            stopRobot();
+
+            forwardRobot();
+            sleep(300); //600
+            stopRobot();
+
+            OpenBox();
+            sleep(waitTimev3);
+
+            backwardRobot();
+            sleep(300);
+            IntakeBox();
+            stopRobot();
+        }
+
     }
-
-
-
 
 
     private void initCode() {
@@ -844,9 +839,9 @@ public class Akash_RBR_World extends LinearOpMode {
 
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
 
-        bleftDrive  = hardwareMap.get(DcMotor.class, "rm");
+        bleftDrive = hardwareMap.get(DcMotor.class, "rm");
         brightDrive = hardwareMap.get(DcMotor.class, "lm");
-        leftDrive  = hardwareMap.get(DcMotor.class, "brm");
+        leftDrive = hardwareMap.get(DcMotor.class, "brm");
         rightDrive = hardwareMap.get(DcMotor.class, "blm");
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -862,8 +857,8 @@ public class Akash_RBR_World extends LinearOpMode {
         BucketR.setDirection(Servo.Direction.REVERSE);
 
 
-        Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
-        ColorFront = hardwareMap.get(NormalizedColorSensor.class,"Color2");
+        Color = hardwareMap.get(NormalizedColorSensor.class, "Color");
+        ColorFront = hardwareMap.get(NormalizedColorSensor.class, "Color2");
         RampSensor = hardwareMap.get(NormalizedColorSensor.class, "RampSensor");
 
 
@@ -875,10 +870,32 @@ public class Akash_RBR_World extends LinearOpMode {
         OpenBox();
 
     }
+
+    private void timeOut(){
+        boolean switcheroo = true;
+        long timeOut = System.currentTimeMillis();
+        while (switcheroo && timeOut > 5000) { // Loop while switcheroo is true and 5 seconds have not passed
+            if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
+                Intake.setPower(1);
+                IntakeRoller.setPower(-0.8);
+                switcheroo = false;
+            } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
+                break;
+            }
+        }
+    }
+
     private void SlidePower(double p){
         SlideR.setPower(p);
         SlideL.setPower(-p);
 
+    }
+
+    private void DownLimit(){
+        while (!LimitSwitch.isPressed()){
+            SlideR.setPower(-0.1);
+            SlideL.setPower(0.1);
+        }
     }
     private void useGrabber(){
         Grabber.setPosition(0.82);
@@ -895,14 +912,11 @@ public class Akash_RBR_World extends LinearOpMode {
 
     private void CloseBox(){
         //BucketHold.setPosition(0); //close
-        BucketHold.setPosition(0.15);
+        BucketHold.setPosition(0.67);
     }
     private void OpenBox(){
         BucketHold.setPosition(0.6); //close
 
-
-
-        BucketHold.setPosition(0.05);
 
     }
     private void BoardDropBox(){
@@ -920,6 +934,15 @@ public class Akash_RBR_World extends LinearOpMode {
     private void IntakeBox(){
         BucketL.setPosition(0.6);
         BucketR.setPosition(0.6);
+    }
+    private void SlideDown(){
+        boolean temp = true;
+        while(temp){
+            SlidePower(-0.25);
+            if(LimitSwitch.isPressed()){
+                temp = false;
+            }
+        }
     }
 /*
       if (LimitSwitch.isPressed()) {
