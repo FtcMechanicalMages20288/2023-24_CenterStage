@@ -8,10 +8,14 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 //import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.w8wjb.ftc.AdafruitNeoDriver;
+
+import android.graphics.Color;
+
 
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -89,8 +93,12 @@ public class MecanumLinear extends LinearOpMode {
 
     boolean IntakeReady = false;
 
+
+
     @Override
     public void runOpMode() throws InterruptedException {
+
+
 
         if (opModeInInit()) {
             initCode();
@@ -294,6 +302,9 @@ public class MecanumLinear extends LinearOpMode {
                     Pixels++;
                 }
 
+                if (Pixels == 2) {
+
+                }
 
             }
 
