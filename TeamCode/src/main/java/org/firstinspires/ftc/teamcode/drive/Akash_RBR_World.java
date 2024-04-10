@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import static java.lang.System.currentTimeMillis;
 
-import android.transition.Slide;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -360,17 +359,7 @@ public class Akash_RBR_World extends LinearOpMode {
                         IntakeRoller.setPower(0.8);
                     }*/
 
-                    boolean switcheroo = true;
-                    long timeOut = System.currentTimeMillis();
-                    while (switcheroo && timeOut > 5000) { // Loop while switcheroo is true and 5 seconds have not passed
-                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
-                            Intake.setPower(1);
-                            IntakeRoller.setPower(-0.8);
-                            switcheroo = false;
-                        } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
-                            break;
-                        }
-                    }
+
 
                 })
 
@@ -389,18 +378,18 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 .addDisplacementMarker(() -> {
                     boolean switcheroo = true;
-                    while (switcheroo && elapsedTimevar < 5000) { // Loop while switcheroo is true and 5 seconds have not passed
+                    long timeOut = System.currentTimeMillis();
+                    while (switcheroo && timeOut < (System.currentTimeMillis() + 5000)) { // Loop while switcheroo is true and 5 seconds have not passed
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
-                            Intake.setPower(0);
-                            IntakeRoller.setPower(0.8);
-                            switcheroo = false;
-                        } else {
                             Intake.setPower(1);
                             IntakeRoller.setPower(-0.8);
+                            switcheroo = false;
+                        } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
                             break;
                         }
                     }
                 })
+
 
                 /* .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
                      Intake.setPower(1);
@@ -418,6 +407,17 @@ public class Akash_RBR_World extends LinearOpMode {
                 })
                 */
                 .build();
+        TrajectorySequence pos1_cycle = drive.trajectorySequenceBuilder(pos1_intake.end())
+                .lineToConstantHeading(new Vector2d(51, 75)) //Change
+                .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(90))) //Change
+
+
+                .build();
+
+        TrajectorySequence pos1_cycle_adjust = drive.trajectorySequenceBuilder(pos1_deposit.end())
+                .strafeLeft(4)
+                .build();
+
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
                 .lineToLinearHeading(new Pose2d(pos2startx, pos2starty))
@@ -547,7 +547,7 @@ public class Akash_RBR_World extends LinearOpMode {
 
         sleep(500);
         setManualExposure(6, 250);
-        targetFound = false;// Desired turning power/speed (-1 to +1) +ve is CounterClockwise
+        targetFound = false;// Desired turning power/speed (-1 to +1)
 
 
         telemetry.addData("Final Pixel Position: ", finalDropPos);
@@ -563,6 +563,7 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 boolean pixelCheck = false;
                 while (!pixelCheck) {
+                    Intake.setPower(1);
                     IntakeRoller.setPower(-0.8);
                     if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
                             (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
@@ -579,8 +580,35 @@ public class Akash_RBR_World extends LinearOpMode {
                 sleep(waitTimev2);
                 OpenBox();
                 sleep(waitTimev2);
-                SlideDown();
+                IntakeBox();
+                SlidePower(-1 * slidePower - 0.2); //Slides Down
+                DownLimit();
 
+                //Cycle 1
+                drive.followTrajectorySequence(pos1_cycle);
+                drive.followTrajectorySequence(pos1_intake);
+
+                while (!pixelCheck) {
+                    IntakeRoller.setPower(-0.8);
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
+                        pixelCheck = true;
+                    }
+                }
+
+                drive.followTrajectorySequence(pos1_deposit);
+                drive.followTrajectorySequence(pos1_cycle_adjust); //move to left a little for deposition
+
+                SlidePower(slidePower);
+                sleep(waitTime + 400);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                OpenBox();
+                sleep(waitTimev2);
+                IntakeBox();
+                SlidePower(-1 * slidePower - 0.2); //Slides Down
+                DownLimit();
 
                 DESIRED_TAG_ID = 1;
                 strafeLeft();
@@ -670,7 +698,9 @@ public class Akash_RBR_World extends LinearOpMode {
                 sleep(waitTimev2);
                 OpenBox();
                 sleep(waitTimev2);
-                SlideDown();
+                IntakeBox();
+                SlidePower(-1 * slidePower - 0.2); //Slides Down
+                sleep(waitTimev2);
 
 
                 DESIRED_TAG_ID = 2;
@@ -764,7 +794,9 @@ public class Akash_RBR_World extends LinearOpMode {
             sleep(waitTimev2);
             OpenBox();
             sleep(waitTimev2);
-            SlideDown();
+            IntakeBox();
+            SlidePower(-1 * slidePower - 0.2); //Slides Down
+            sleep(waitTimev2);
 
 
             DESIRED_TAG_ID = 2;
@@ -874,7 +906,7 @@ public class Akash_RBR_World extends LinearOpMode {
     private void timeOut(){
         boolean switcheroo = true;
         long timeOut = System.currentTimeMillis();
-        while (switcheroo && timeOut > 5000) { // Loop while switcheroo is true and 5 seconds have not passed
+        while (switcheroo && timeOut < (System.currentTimeMillis() + 5000)) { // Loop while switcheroo is true and 5 seconds have not passed
             if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
                 Intake.setPower(1);
                 IntakeRoller.setPower(-0.8);
@@ -912,37 +944,32 @@ public class Akash_RBR_World extends LinearOpMode {
 
     private void CloseBox(){
         //BucketHold.setPosition(0); //close
-        BucketHold.setPosition(0.67);
+        BucketHold.setPosition(0.7);
     }
     private void OpenBox(){
-        BucketHold.setPosition(0.6); //close
+        BucketHold.setPosition(0.5); //close
 
 
     }
     private void BoardDropBox(){
-        BucketR.setPosition(0.23);
-        BucketL.setPosition(0.27);
+        BucketL.setPosition(1.1);
+        BucketR.setPosition(1.1);
     }
+
     private void HoldSlides(){
-        SlideR.setPower(0.1);
+        SlideR.setPower(-0.1);
         SlideL.setPower(0.1);
     }
+
     private void StopSlides(){
         SlideR.setPower(0);
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketL.setPosition(0.6);
-        BucketR.setPosition(0.6);
-    }
-    private void SlideDown(){
-        boolean temp = true;
-        while(temp){
-            SlidePower(-0.25);
-            if(LimitSwitch.isPressed()){
-                temp = false;
-            }
-        }
+        BucketL.setPosition(0.34);
+        BucketR.setPosition(0.34);
+//        BucketR.setPosition(0.59);
+//        BucketL.setPosition(0.63);
     }
 /*
       if (LimitSwitch.isPressed()) {

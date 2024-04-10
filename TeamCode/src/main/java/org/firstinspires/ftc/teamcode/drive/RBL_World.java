@@ -9,11 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -81,10 +84,18 @@ public class RBL_World extends LinearOpMode {
     private DcMotor SlideR, SlideL, Intake;
     private CRServo GrabRoller;
 
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+    private DcMotor brightDrive = null;
+    private DcMotor bleftDrive = null;
+
     private TouchSensor LimitSwitch;
     private Servo Grabber;
     private CRServo IntakeRoller;
 
+    private NormalizedColorSensor RampSensor, Color, ColorFront;
+
+    int pixels = 1;
 
     public static double slidePower = 0.45;
     int xValue = 19;
@@ -142,7 +153,6 @@ public class RBL_World extends LinearOpMode {
         initCode();
         CloseBox();
         initTfod();
-
         PixelPusher.setPosition(0.45); // locks pixel
 
 
@@ -160,9 +170,6 @@ public class RBL_World extends LinearOpMode {
 
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
-                .addDisplacementMarker(() -> {
-                    sleep(WaitageTimeVar);
-                })
 
                 .lineToLinearHeading(new Pose2d(24, 6))
                 .addDisplacementMarker(() -> {
@@ -172,8 +179,11 @@ public class RBL_World extends LinearOpMode {
                     sleep(800);
                 })
                 .back(9)
-                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(x22Value - 1.25 ,y22Value,Math.toRadians(90)))
+
+
                 .build();
+
 
 
 
@@ -183,9 +193,23 @@ public class RBL_World extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
                 )
+                .addDisplacementMarker(() -> {
+                    OpenBox();
+                    sleep(200);
+                    SlidePower(slidePower + 0.2);
+                    sleep(250);
+                    HoldSlides();
+                    IntakeBox();
+                    StopSlides();
+                    //sleep(300);
+                })
 
 
                 .build();
+
+
+
+
 
 
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj2.end())
@@ -196,15 +220,68 @@ public class RBL_World extends LinearOpMode {
                 )
                 /*  .addDisplacementMarker(() -> {
                       IntakeBox();
-                  })*/
-                .lineToLinearHeading(new Pose2d(5, 10, Math.toRadians(90)))
-                //  .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                  })
+                  .lineToLinearHeading(new Pose2d(5, 10, Math.toRadians(90)))*/
                 .build();
 
+
         TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj2.end())
-                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(135)))
+
+                .addDisplacementMarker(() -> {
+                    SlideDown();
+
+                })
+
+                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
+                .turn(Math.toRadians(-5))
+
+                .back(5)
+
+                .addDisplacementMarker(() -> {
+                    useGrabber();
+                })
+
+
+                .build();
+        TrajectorySequence intake = drive.trajectorySequenceBuilder(traj4.end())
+
+                .waitSeconds(3)
+                .addDisplacementMarker(() -> {
+                    setGrabber();
+                })
+                .waitSeconds(.5)
+
+
+                .back(2.8)
+                .waitSeconds(0.5)
+
+                .addDisplacementMarker(() -> {
+                    boolean switcheroo = true;
+                    long timeOut = System.currentTimeMillis();
+
+                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+
+                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
+                           /* Intake.setPower(-1);
+                            IntakeRoller.setPower(0.8); */
+                            pixels++;
+                            switcheroo = false;
+                            telemetry.addData("Krrish Sucks", "Its true");
+                            telemetry.update();
+                        }
+                    }
+                    Intake.setPower(1);
+
+
+                })
+                .waitSeconds(0.5)
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(1);
+                    IntakeRoller.setPower(-0.8);
+
+                })
 
                 .build();
 
@@ -231,14 +308,44 @@ public class RBL_World extends LinearOpMode {
                 .build(); */
 
 
-        TrajectorySequence traj5 = drive.trajectorySequenceBuilder(traj4.end())
-                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(28,25, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+        TrajectorySequence traj5 = drive.trajectorySequenceBuilder(intake.end())
+//                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90)))
+//                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90)))
+//                .lineToLinearHeading(new Pose2d(28,25, Math.toRadians(90)))
+//                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+
+                // new code!!!!
+
+                //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
+                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(25,25, Math.toRadians(90)))
+
+
+
+                //Traj4
+//                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90))) //x = 4.5 prev
+//                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90))) //x = 4.5 prev
+//                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
+//                .forward(6)
+
                 .build();
 
+        TrajectorySequence traj5p2 = drive.trajectorySequenceBuilder(traj5.end())
+                .forward(FwBw,
+                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
+                )
+
+
+                .build();
+        TrajectorySequence park = drive.trajectorySequenceBuilder(traj5p2.end())
+
+                .back(FwBw+3)
+                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+
+                .build();
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
@@ -275,7 +382,7 @@ public class RBL_World extends LinearOpMode {
                 .addDisplacementMarker(() -> {
                     IntakeBox();
                 })
-                .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(90)))
+                // .lineToLinearHeading(new Pose2d(strafetox+3,strafetoy,Math.toRadians(90)))
                 .build();
 
         TrajectorySequence traj2_4 = drive.trajectorySequenceBuilder(traj2_3.end())
@@ -306,7 +413,7 @@ public class RBL_World extends LinearOpMode {
                 .back(14)
                 // .back(4)
                 // .turn(Math.toRadians(turn3_5))
-                .lineToLinearHeading(new Pose2d(x44Value-2.5,y44Value,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(x44Value-3.5, y44Value,Math.toRadians(90)))
                 .build();
 
 
@@ -341,6 +448,40 @@ public class RBL_World extends LinearOpMode {
                 .build();
 
 
+        TrajectorySequence traj_intake = drive.trajectorySequenceBuilder(traj3_5.end())//Change End
+                .back(1) //Change
+                .addDisplacementMarker(() -> { //Change Duration
+                    // Run action at 2.5 seconds into the path (1.5 seconds after the previous marker)
+                    useGrabber();
+                    GrabRoller.setPower(0.95);
+                })
+
+                .addDisplacementMarker(() -> { //Intake N Wrods
+                    stopRobot();
+                    sleep(2000);
+                    setGrabber();
+                    GrabRoller.setPower(0);
+                    /*if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
+                        Intake.setPower(0);
+                        IntakeRoller.setPower(0.8);
+                    }*/
+
+                    boolean switcheroo = true;
+                    long timeOut = System.currentTimeMillis();
+                    while (switcheroo && timeOut > 5000) { // Loop while switcheroo is true and 5 seconds have not passed
+                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
+                            Intake.setPower(1);
+                            IntakeRoller.setPower(-0.8);
+                            switcheroo = false;
+                        } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
+                            break;
+                        }
+                    }
+
+                })
+
+                .build();
+
 
 
 
@@ -369,71 +510,163 @@ public class RBL_World extends LinearOpMode {
         if(!isStopRequested()){
             if(finalDropPos == 1 ) {
                 drive.followTrajectorySequence(pos1);
+
                 IntakeBox();
-
-
-                SlideUp(500);
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-250); //Change
                 HoldSlides();
-
                 BoardDropBox();
-                sleep(waitTimev2);
                 drive.followTrajectorySequence(traj2);
-                OpenBox();
-                sleep(500);
 
-                drive.followTrajectorySequence(traj3);
-                SlideDown();
+
+
+                //drive.followTrajectorySequence(traj3);
+
 
                 drive.followTrajectorySequence(traj4);
+                //useGrabber();
+
+                IntakePix();
+                //sleep(waitTime+1500);
+
+
+                drive.followTrajectorySequence(intake);
+
+
                 drive.followTrajectorySequence(traj5);
+                boolean pixelCheck = false;
+                while (!pixelCheck) {
+
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
+                        pixelCheck = true;
+                    }
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
+                        pixelCheck = true;
+                    }
+                }
+                IntakeRoller.setPower(0);
+                Intake.setPower(0);
+                CloseBox();
+
+                //sleep(5000);
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime+200);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj5p2);
+                OpenBox();
+                sleep(waitTimev2-150);
+                IntakeBox();
+                sleep(300);
+                drive.followTrajectorySequence(park);
+
 
 
             }
             if(finalDropPos == 2 ) {
                 drive.followTrajectorySequence(pos2);
+
                 IntakeBox();
-
-                SlideUp(500);
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-200);
                 HoldSlides();
-
                 BoardDropBox();
                 sleep(waitTimev2);
                 drive.followTrajectorySequence(traj2_2);
                 OpenBox();
-                sleep(500);
+                SlidePower(slidePower + 0.2);
+                sleep(250);
+                HoldSlides();
+                IntakeBox();
+                sleep(300);
 
 
-                drive.followTrajectorySequence(traj2_3);
-
+                //drive.followTrajectorySequence(traj3);
                 SlideDown();
-
+                sleep(300);
 
                 drive.followTrajectorySequence(traj4);
+                useGrabber();
+
+                sleep(waitTime+1500);
+                setGrabber();
+
+                IntakePix();
+                sleep(waitTime+1500);
+
+                drive.followTrajectorySequence(intake);
+
+
                 drive.followTrajectorySequence(traj5);
+
+                //sleep(5000);
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-100);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj5p2);
+                OpenBox();
+                sleep(waitTimev2-150);
+                IntakeBox();
+                sleep(300);
+                drive.followTrajectorySequence(park);
 
 
             }
             if(finalDropPos == 3) {
-
                 drive.followTrajectorySequence(pos3);
+
                 IntakeBox();
-
-                SlideUp(500);
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-200);
                 HoldSlides();
-
                 BoardDropBox();
                 sleep(waitTimev2);
                 drive.followTrajectorySequence(traj3_2);
                 OpenBox();
-                sleep(500);
+                SlidePower(slidePower + 0.2);
+                sleep(250);
+                HoldSlides();
+                IntakeBox();
+                sleep(300);
 
 
-                drive.followTrajectorySequence(traj3_3);
-
+                //drive.followTrajectorySequence(traj3);
                 SlideDown();
+                sleep(300);
 
                 drive.followTrajectorySequence(traj4);
+                useGrabber();
+
+                sleep(waitTime+1500);
+                setGrabber();
+
+                IntakePix();
+                sleep(waitTime+1500);
+
+                drive.followTrajectorySequence(intake);
+
+
                 drive.followTrajectorySequence(traj3_5);
+
+                //sleep(5000);
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-100);
+                HoldSlides();
+                BoardDropBox();
+                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj5p2);
+                OpenBox();
+                sleep(waitTimev2-150);
+                IntakeBox();
+                sleep(300);
+                drive.followTrajectorySequence(park);
 
 
 
@@ -450,23 +683,30 @@ public class RBL_World extends LinearOpMode {
 
     private void SlideDown(){
         boolean temp = true;
+
         while(temp){
-            SlidePower(-0.25);
+            SlidePower(-0.4);
             if(LimitSwitch.isPressed()){
+                telemetry.addData("Is Pressed", "HI");
+                telemetry.update();
                 temp = false;
+
             }
         }
-    }
-
-    private void SlideUp(long time ){
-        SlidePower(slidePower+0.2);
-        sleep(time);
     }
     private void initCode() {
         SlideR = hardwareMap.dcMotor.get("SlideR");
         SlideL = hardwareMap.dcMotor.get("SlideL");
 
+        bleftDrive = hardwareMap.get(DcMotor.class, "rm");
+        brightDrive = hardwareMap.get(DcMotor.class, "lm");
+        leftDrive = hardwareMap.get(DcMotor.class, "brm");
+        rightDrive = hardwareMap.get(DcMotor.class, "blm");
 
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        bleftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        brightDrive.setDirection(DcMotor.Direction.FORWARD);
 
         PixelPusher = hardwareMap.get(Servo.class, "Pixel Pusher");
 
@@ -476,12 +716,21 @@ public class RBL_World extends LinearOpMode {
         BucketHold = hardwareMap.get(Servo.class, "BucketHold");
         BucketR = hardwareMap.get(Servo.class, "BucketR");
         BucketR.setDirection(Servo.Direction.REVERSE);
+
         Grabber = hardwareMap.get(Servo.class, "Grab");
         GrabRoller = hardwareMap.get(CRServo.class, "GrabRoller");
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
+        Intake = hardwareMap.dcMotor.get("Intake");
+
+        Color = hardwareMap.get(NormalizedColorSensor.class, "Color");
+        ColorFront = hardwareMap.get(NormalizedColorSensor.class, "Color2");
+        RampSensor = hardwareMap.get(NormalizedColorSensor.class, "RampSensor");
+
+
         setGrabber();
         CloseBox();
         IntakeBox();
+
 
     }
 
@@ -495,6 +744,16 @@ public class RBL_World extends LinearOpMode {
         PixelPusher.setPosition(0.15);
     }
 
+    private void IntakePix() {
+        Intake.setPower(1);
+        IntakeRoller.setPower(-0.8);
+    }
+
+    private void OuttakePix() {
+        Intake.setPower(-1);
+        IntakeRoller.setPower(0.8);
+    }
+
     private void CloseBox(){
         BucketHold.setPosition(0.7);
     }
@@ -505,8 +764,8 @@ public class RBL_World extends LinearOpMode {
 
     }
     private void useGrabber(){
-        Grabber.setPosition(0.55);
-
+        Grabber.setPosition(0.83);
+        GrabRoller.setPower(0.95);
     }
 
     private void setGrabber(){
@@ -521,9 +780,16 @@ public class RBL_World extends LinearOpMode {
     //Bucket Hold Port 3
 
     private void BoardDropBox(){
-        BucketR.setPosition(0.25); //ChangeLads
-        BucketL.setPosition(0.25);
+        BucketL.setPosition(0.7);
+        BucketR.setPosition(0.7);
     }
+    public void stopRobot(){
+        leftDrive.setPower(0);
+        bleftDrive.setPower(0);
+        rightDrive.setPower(0);
+        brightDrive.setPower(0);
+    }
+
     private void HoldSlides(){
         SlideR.setPower(-0.1);
         SlideL.setPower(0.1);
@@ -534,8 +800,8 @@ public class RBL_World extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
+        BucketL.setPosition(0.34);
+        BucketR.setPosition(0.34);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }
