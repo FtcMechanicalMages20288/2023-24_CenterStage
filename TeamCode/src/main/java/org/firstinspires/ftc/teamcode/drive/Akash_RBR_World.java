@@ -301,7 +301,7 @@ public class Akash_RBR_World extends LinearOpMode {
         TrajectorySequence pos1_intake = drive.trajectorySequenceBuilder(pos1.end())
 
 
-                .waitSeconds(3)
+                .waitSeconds(1)
 
                 .addDisplacementMarker(() -> {
                     setGrabber();
@@ -344,24 +344,60 @@ public class Akash_RBR_World extends LinearOpMode {
 
                     Intake.setPower(-0.6);
                     IntakeRoller.setPower(0.8);
+                    CloseBox();
+                    sleep(1000);
 
                 })
 
-                .lineToConstantHeading(new Vector2d(51, 75)) //Change
-                .lineToLinearHeading(new Pose2d(17, 25,Math.toRadians(90))) //Change
+
+                .lineToConstantHeading(new Vector2d(51, 75))
+                .strafeLeft(27)
+
+
+
+                .addSpatialMarker(new Vector2d(51, 75), () -> {
+                    CloseBox();
+                    IntakeBox();
+                    SlidePower(slidePower);
+                    sleep(waitTime + 400);
+                    HoldSlides();
+                    BoardDropBox();
+                    sleep(400);
+                    OpenBox();
+                    stopRobot();
+                    sleep(1500);
+
+
+                })
+
+
+
+                .forward(13)//change
 
                 .build();
 
 
 
-        TrajectorySequence pos1_cycle = drive.trajectorySequenceBuilder(pos1_intake.end())
+
+        TrajectorySequence pos1_cycle = drive.trajectorySequenceBuilder(pos1_deposit.end())
+
+                .addDisplacementMarker(() -> {
+                    sleep(200);
+                    SlidePower(slidePower + 0.2);
+                    sleep(250);
+                    HoldSlides();
+                    IntakeBox();
+                    StopSlides();
+                    //sleep(300);
+                })
+
                 .lineToConstantHeading(new Vector2d(51, 75)) //Change
                 .lineToLinearHeading(new Pose2d(49, -14,Math.toRadians(90))) //Change
 
 
                 .build();
 
-        TrajectorySequence pos1_cycle_adjust = drive.trajectorySequenceBuilder(pos1_deposit.end())
+        TrajectorySequence pos1_cycle_adjust = drive.trajectorySequenceBuilder(pos1_cycle.end())
                 .strafeLeft(4)
                 .build();
 
@@ -523,16 +559,14 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos1_deposit);
 
-                SlidePower(slidePower);
-                sleep(waitTime + 400);
+                CloseBox();
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-250); //Change
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
                 OpenBox();
-                sleep(waitTimev2);
-                IntakeBox();
-                SlidePower(-1 * slidePower - 0.2); //Slides Down
-                DownLimit();
+
 
                 //Cycle 1
                 drive.followTrajectorySequence(pos1_cycle);
@@ -868,8 +902,8 @@ public class Akash_RBR_World extends LinearOpMode {
     }
 
     private void SlidePower(double p){
-        SlideR.setPower(p);
-        SlideL.setPower(-p);
+        SlideR.setPower(-p);
+        SlideL.setPower(p);
 
     }
 
