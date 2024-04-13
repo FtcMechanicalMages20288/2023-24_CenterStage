@@ -121,6 +121,7 @@ public class Akash_RBR_World extends LinearOpMode {
 
     private NormalizedColorSensor RampSensor, Color, ColorFront;
 
+    int pixels = 1;
 
     // Tfod Stuff Above
 
@@ -286,137 +287,124 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 //.lineTo(new Vector2d(18, 2))
                 .lineToLinearHeading(new Pose2d(49, -2, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(49, -15, Math.toRadians(90)))
+
+
+                .back(3)
+                .addDisplacementMarker(() -> { //Change Duration
+                    useGrabber();
+                })
 
                 .build();
 
 
-        TrajectorySequence pos1_deposit = drive.trajectorySequenceBuilder(pos1.end())
+        TrajectorySequence pos1_intake = drive.trajectorySequenceBuilder(pos1.end())
+
+
+                .waitSeconds(1)
+
+                .addDisplacementMarker(() -> {
+                    setGrabber();
+                })
+                .waitSeconds(.2)
+
+                .back(2.8)
+                .waitSeconds(0.2)
+
+                .addDisplacementMarker(() -> {
+                    boolean switcheroo = true;
+                    final long timeOut = System.currentTimeMillis();
+
+                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+
+                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
+                           Intake.setPower(-1);
+                            IntakeRoller.setPower(0.8);
+                            pixels++;
+                            switcheroo = false;
+                            telemetry.addData("Krrish Sucks", "Its true");
+                            telemetry.update();
+                        }
+                    }
+
+                })
+                .waitSeconds(0.2)
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(1);
+                    IntakeRoller.setPower(-0.8);
+
+                })
+
+                .build();
+
+        TrajectorySequence pos1_deposit = drive.trajectorySequenceBuilder(pos1_intake.end())
 
 
                 .addDisplacementMarker(() -> {
 
                     Intake.setPower(-0.6);
                     IntakeRoller.setPower(0.8);
+                    CloseBox();
+                    sleep(1000);
 
                 })
+
 
                 .lineToConstantHeading(new Vector2d(51, 75))
-
-                /*  .addSpatialMarker(new Vector2d(49,-14), () -> {
-                      Intake.setPower(1);
-
-                  })*/
+                .strafeLeft(27)
 
 
-                .addDisplacementMarker(() -> {
-                    setGrabber();
 
-                })
-
-
-                /* .addDisplacementMarker(() -> {
-
-                     IntakeBox();
-                     SlidePower(slidePower);
-                     sleep(waitTime+500);
-                     HoldSlides();
-                     BoardDropBox();
-                     // sleep(waitTimev2);
-
-                 })*/
-                //.lineTo(new Vector2d(54, 75))
-                /*.addDisplacementMarker(() -> {
+                .addSpatialMarker(new Vector2d(51, 75), () -> {
+                    CloseBox();
+                    IntakeBox();
+                    SlidePower(slidePower);
+                    sleep(waitTime + 400);
+                    HoldSlides();
+                    BoardDropBox();
+                    sleep(400);
                     OpenBox();
-                    sleep(1000);
-                    backwardRobot();
-                    sleep(500);
                     stopRobot();
+                    sleep(1500);
+
+
                 })
-                .waitSeconds(1.6)*/
-                //.turn(Math.toRadians(200))
-                //.turn(Math.toRadians(-15.5))
+
+
+
+                .forward(13)//change
+
                 .build();
 
-        TrajectorySequence pos1_intake = drive.trajectorySequenceBuilder(pos1.end())
-
-
-                .back(2.1)
-
-                .addDisplacementMarker(() -> { //Change Duration
-                    // Run action at 2.5 seconds into the path (1.5 seconds after the previous marker)
-                    useGrabber();
-                    GrabRoller.setPower(0.95);
-                })
-
-                .addDisplacementMarker(() -> { //Intake N Wrods
-                    stopRobot();
-                    sleep(2000);
-                    setGrabber();
-                    GrabRoller.setPower(0);
-                    /*if((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4) ){
-                        Intake.setPower(0);
-                        IntakeRoller.setPower(0.8);
-                    }*/
 
 
 
-                })
-
-
+        TrajectorySequence pos1_cycle = drive.trajectorySequenceBuilder(pos1_deposit.end())
 
                 .addDisplacementMarker(() -> {
-                    resetSpeed();
                     sleep(200);
-                    if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
-                        Intake.setPower(0);
-                        IntakeRoller.setPower(0.8);
-                    }
+                    SlidePower(slidePower + 0.2);
+                    sleep(250);
+                    HoldSlides();
+                    IntakeBox();
+                    StopSlides();
+                    //sleep(300);
                 })
 
-                .back(1.8)
-
-                .addDisplacementMarker(() -> {
-                    boolean switcheroo = true;
-                    long timeOut = System.currentTimeMillis();
-                    while (switcheroo && timeOut < (System.currentTimeMillis() + 5000)) { // Loop while switcheroo is true and 5 seconds have not passed
-                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
-                            Intake.setPower(1);
-                            IntakeRoller.setPower(-0.8);
-                            switcheroo = false;
-                        } else if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) > 4)) {
-                            break;
-                        }
-                    }
-                })
-
-
-                /* .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
-                     Intake.setPower(1);
-                     IntakeRoller.setPower(-0.8);
-                     sleep(1200);
-                     stopRobot();
-
-                 }) */
-
-                /*
-                .addDisplacementMarker(() -> { //After First Temporal Marker: Outake Any pixels
-                    Intake.setPower(-1);
-                    IntakeRoller.setPower(0.8);
-
-                })
-                */
-                .build();
-        TrajectorySequence pos1_cycle = drive.trajectorySequenceBuilder(pos1_intake.end())
                 .lineToConstantHeading(new Vector2d(51, 75)) //Change
-                .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(90))) //Change
+                .lineToLinearHeading(new Pose2d(49, -14,Math.toRadians(90))) //Change
 
 
                 .build();
 
-        TrajectorySequence pos1_cycle_adjust = drive.trajectorySequenceBuilder(pos1_deposit.end())
+        TrajectorySequence pos1_cycle_adjust = drive.trajectorySequenceBuilder(pos1_cycle.end())
                 .strafeLeft(4)
                 .build();
+
+
+
+        /// POS 2 ///
+
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
@@ -485,37 +473,35 @@ public class Akash_RBR_World extends LinearOpMode {
                     }
                 })
 
-                .back(1.8)
+                .back(2.8)
+                .waitSeconds(0.5)
 
                 .addDisplacementMarker(() -> {
                     boolean switcheroo = true;
-                    while (switcheroo) {
-                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4)) {
-                            Intake.setPower(0);
-                            IntakeRoller.setPower(0.8);
+                    long timeOut = System.currentTimeMillis();
+
+                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+
+                        if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
+                           /* Intake.setPower(-1);
+                            IntakeRoller.setPower(0.8); */
+                            pixels++;
                             switcheroo = false;
-                        } else {
-                            Intake.setPower(1);
-                            IntakeRoller.setPower(-0.8);
+                            telemetry.addData("Krrish Sucks", "Its true");
+                            telemetry.update();
                         }
                     }
-                })
+                    Intake.setPower(1);
 
-                /* .addDisplacementMarker(() -> { //Intake on Stack - Wait Seconds
-                     Intake.setPower(1);
-                     IntakeRoller.setPower(-0.8);
-                     sleep(1200);
-                     stopRobot();
-
-                 }) */
-
-                /*
-                .addDisplacementMarker(() -> { //After First Temporal Marker: Outake Any pixels
-                    Intake.setPower(-1);
-                    IntakeRoller.setPower(0.8);
 
                 })
-                */
+                .waitSeconds(0.5)
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(1);
+                    IntakeRoller.setPower(-0.8);
+
+                })
+
                 .build();
 
 
@@ -573,16 +559,14 @@ public class Akash_RBR_World extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos1_deposit);
 
-                SlidePower(slidePower);
-                sleep(waitTime + 400);
+                CloseBox();
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-250); //Change
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
                 OpenBox();
-                sleep(waitTimev2);
-                IntakeBox();
-                SlidePower(-1 * slidePower - 0.2); //Slides Down
-                DownLimit();
+
 
                 //Cycle 1
                 drive.followTrajectorySequence(pos1_cycle);
@@ -918,8 +902,8 @@ public class Akash_RBR_World extends LinearOpMode {
     }
 
     private void SlidePower(double p){
-        SlideR.setPower(p);
-        SlideL.setPower(-p);
+        SlideR.setPower(-p);
+        SlideL.setPower(p);
 
     }
 
@@ -930,12 +914,15 @@ public class Akash_RBR_World extends LinearOpMode {
         }
     }
     private void useGrabber(){
-        Grabber.setPosition(0.82);
+        Grabber.setPosition(0.83);
+        GrabRoller.setPower(0.95);
 
     }
 
     private void setGrabber(){
         Grabber.setPosition(0.47);
+        GrabRoller.setPower(0);
+
     }
 
     private void ReleasePixel() {
@@ -952,8 +939,8 @@ public class Akash_RBR_World extends LinearOpMode {
 
     }
     private void BoardDropBox(){
-        BucketL.setPosition(1.1);
-        BucketR.setPosition(1.1);
+        BucketL.setPosition(0.7);
+        BucketR.setPosition(0.7);
     }
 
     private void HoldSlides(){
