@@ -174,16 +174,21 @@ public class RRR_World extends LinearOpMode {
 
         TrajectorySequence pos1 = drive.trajectorySequenceBuilder(sP)
 
-                .lineToLinearHeading(new Pose2d(24, 6))
+                .lineToLinearHeading(new Pose2d(x4Value, y4Value))
+                .turn(Math.toRadians(50-11))
+                .forward(8)
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(800);
+                    sleep(500);
                 })
-                .back(9)
-                .lineToLinearHeading(new Pose2d(x22Value - 1.25 ,y22Value,Math.toRadians(90)))
+                .back(8)
+                .back(7)
 
+                //goes to board
+                .turn(Math.toRadians(-90+11))
+                .lineToLinearHeading(new Pose2d(x22Value,-y22Value,Math.toRadians(-90)))
 
                 .build();
 
@@ -236,13 +241,12 @@ public class RRR_World extends LinearOpMode {
 
                 })
 
-                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
+                .lineToLinearHeading(new Pose2d(4,-8,Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(4, 60, Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(16, 72, Math.toRadians(-90-36)))
                 //  .turn(Math.toRadians(-3.6))
 
-                .back(6
-                )
+                .back(6)
 
                 .addDisplacementMarker(() -> {
                     useGrabber();
@@ -263,7 +267,7 @@ public class RRR_World extends LinearOpMode {
 
 
 
-                .back(3.8)
+                //.back(3.8)
                 .waitSeconds(0.5)
 
                 .addDisplacementMarker(() -> {
@@ -294,27 +298,6 @@ public class RRR_World extends LinearOpMode {
 
                 .build();
 
-       /* TrajectorySequence traj4_p2 = drive.trajectorySequenceBuilder(traj4.end())
-                .addDisplacementMarker(() ->{
-                    useGrabber();
-                    GrabRoller.setPower(0.85);
-
-
-                })
-                .build();
-
-        TrajectorySequence traj4_p3 = drive.trajectorySequenceBuilder(traj4.end())
-                .addDisplacementMarker(() ->{
-
-                    Intake.setPower(0.8);
-                    IntakeRoller.setPower(-0.8);
-                    sleep(1000);
-                    Intake.setPower(0);
-                    IntakeRoller.setPower(0);
-
-
-                })
-                .build(); */
 
 
         TrajectorySequence traj5 = drive.trajectorySequenceBuilder(intake.end())
@@ -331,8 +314,11 @@ public class RRR_World extends LinearOpMode {
                 // new code!!!!
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
-                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90)))
+
+                .lineToLinearHeading(new Pose2d(4, 60, Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(4,-8,Math.toRadians(-90))) //x = 4.5 prev
+
+
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
                     boolean breakyCheck = false;
@@ -373,8 +359,8 @@ public class RRR_World extends LinearOpMode {
                 .build();
 
         TrajectorySequence traj5p2 = drive.trajectorySequenceBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(18,25, Math.toRadians(90)))
-                .forward(FwBw+2,
+                .lineToLinearHeading(new Pose2d(18,-23, Math.toRadians(-90)))
+                .forward(FwBw,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -385,21 +371,22 @@ public class RRR_World extends LinearOpMode {
         TrajectorySequence park = drive.trajectorySequenceBuilder(traj5p2.end())
 
                 .back(FwBw)
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,-27,Math.toRadians(-90)))
 
                 .build();
 
 
         TrajectorySequence pos2 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x3Value, y3Value, Math.toRadians(-5))) // added to make robot more straight
+                .lineToLinearHeading(new Pose2d(29, -4))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
-                    sleep(800);
+                    sleep(500);
                 })
-                .back(4)
-                .lineToLinearHeading(new Pose2d(x33Value-1,y33Value+1,Math.toRadians(turn2+5))) //90
+                .back(10)
+                //going to board
+                .lineToLinearHeading(new Pose2d(26,-25,Math.toRadians(-90)))
                 .build();
 
 
@@ -435,23 +422,19 @@ public class RRR_World extends LinearOpMode {
 
 
         TrajectorySequence pos3 = drive.trajectorySequenceBuilder(sP)
-                .lineToLinearHeading(new Pose2d(x4Value, y4Value))
-                .turn(Math.toRadians(turn3_3))
-                .forward(10)
+                .lineToLinearHeading(new Pose2d(20, -13))
                 .addDisplacementMarker(() -> {
                     ReleasePixel();
                 })
                 .addDisplacementMarker(() -> {
                     sleep(800);
                 })
-                .back(14)
-                // .back(4)
-                // .turn(Math.toRadians(turn3_5))
-                .lineToLinearHeading(new Pose2d(x44Value-3.5, y44Value,Math.toRadians(90)))
+                .back(9)
+                .lineToLinearHeading(new Pose2d(16,-23,Math.toRadians(-90)))
                 .build();
 
         TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw+5,
+                .forward(FwBw+1,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -471,38 +454,14 @@ public class RRR_World extends LinearOpMode {
                 .build();
 
 
-        TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw+3,
-                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-
-                .build();
 
 
-        TrajectorySequence traj3_3 = drive.trajectorySequenceBuilder(traj3_2.end())
-                .back(FwBw,
-                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
-                )
-                .addDisplacementMarker(() -> {
-                    IntakeBox();
-                })
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
-                .build();
 
-        TrajectorySequence traj3_5 = drive.trajectorySequenceBuilder(traj4.end())
-                .lineToLinearHeading(new Pose2d(5, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(5,10,Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(35,25, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
-                .build();
 
 
         TrajectorySequence breakPark = drive.trajectorySequenceBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,-27,Math.toRadians(-90)))
                 .build();
 
 
@@ -522,7 +481,7 @@ public class RRR_World extends LinearOpMode {
         } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
             finalDropPos = 3;
         } else {
-            finalDropPos = 3;
+            finalDropPos = 1;
             telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
         }
 

@@ -228,7 +228,7 @@ public class RRR_State extends LinearOpMode {
 
                 //goes to board
                 .turn(Math.toRadians(turn3_5+11))
-                .lineToLinearHeading(new Pose2d(x22Value,y22Value,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(19,25,Math.toRadians(-90)))
                 .build();
 
 

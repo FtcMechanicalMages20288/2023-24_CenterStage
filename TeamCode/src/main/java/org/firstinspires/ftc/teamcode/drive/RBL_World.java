@@ -243,8 +243,7 @@ public class RBL_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
               //  .turn(Math.toRadians(-3.6))
 
-                .back(6
-                )
+                .back(6)
 
                 .addDisplacementMarker(() -> {
                     useGrabber();
@@ -263,25 +262,8 @@ public class RBL_World extends LinearOpMode {
                     IntakePix();
                 })
 
+                .back(0.1)
 
-
-                .forward(1)
-                .addDisplacementMarker(() ->{
-
-                    if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
-                        switcheroo = false;
-                    }
-                    else{
-                        switcheroo = true;
-                    }
-                })
-                .waitSeconds(0.2)
-                .back(2.5,
-                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
                 .waitSeconds(0.2)
 
                 .addDisplacementMarker(() -> {
@@ -304,36 +286,14 @@ public class RBL_World extends LinearOpMode {
 
                         }
                     }
+                    if(!switcheroo){
                     Intake.setPower(-1);
-
+                    }
 
                 })
 
 
                 .build();
-
-       /* TrajectorySequence traj4_p2 = drive.trajectorySequenceBuilder(traj4.end())
-                .addDisplacementMarker(() ->{
-                    useGrabber();
-                    GrabRoller.setPower(0.85);
-
-
-                })
-                .build();
-
-        TrajectorySequence traj4_p3 = drive.trajectorySequenceBuilder(traj4.end())
-                .addDisplacementMarker(() ->{
-
-                    Intake.setPower(0.8);
-                    IntakeRoller.setPower(-0.8);
-                    sleep(1000);
-                    Intake.setPower(0);
-                    IntakeRoller.setPower(0);
-
-
-                })
-                .build(); */
-
 
         TrajectorySequence traj5 = drive.trajectorySequenceBuilder(intake.end())
 //                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90)))
