@@ -46,6 +46,8 @@ public class MecanumLinear extends LinearOpMode {
     //BoxColorSensor
     private NormalizedColorSensor Color, ColorFront;
 
+    private ColorSensor ColorSense, ColorFrontSense;
+
     long startTime = System.currentTimeMillis();
 
 
@@ -59,7 +61,26 @@ public class MecanumLinear extends LinearOpMode {
 
     public static final int NUM_PIXELS = 60;
 
+    public final int thirdPixels = 15;
+
+    public final int twoThirdPixels = 35;
+
+
+
     AdafruitNeoDriver neopixels;
+
+       float[] stripPurple =  new float[] {278 , 89, 66 };
+
+       float[] stripGreen = new float[] {101 , 42, 66 };
+
+       float[] stripYellow = new float[] {20, 100, 100};
+
+       float[] stripWhite = new float[] {0 , 0, 100};
+
+
+
+
+
 
 
     boolean Rumbled = false;
@@ -129,6 +150,8 @@ public class MecanumLinear extends LinearOpMode {
                 gamepad2.stopRumble();
                 telemetry.addData("Intake", " Not Ready");
             }
+
+
 
             telemetry.addData("ServoR", HangR.getPosition());
             telemetry.addData("ServoL", HangL.getPosition());
@@ -220,11 +243,14 @@ public class MecanumLinear extends LinearOpMode {
             }
 
             if (Pixels == 1 && endTime < 85000) {
-                showGreen();
+                colorsDefined(stripWhite , getBackColor() );
+                //showGreen();
             }
 
             if (Pixels == 2 && endTime < 85000) {
-                showPurple();
+               // showPurple();
+
+                colorsDefined(getFrontColor(), getBackColor());
             }
 
             if (endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2) {
@@ -305,9 +331,6 @@ public class MecanumLinear extends LinearOpMode {
                     Pixels++;
                 }
 
-                if (Pixels == 2) {
-
-                }
 
             }
 
@@ -569,11 +592,86 @@ public class MecanumLinear extends LinearOpMode {
         neopixels.setPixelColors(colors);
         neopixels.show();
     }
+
+
     private void colorOff(){
         int[] colors = new int[NUM_PIXELS];
 
         for (int i=0; i < colors.length; i++) {
             int color = android.graphics.Color.HSVToColor(new float[] {0 , 0, 0 });
+            colors[i] = color;
+        }
+
+        neopixels.setPixelColors(colors);
+        neopixels.show();
+    }
+
+    private float[] getBackColor(){
+        //Yellow
+        if ((1000 < ColorSense.red() && ColorSense.red() < 1200) && (400 < ColorSense.blue()) && (ColorSense.blue() < 550) && (1500 < ColorSense.green()) && (ColorSense.green() < 1700)) {
+            return stripYellow;
+        }
+
+        //White
+        if ((2000 < ColorSense.red() && ColorSense.red() < 2250) && (3600 < ColorSense.blue()) && (ColorSense.blue() < 3750) && (3850 < ColorSense.green()) && (ColorSense.green() < 4000)) {
+
+
+            return stripWhite;
+        }
+
+        //Green
+        if ((300 < ColorSense.red() && ColorSense.red() < 400) && (400 < ColorSense.blue()) && (ColorSense.blue() < 550) && (900 < ColorSense.green()) && (ColorSense.green() < 1100)) {
+            return stripGreen;
+        }
+
+        //Purple
+        if ((700 < ColorSense.red() && ColorSense.red() < 950) && (1850 < ColorSense.blue()) && (ColorSense.blue() < 1990) && (1200 < ColorSense.green()) && (ColorSense.green() < 1400)) {
+            return stripPurple;
+        }
+
+        return stripWhite;
+    }
+
+    private float[] getFrontColor() {
+        //Yellow
+        if ((100 < ColorFrontSense.red() && ColorFrontSense.red() < 200) && (100 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 200) && (200 < ColorFrontSense.green()) && (ColorFrontSense.green() < 300)) {
+            return stripYellow;
+        }
+            //White
+            if ((240 < ColorFrontSense.red() && ColorFrontSense.red() < 350) && (400 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 500) && (450 < ColorFrontSense.green()) && (ColorFrontSense.green() < 550)) {
+
+
+                return stripWhite;
+            }
+            //Green
+            if ((50 < ColorFrontSense.red() && ColorFrontSense.red() < 150) && (100 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 200) && (180 < ColorFrontSense.green()) && (ColorFrontSense.green() < 280)) {
+                return stripGreen;
+            }
+            //Purple
+            if ((100 < ColorFrontSense.red() && ColorFrontSense.red() < 200) && (250 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 380) && (200 < ColorFrontSense.green()) && (ColorFrontSense.green() < 300)) {
+                return stripPurple;
+            }
+
+            return stripWhite;
+        }
+
+    private void colorsDefined(float[] frontColor, float[] BackColor){
+
+        int[] colors = new int[NUM_PIXELS];
+
+        for (int i=0; i < thirdPixels; i++) {
+            int color = android.graphics.Color.HSVToColor(frontColor);
+            colors[i] = color;
+        }
+
+
+        for (int i= thirdPixels;  i < twoThirdPixels ; i++) {
+            int color = android.graphics.Color.HSVToColor(BackColor);
+            colors[i] = color;
+        }
+
+        for (int i=twoThirdPixels; i < colors.length; i++) {
+            int color = android.graphics.Color.HSVToColor(frontColor);
             colors[i] = color;
         }
 
@@ -601,6 +699,10 @@ public class MecanumLinear extends LinearOpMode {
         LimitSwitch = hardwareMap.get(TouchSensor.class, "LimitSwitch");
         Color = hardwareMap.get(NormalizedColorSensor.class,"Color");
         ColorFront = hardwareMap.get(NormalizedColorSensor.class,"Color2");
+
+        ColorSense = hardwareMap.get(ColorSensor.class, "Color");
+        ColorFrontSense = hardwareMap.get(ColorSensor.class,"Color2");
+
 
         //SERVOS
         BucketL = hardwareMap.get(Servo.class, "BucketL");

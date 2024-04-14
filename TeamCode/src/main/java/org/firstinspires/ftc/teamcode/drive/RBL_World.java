@@ -352,7 +352,7 @@ public class RBL_World extends LinearOpMode {
                 .build();
 
         TrajectorySequence traj5p2 = drive.trajectorySequenceBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(18,25, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(21,25, Math.toRadians(90)))
                 .forward(FwBw+2,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)

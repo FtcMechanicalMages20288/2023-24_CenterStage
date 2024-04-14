@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drive;
 import static android.os.SystemClock.sleep;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -11,6 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Test Toggling Servo
  */
 @Config
+
+@Disabled
 @TeleOp(group = "ToggleDrop")
 public class ToggleDrop extends OpMode {
 

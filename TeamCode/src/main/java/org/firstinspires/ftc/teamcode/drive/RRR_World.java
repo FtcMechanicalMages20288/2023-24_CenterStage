@@ -97,6 +97,7 @@ public class RRR_World extends LinearOpMode {
     private NormalizedColorSensor RampSensor, Color, ColorFront;
 
     int pixels = 1;
+    boolean switcheroo = true;
 
     public static double slidePower = 0.45;
     int xValue = 19;
@@ -188,7 +189,8 @@ public class RRR_World extends LinearOpMode {
 
                 //goes to board
                 .turn(Math.toRadians(-90+11))
-                .lineToLinearHeading(new Pose2d(x22Value,-y22Value,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(33,-23,Math.toRadians(-90)))
+
 
                 .build();
 
@@ -196,7 +198,7 @@ public class RRR_World extends LinearOpMode {
 
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw+3,
+                .forward(FwBw+4.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -205,7 +207,7 @@ public class RRR_World extends LinearOpMode {
                     OpenBox();
                     sleep(200);
                     SlidePower(slidePower + 0.2);
-                    sleep(400);
+                    sleep(250);
                     IntakeBox();
                     sleep(100);
                     HoldSlides();
@@ -242,11 +244,11 @@ public class RRR_World extends LinearOpMode {
                 })
 
                 .lineToLinearHeading(new Pose2d(4,-8,Math.toRadians(-90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(4, 60, Math.toRadians(-90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(16, 72, Math.toRadians(-90-36)))
+                .lineToLinearHeading(new Pose2d(4, 58, Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(16.5,65, Math.toRadians(-90-23)))
                 //  .turn(Math.toRadians(-3.6))
 
-                .back(6)
+                .back(6.5)
 
                 .addDisplacementMarker(() -> {
                     useGrabber();
@@ -268,13 +270,14 @@ public class RRR_World extends LinearOpMode {
 
 
                 //.back(3.8)
+
                 .waitSeconds(0.5)
 
                 .addDisplacementMarker(() -> {
-                    boolean switcheroo = true;
+
                     long timeOut = System.currentTimeMillis();
 
-                    while (switcheroo && (timeOut + 2000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+                    while (switcheroo && (timeOut + 1680) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
 
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
                            /* Intake.setPower(-1);
@@ -290,7 +293,9 @@ public class RRR_World extends LinearOpMode {
 
                         }
                     }
-                    Intake.setPower(-1);
+                    if(!switcheroo){
+                        Intake.setPower(-1);
+                    }
 
 
                 })
@@ -359,8 +364,8 @@ public class RRR_World extends LinearOpMode {
                 .build();
 
         TrajectorySequence traj5p2 = drive.trajectorySequenceBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(18,-23, Math.toRadians(-90)))
-                .forward(FwBw,
+                .lineToLinearHeading(new Pose2d(22,-23, Math.toRadians(-90)))
+                .forward(FwBw+4.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -386,14 +391,14 @@ public class RRR_World extends LinearOpMode {
                 })
                 .back(10)
                 //going to board
-                .lineToLinearHeading(new Pose2d(26,-25,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(28,-25,Math.toRadians(-90)))
                 .build();
 
 
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
-
-                .forward(FwBw+2,
+                .waitSeconds(0.5)
+                .forward(FwBw+3,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -430,11 +435,13 @@ public class RRR_World extends LinearOpMode {
                     sleep(800);
                 })
                 .back(9)
-                .lineToLinearHeading(new Pose2d(16,-23,Math.toRadians(-90)))
+
+                .lineToLinearHeading(new Pose2d(x22Value+0.5,-y22Value,Math.toRadians(-90)))
+
                 .build();
 
         TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw+1,
+                .forward(FwBw+3,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -461,7 +468,7 @@ public class RRR_World extends LinearOpMode {
 
 
         TrajectorySequence breakPark = drive.trajectorySequenceBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(strafetox+5,-27,Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(strafetox+5,-33,Math.toRadians(-90)))
                 .build();
 
 
@@ -481,7 +488,7 @@ public class RRR_World extends LinearOpMode {
         } else if (dropPos3 > dropPos1 && dropPos3 > dropPos2) {
             finalDropPos = 3;
         } else {
-            finalDropPos = 1;
+            finalDropPos = 3;
             telemetry.addData("Failsafe Initiated: Robot going to DropPos: ", finalDropPos);
         }
 
@@ -516,21 +523,19 @@ public class RRR_World extends LinearOpMode {
 
 
                 drive.followTrajectorySequence(traj5);
-
                 boolean pixelCheck = false;
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        pixelCheck = true;
-                    }
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
-                        pixelCheck = true;
-                    }
-                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
-                        pixelCheck = true;
+                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         breakerCheck = true;
+                        pixelCheck = true;
+                    }
+                    else{
+                        pixelCheck = true;
+                        telemetry.addData("check", "Dhruv sucks");
+                        telemetry.update();
                     }
                 }
                 IntakeRoller.setPower(0);
@@ -597,16 +602,13 @@ public class RRR_World extends LinearOpMode {
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        pixelCheck = true;
-                    }
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
-                        pixelCheck = true;
-                    }
-                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
-                        pixelCheck = true;
+                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         breakerCheck = true;
+                        pixelCheck = true;
+                    }
+                    else{
+                        pixelCheck = true;
                     }
                 }
                 IntakeRoller.setPower(0);
@@ -671,16 +673,13 @@ public class RRR_World extends LinearOpMode {
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        pixelCheck = true;
-                    }
-                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
-                        pixelCheck = true;
-                    }
-                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
-                        pixelCheck = true;
+                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         breakerCheck = true;
+                        pixelCheck = true;
+                    }
+                    else{
+                        pixelCheck = true;
                     }
                 }
                 IntakeRoller.setPower(0);
