@@ -31,8 +31,8 @@ import java.util.List;
  */
 
 @Config
-@Autonomous(group = "RBL_World")
-public class RBL_World extends LinearOpMode {
+@Autonomous(group = "RRR_World")
+public class RRR_World extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
@@ -48,7 +48,7 @@ public class RBL_World extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "RedElement.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -97,8 +97,6 @@ public class RBL_World extends LinearOpMode {
     private NormalizedColorSensor RampSensor, Color, ColorFront;
 
     int pixels = 1;
-    boolean switcheroo = true;
-
 
     public static double slidePower = 0.45;
     int xValue = 19;
@@ -241,7 +239,7 @@ public class RBL_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90))) //x = 4.5 prev
                 .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90))) //x = 4.5 prev
                 .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
-              //  .turn(Math.toRadians(-3.6))
+                //  .turn(Math.toRadians(-3.6))
 
                 .back(6
                 )
@@ -259,33 +257,17 @@ public class RBL_World extends LinearOpMode {
                     setGrabber();
                 })
                 .addDisplacementMarker(() -> {
-                   sleep(2000);
+                    sleep(2000);
                     IntakePix();
                 })
 
 
 
-                .forward(1)
-                .addDisplacementMarker(() ->{
-
-                    if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
-                        switcheroo = false;
-                    }
-                    else{
-                        switcheroo = true;
-                    }
-                })
-                .waitSeconds(0.2)
-                .back(2.5,
-                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
-
-                )
-                .waitSeconds(0.2)
+                .back(3.8)
+                .waitSeconds(0.5)
 
                 .addDisplacementMarker(() -> {
-
+                    boolean switcheroo = true;
                     long timeOut = System.currentTimeMillis();
 
                     while (switcheroo && (timeOut + 2000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
@@ -342,7 +324,8 @@ public class RBL_World extends LinearOpMode {
 //                .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .waitSeconds(1.2)
                 .addDisplacementMarker(() -> {
-                   IntakePix();
+                    Intake.setPower(1);
+                    IntakeRoller.setPower(-0.8);
 
                 })
                 // new code!!!!
@@ -352,10 +335,8 @@ public class RBL_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90)))
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
-                   boolean breakyCheck = false;
+                    boolean breakyCheck = false;
                     while (!pixelCheck) {
-
-
 
                         if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
                                 (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
@@ -424,7 +405,7 @@ public class RBL_World extends LinearOpMode {
 
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
-                .waitSeconds(0.5)
+
                 .forward(FwBw+2,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -581,13 +562,16 @@ public class RBL_World extends LinearOpMode {
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        breakerCheck = true;
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         pixelCheck = true;
                     }
-                    else{
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
                         pixelCheck = true;
+                    }
+                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
+                        pixelCheck = true;
+                        breakerCheck = true;
                     }
                 }
                 IntakeRoller.setPower(0);
@@ -604,12 +588,12 @@ public class RBL_World extends LinearOpMode {
 
                 if(!breakerCheck) {
 
-                        //sleep(5000);
-                        SlidePower(slidePower + 0.2);
-                        sleep(waitTime + 200);
-                        HoldSlides();
-                        BoardDropBox();
-                       // sleep(waitTimev2);
+                    //sleep(5000);
+                    SlidePower(slidePower + 0.2);
+                    sleep(waitTime + 200);
+                    HoldSlides();
+                    BoardDropBox();
+                    // sleep(waitTimev2);
 
                     drive.followTrajectorySequence(traj5p2);
                     OpenBox();
@@ -654,13 +638,16 @@ public class RBL_World extends LinearOpMode {
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        breakerCheck = true;
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         pixelCheck = true;
                     }
-                    else{
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
                         pixelCheck = true;
+                    }
+                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
+                        pixelCheck = true;
+                        breakerCheck = true;
                     }
                 }
                 IntakeRoller.setPower(0);
@@ -725,13 +712,16 @@ public class RBL_World extends LinearOpMode {
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
 
-                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        breakerCheck = true;
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
                         pixelCheck = true;
                     }
-                    else{
+                    if ((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2 && pixels == 1)){
                         pixelCheck = true;
+                    }
+                    else if(!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
+                        pixelCheck = true;
+                        breakerCheck = true;
                     }
                 }
                 IntakeRoller.setPower(0);
@@ -836,7 +826,7 @@ public class RBL_World extends LinearOpMode {
     }
 
     private void IntakePix() {
-        Intake.setPower(0.7);
+        Intake.setPower(1);
         IntakeRoller.setPower(-0.8);
     }
 
@@ -1006,15 +996,15 @@ public class RBL_World extends LinearOpMode {
             //telemetry.addData("X value: ", x);
 
 
-            if(x>=0 && x<=300){
+            if(x>=0 && x<=200){
                 dropPos1 ++;
                 telemetry.addData("Pixel Position :", "dropPos1");
             }
-            if(x>=301 && x<=891){
+            if(x>=201 && x<=700){
                 dropPos2 ++;
                 telemetry.addData("Pixel Position:", "dropPos2");
             }
-            if(x>=891 && x<=900){
+            if(x>=701 && x<=900){
                 dropPos3 ++;
                 telemetry.addData("Pixel Position:", "dropPos3");
             }
