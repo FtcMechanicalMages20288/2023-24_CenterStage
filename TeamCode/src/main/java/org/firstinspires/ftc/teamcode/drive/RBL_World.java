@@ -270,7 +270,7 @@ public class RBL_World extends LinearOpMode {
 
                     long timeOut = System.currentTimeMillis();
 
-                    while (switcheroo && (timeOut + 2000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+                    while (switcheroo && (timeOut + 2000) > (System.currentTimeMillis())) { // (< changed to > ) Loop while switcheroo is true and 5 seconds have not passed
 
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
                            /* Intake.setPower(-1);
@@ -278,13 +278,17 @@ public class RBL_World extends LinearOpMode {
                             pixels++;
                             switcheroo = false;
 
+                            telemetry.addData("RampSense: ", "yes");
+
+
                         }
                         else if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
                                 (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
                             pixels++;
                             switcheroo = false;
-
+                            telemetry.addData("RampSense: ", "yes");
                         }
+                        telemetry.update();
                     }
                     if(!switcheroo){
                     Intake.setPower(-1);
@@ -832,8 +836,8 @@ public class RBL_World extends LinearOpMode {
     //Bucket Hold Port 3
 
     private void BoardDropBox(){
-        BucketL.setPosition(0.18);
-        BucketR.setPosition(0.18);
+        BucketL.setPosition(0.99);
+        BucketR.setPosition(0.99);
     }
     public void stopRobot(){
         leftDrive.setPower(0);
@@ -852,8 +856,8 @@ public class RBL_World extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketL.setPosition(0.5);
-        BucketR.setPosition(0.5);
+        BucketL.setPosition(0.63);
+        BucketR.setPosition(0.63);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }

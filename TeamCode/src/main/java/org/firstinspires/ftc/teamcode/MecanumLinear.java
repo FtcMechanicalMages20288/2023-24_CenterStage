@@ -211,8 +211,22 @@ public class MecanumLinear extends LinearOpMode {
             telemetry.addData("Slides", SlideL.getCurrentPosition());
             telemetry.update();
 
-            //Fwd Bckwd
 
+
+            //Fwd Bckwd
+            if(gamepad1.right_trigger > 0.3){
+                left_drive.setPower(1);
+                right_drive.setPower(1);
+                back_left_drive.setPower(1);
+                back_right_drive.setPower(1);
+            }
+
+            if(gamepad1.left_trigger > 0.3){
+                left_drive.setPower(-1);
+                right_drive.setPower(-1);
+                back_left_drive.setPower(-1);
+                back_right_drive.setPower(-1);
+            }
             //Auto Forward and Backward
 
        /* if(gamepad1.right_trigger > 0.3){
@@ -528,8 +542,8 @@ public class MecanumLinear extends LinearOpMode {
         Grabber.setPosition(0.47);
     }
     private void BoardDropBox(){
-        BucketL.setPosition(0.8);
-        BucketR.setPosition(0.8);
+        BucketL.setPosition(0.01);
+        BucketR.setPosition(0.01);
 
     }
     private void HoldSlides(){
@@ -542,8 +556,8 @@ public class MecanumLinear extends LinearOpMode {
         SlideR.setPower(0);
     }
     private void IntakeBox(){
-       BucketL.setPosition(0.5);
-       BucketR.setPosition(0.5);
+       BucketL.setPosition(0.37);
+       BucketR.setPosition(0.37);
 
     }
 
@@ -607,7 +621,7 @@ public class MecanumLinear extends LinearOpMode {
     }
 
     private float[] getBackColor(){
-        //Yellow
+     /*   //Yellow
         if ((1000 < ColorSense.red() && ColorSense.red() < 1200) && (400 < ColorSense.blue()) && (ColorSense.blue() < 550) && (1500 < ColorSense.green()) && (ColorSense.green() < 1700)) {
             return stripYellow;
         }
@@ -630,10 +644,20 @@ public class MecanumLinear extends LinearOpMode {
         }
 
         return stripWhite;
+
+
+      */
+        //White
+        if(Color.getNormalizedColors().toColor() < 51000000 && Color.getNormalizedColors().toColor() > 48000000){
+            return stripWhite;
+        }
+
+        return stripWhite;
+        
     }
 
     private float[] getFrontColor() {
-        //Yellow
+       /* //Yellow
         if ((100 < ColorFrontSense.red() && ColorFrontSense.red() < 200) && (100 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 200) && (200 < ColorFrontSense.green()) && (ColorFrontSense.green() < 300)) {
             return stripYellow;
         }
@@ -651,9 +675,18 @@ public class MecanumLinear extends LinearOpMode {
             if ((100 < ColorFrontSense.red() && ColorFrontSense.red() < 200) && (250 < ColorFrontSense.blue()) && (ColorFrontSense.blue() < 380) && (200 < ColorFrontSense.green()) && (ColorFrontSense.green() < 300)) {
                 return stripPurple;
             }
+            */
+
+        //Yellow
+        if(Color.getNormalizedColors().toColor() < 1510000000 && Color.getNormalizedColors().toColor() > 1480000000){
+
+        }
 
             return stripWhite;
         }
+
+
+
 
     private void colorsDefined(float[] frontColor, float[] BackColor){
 
