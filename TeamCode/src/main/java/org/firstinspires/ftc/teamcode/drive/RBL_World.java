@@ -48,7 +48,7 @@ public class RBL_World extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "WorldyBlue.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -232,15 +232,15 @@ public class RBL_World extends LinearOpMode {
 
 
         TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj2.end())
-
+                .waitSeconds(1)
                 .addDisplacementMarker(() -> {
                     SlideDown();
 
                 })
 
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132-3)))
               //  .turn(Math.toRadians(-3.6))
 
                 .back(6)
@@ -312,8 +312,8 @@ public class RBL_World extends LinearOpMode {
                 // new code!!!!
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93)))
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
                    boolean breakyCheck = false;
@@ -389,7 +389,7 @@ public class RBL_World extends LinearOpMode {
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
                 .waitSeconds(0.5)
-                .forward(FwBw+2,
+                .forward(FwBw+1.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -434,7 +434,7 @@ public class RBL_World extends LinearOpMode {
                 .build();
 
         TrajectorySequence traj2_3 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw+5,
+                .forward(FwBw+3.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -455,7 +455,7 @@ public class RBL_World extends LinearOpMode {
 
 
         TrajectorySequence traj3_2 = drive.trajectorySequenceBuilder(pos3.end())
-                .forward(FwBw+3,
+                .forward(FwBw+2.5,
                         SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -661,6 +661,12 @@ public class RBL_World extends LinearOpMode {
             }
             if(finalDropPos == 3) {
                 drive.followTrajectorySequence(pos3);
+                IntakeBox();
+                SlidePower(slidePower + 0.2);
+                sleep(waitTime-250); //Change
+                HoldSlides();
+                BoardDropBox();
+
 
 
 
@@ -951,7 +957,6 @@ public class RBL_World extends LinearOpMode {
 
 
     private void telemetryTfod() {
-
         List<Recognition> currentRecognitions = tfod.getRecognitions();
         telemetry.addData("# Objects Detected", currentRecognitions.size());
 

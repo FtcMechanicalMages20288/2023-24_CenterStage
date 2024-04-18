@@ -237,7 +237,7 @@ public class RRR_World extends LinearOpMode {
 
 
         TrajectorySequence traj4 = drive.trajectorySequenceBuilder(traj2.end())
-
+                .waitSeconds(0.5)
                 .addDisplacementMarker(() -> {
                     SlideDown();
 
@@ -320,8 +320,8 @@ public class RRR_World extends LinearOpMode {
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
 
-                .lineToLinearHeading(new Pose2d(4, 60, Math.toRadians(-90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(4,-8,Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, 60, Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4,-8,Math.toRadians(-90))) //x = 4.5 prev
 
 
                 .addDisplacementMarker(()->{

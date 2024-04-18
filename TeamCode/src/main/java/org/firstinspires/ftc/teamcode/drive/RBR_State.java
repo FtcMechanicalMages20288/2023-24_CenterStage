@@ -150,6 +150,9 @@ public class RBR_State extends LinearOpMode {
     public static int waitTimev3 = 1000;
 
     public static double FwBw = 8;
+
+    //Wait Adjust based of team autos in Seconds. Adjusted in milliseconds for Pos1 & Pos3(sleep commands)
+    public static int WaitAdjustVar = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -159,6 +162,7 @@ public class RBR_State extends LinearOpMode {
         sleep(3000);
         CloseBox();
         PixelPusher.setPosition(0.45);
+        Grabber.setPosition(0.15);
 
 
 
@@ -254,7 +258,7 @@ public class RBR_State extends LinearOpMode {
                     // sleep(waitTimev2);
 
                 })
-                .lineTo(new Vector2d(54, 75))
+                .lineTo(new Vector2d(54, 76.5))
                 /*.addDisplacementMarker(() -> {
                     OpenBox();
                     sleep(1000);
@@ -283,8 +287,10 @@ public class RBR_State extends LinearOpMode {
 
 
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
-                .waitSeconds(4) // Change depending on teammate speed
-                .lineToLinearHeading(new Pose2d(25.5, 75, Math.toRadians(88)))
+                 //Wait Adjust Variable. Default 0, bf strafe
+                .waitSeconds(WaitAdjustVar) // Change depending on teammate speed
+
+                .lineToLinearHeading(new Pose2d(25.5, 75.5, Math.toRadians(88)))
                 .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
                     IntakeBox();
                     SlidePower(slidePower);
@@ -307,8 +313,20 @@ public class RBR_State extends LinearOpMode {
 
                 .build();
 
+        TrajectorySequence pos1_park = drive.trajectorySequenceBuilder(pos1.end())
+                .lineToLinearHeading(new Pose2d(52, 80, Math.toRadians(90))) //X Changed 49 bf
+                //.lineToLinearHeading(new Pose2d(52, 92, Math.toRadians(90))) //X Changed 49 bf
+                .build();
 
+        TrajectorySequence pos2_park = drive.trajectorySequenceBuilder(pos2.end())
+                .lineToLinearHeading(new Pose2d(52, 80, Math.toRadians(90))) //X Changed 49 bf
+               // .lineToLinearHeading(new Pose2d(52, 92, Math.toRadians(90))) //X Changed 49 bf
+                .build();
 
+        TrajectorySequence pos3_park = drive.trajectorySequenceBuilder(pos3.end())
+                .lineToLinearHeading(new Pose2d(52, 80, Math.toRadians(90))) //X Changed 49 bf
+              //  .lineToLinearHeading(new Pose2d(52, 92, Math.toRadians(90))) //X Changed 49 bf
+                .build();
 
 
 
@@ -369,7 +387,8 @@ public class RBR_State extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos1);
 
-
+                //Wait Adjust Variable. Default 0, bf strafe
+                sleep(WaitAdjustVar * 1000);
 
                 DESIRED_TAG_ID = 1;
                 strafeLeft();
@@ -433,6 +452,9 @@ public class RBR_State extends LinearOpMode {
                 stopRobot();
                 IntakeBox();
 
+                drive.followTrajectorySequence(pos1_park);
+
+
 
 
             }
@@ -448,6 +470,8 @@ public class RBR_State extends LinearOpMode {
                 stopRobot();
                 IntakeBox();
 
+                drive.followTrajectorySequence(pos2_park);
+
 
             }
             if(finalDropPos == 3) {
@@ -455,6 +479,8 @@ public class RBR_State extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos3);
 
+                //Wait Adjust Variable. Default 0, bf strafe
+                sleep(WaitAdjustVar * 1000);
 
                 DESIRED_TAG_ID = 3;
                 strafeLeft();
@@ -517,6 +543,8 @@ public class RBR_State extends LinearOpMode {
                 IntakeBox();
                 sleep(250);
                 stopRobot();
+
+                drive.followTrajectorySequence(pos3_park);
 
             }
 
@@ -774,3 +802,7 @@ public class RBR_State extends LinearOpMode {
     }
 
 }   // end method telemetryTfod()
+
+
+
+

@@ -24,6 +24,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+import org.opencv.objdetect.Board;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +56,7 @@ public class RBR_World extends LinearOpMode {
 
     // TFOD_MODEL_ASSET points to a model file stored in the project Asset location,
     // this is only used for Android Studio when using models in Assets.
-    private static final String TFOD_MODEL_ASSET = "BlueElement.tflite";
+    private static final String TFOD_MODEL_ASSET = "WorldyBlue.tflite";
     // TFOD_MODEL_FILE points to a model file stored onboard the Robot Controller's storage,
     // this is used when uploading models directly to the RC using the model upload interface.
     private static final String TFOD_MODEL_FILE = "/sdcard/FIRST/tflitemodels/myCustomModel.tflite";
@@ -196,23 +197,30 @@ public class RBR_World extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(48, 0.5))
                 .turn(Math.toRadians(84))
                 .lineToLinearHeading(new Pose2d(48.5, -14, Math.toRadians(90))) //Change
-                .back(4.5)
+                .back(3.7)
 
 
                 .build();
 
         TrajectorySequence pos3_intake = drive.trajectorySequenceBuilder(pos3.end())
 
-                .back(2)
+                .back(1.3) //Change
 
 
+
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(0.8);
+                    IntakeRoller.setPower(-0.8);
+                    stopRobot();
+                    sleep(500);
+                })
 
                 .addDisplacementMarker(() -> {
 
                     boolean switcheroo = true;
                     long timeOut = System.currentTimeMillis();
 
-                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+                    while (switcheroo && (timeOut + 2000) > (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
 
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
                            /* Intake.setPower(-1);
@@ -222,17 +230,21 @@ public class RBR_World extends LinearOpMode {
 
 
                         }
+                        else if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                                (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
+                            pixels++;
+                            switcheroo = false;
+
+                        }
+                    }
+                    if(!switcheroo){
+                        Intake.setPower(-1);
                     }
 
-                })
-                .waitSeconds(0.5)
-                .addDisplacementMarker(() -> {
-                    Intake.setPower(1);
-                    IntakeRoller.setPower(-0.8);
-                    stopRobot();
-                    sleep(2000);
+
                 })
 
+                .waitSeconds(0.5)
 
                 .build();
 
@@ -268,7 +280,7 @@ public class RBR_World extends LinearOpMode {
 
         TrajectorySequence pos3_depositp3 = drive.trajectorySequenceBuilder(pos3_depositp2.end())
                 .back(4)
-                .strafeRight(12.5)
+                .strafeRight(11)//10 bf
                 .forward(3.3,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
@@ -342,7 +354,7 @@ public class RBR_World extends LinearOpMode {
 
                 //.lineTo(new Vector2d(18, 2))
                 .lineToLinearHeading(new Pose2d(49, -2, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(49, -14, Math.toRadians(87)))
                 .back(4.5)
 
                 .build();
@@ -350,16 +362,21 @@ public class RBR_World extends LinearOpMode {
 
         TrajectorySequence pos1_intake = drive.trajectorySequenceBuilder(pos1.end())
 
-                .back(3.1)
+                .back(0.3)//3.3
 
-
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(0.8);
+                    IntakeRoller.setPower(-0.8);
+                    stopRobot();
+                    sleep(500);
+                })
 
                 .addDisplacementMarker(() -> {
 
                     boolean switcheroo = true;
                     long timeOut = System.currentTimeMillis();
 
-                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+                    while (switcheroo && (timeOut + 2000) > (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
 
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
                            /* Intake.setPower(-1);
@@ -369,16 +386,22 @@ public class RBR_World extends LinearOpMode {
 
 
                         }
+                        else if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                                (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
+                            pixels++;
+                            switcheroo = false;
+
+                        }
+                    }
+                    if(!switcheroo){
+                        Intake.setPower(-1);
                     }
 
+
                 })
+
                 .waitSeconds(0.5)
-                .addDisplacementMarker(() -> {
-                    Intake.setPower(1);
-                    IntakeRoller.setPower(-0.8);
-                    stopRobot();
-                    sleep(2000);
-                })
+
 
 
                 .build();
@@ -394,7 +417,7 @@ public class RBR_World extends LinearOpMode {
 
                 .lineToConstantHeading(new Vector2d(51, 72))
 
-                .strafeLeft(20)
+                .strafeLeft(15)
                 .forward(10)
 
 
@@ -407,11 +430,20 @@ public class RBR_World extends LinearOpMode {
 
 
         TrajectorySequence pos1_depositp2 = drive.trajectorySequenceBuilder(pos1_deposit.end())
-                .back(6) //Change to fix the interesting going back(needs to be fixed)
-                .strafeLeft(9.5)
-                .forward(6)
+                .back(6,
+                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+
+                .strafeLeft(14)
 
 
+                .forward(14,
+                        SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
 
                 .build();
 
@@ -485,16 +517,23 @@ public class RBR_World extends LinearOpMode {
 
         TrajectorySequence pos2_intake = drive.trajectorySequenceBuilder(pos2.end())
 
-                .back(4.2)
+                .back(4) //prev 4.2
 
 
+
+                .addDisplacementMarker(() -> {
+                    Intake.setPower(0.8);
+                    IntakeRoller.setPower(-0.8);
+                    stopRobot();
+                    sleep(500);
+                })
 
                 .addDisplacementMarker(() -> {
 
                     boolean switcheroo = true;
                     long timeOut = System.currentTimeMillis();
 
-                    while (switcheroo && (timeOut + 4000) < (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
+                    while (switcheroo && (timeOut + 2000) > (System.currentTimeMillis())) { // Loop while switcheroo is true and 5 seconds have not passed
 
                         if ((((DistanceSensor) RampSensor).getDistance(DistanceUnit.CM) < 4 && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2))) {
                            /* Intake.setPower(-1);
@@ -504,18 +543,22 @@ public class RBR_World extends LinearOpMode {
 
 
                         }
+                        else if((((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                                (((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)){
+                            pixels++;
+                            switcheroo = false;
+
+                        }
+                    }
+                    if(!switcheroo){
+                        Intake.setPower(-1);
                     }
 
+
                 })
+
+
                 .waitSeconds(0.5)
-                .addDisplacementMarker(() -> {
-                    Intake.setPower(1);
-                    IntakeRoller.setPower(-0.8);
-                    stopRobot();
-                    sleep(2000);
-                })
-
-
 
                 .build();
 
@@ -561,7 +604,7 @@ public class RBR_World extends LinearOpMode {
 
                 )
                 //.back(3)
-                // .strafeRight(6)
+                .strafeRight(2.5)
                 .waitSeconds(0.5)
                 .forward(3)
                 .waitSeconds(0.2)
@@ -572,15 +615,24 @@ public class RBR_World extends LinearOpMode {
 
 
         TrajectorySequence pos2_depositp3 = drive.trajectorySequenceBuilder(pos2_deposit.end())
-                .back(4)
-                .strafeLeft(7)//Change to 6.5 if not
-                .forward(4)
+                .back(4,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
+                .strafeLeft(8)//Has been Changed
+                .forward(4,
+                        SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
+
+                )
                 .waitSeconds(0.5)
 
                 .build();
 
 
-        TrajectorySequence pos2_traj2 = drive.trajectorySequenceBuilder(pos2_depositp3.end())
+
+        TrajectorySequence pos2_traj2 = drive.trajectorySequenceBuilder(pos2_deposit.end())
                 .waitSeconds(0.5)
                 .back(0.2,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -652,8 +704,6 @@ public class RBR_World extends LinearOpMode {
                 setGrabber();
 
                 drive.followTrajectorySequence(pos1_intake);
-
-
 
                 while (!pixelCheck) {
 
@@ -813,20 +863,13 @@ public class RBR_World extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos2_intake);
 
-
-
-
-
-
                 drive.followTrajectorySequence(pos2_deposit);
 
                 if((((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5) && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
                     dropBox();
                 }
-
-                //    drive.followTrajectorySequence(pos2_depositp2);
-
                 drive.followTrajectorySequence(pos2_depositp3);
+
                 OpenBox();
                 sleep(300);
                 SlidePower(slidePower);
@@ -943,6 +986,13 @@ public class RBR_World extends LinearOpMode {
                     pixelCheck = true;
                 }
             }
+/*
+            if((((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5) && (((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) ){
+                dropBox();
+            }
+
+ */
+
 
             //Lowering the Slides
             drive.followTrajectorySequence(pos3_deposit);
@@ -1104,7 +1154,7 @@ public class RBR_World extends LinearOpMode {
     private void dropBox(){
         BucketHold.setPosition(0.53);
 
-        sleep(120);
+        sleep(110);
         BucketHold.setPosition(0.7);
         sleep(750);
 
@@ -1203,8 +1253,8 @@ public class RBR_World extends LinearOpMode {
 
     }
     private void BoardDropBox(){
-        BucketL.setPosition(0.99);
-        BucketR.setPosition(0.99);
+        BucketL.setPosition(0.955);
+        BucketR.setPosition(0.955);
     }
 
     private void HoldSlides(){
