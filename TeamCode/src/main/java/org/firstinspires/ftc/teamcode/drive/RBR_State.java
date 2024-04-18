@@ -182,11 +182,20 @@ public class RBR_State extends LinearOpMode {
                 })
                 .back(9)
                 .strafeLeft(16.3)
+
+                /*
                 .lineToLinearHeading( new Pose2d(48, 0.5))
                 .turn(Math.toRadians(84))
 
-                //.turn(Math.toRadians(-88))
                 .lineToConstantHeading(new Vector2d(55, 70))
+
+                 */
+                .lineToLinearHeading(new Pose2d(50, -2, Math.toRadians(90)))
+
+                //.turn(Math.toRadians(-88))
+                .lineToLinearHeading(new Pose2d(50, 70, Math.toRadians(90)))
+
+
 
                 .addDisplacementMarker(() -> {
 
@@ -230,10 +239,10 @@ public class RBR_State extends LinearOpMode {
                 .back(8)
 
                 //.lineTo(new Vector2d(18, 2))
-                .lineToLinearHeading(new Pose2d(48, -2, Math.toRadians(85)))
+                .lineToLinearHeading(new Pose2d(50, -2, Math.toRadians(90)))
 
                 //.turn(Math.toRadians(-88))
-                .lineToConstantHeading(new Vector2d(55, 70))
+                .lineToLinearHeading(new Pose2d(50, 70, Math.toRadians(90)))
 
                 .addDisplacementMarker(() -> {
 
@@ -545,7 +554,7 @@ public class RBR_State extends LinearOpMode {
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
     }
     private void SlidePower(double p){
-        SlideR.setPower(p);
+        SlideR.setPower(-p);
         SlideL.setPower(p);
 
 
@@ -558,17 +567,17 @@ public class RBR_State extends LinearOpMode {
     }
 
     private void CloseBox(){
-        BucketHold.setPosition(0); //close
-    }
-    private void OpenBox(){
         BucketHold.setPosition(0.7); //close
     }
+    private void OpenBox(){
+        BucketHold.setPosition(0.5); //close
+    }
     private void BoardDropBox(){
-        BucketR.setPosition(0.23);
-        BucketL.setPosition(0.27);
+        BucketL.setPosition(0.955);
+        BucketR.setPosition(0.955);
     }
     private void HoldSlides(){
-        SlideR.setPower(0.1);
+        SlideR.setPower(-0.1);
         SlideL.setPower(0.1);
     }
     private void StopSlides(){
@@ -576,8 +585,8 @@ public class RBR_State extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketR.setPosition(0.58);
-        BucketL.setPosition(0.62);
+        BucketL.setPosition(0.63);
+        BucketR.setPosition(0.63);
     }
 
     /**
@@ -765,8 +774,3 @@ public class RBR_State extends LinearOpMode {
     }
 
 }   // end method telemetryTfod()
-
-
-
-
-

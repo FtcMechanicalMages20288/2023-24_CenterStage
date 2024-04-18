@@ -238,8 +238,8 @@ public class RBL_World extends LinearOpMode {
 
                 })
 
-                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(90))) //x = 4.5 prev
                 .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132)))
               //  .turn(Math.toRadians(-3.6))
 
@@ -312,8 +312,8 @@ public class RBL_World extends LinearOpMode {
                 // new code!!!!
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
-                .lineToLinearHeading(new Pose2d(4, -55, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(4,10,Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(90)))
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
                    boolean breakyCheck = false;
@@ -662,11 +662,8 @@ public class RBL_World extends LinearOpMode {
             if(finalDropPos == 3) {
                 drive.followTrajectorySequence(pos3);
 
-                IntakeBox();
-                SlidePower(slidePower + 0.2);
-                sleep(waitTime-250); //Change
-                HoldSlides();
-                BoardDropBox();
+
+
                 drive.followTrajectorySequence(traj2_3);
 
 
@@ -836,8 +833,8 @@ public class RBL_World extends LinearOpMode {
     //Bucket Hold Port 3
 
     private void BoardDropBox(){
-        BucketL.setPosition(0.99);
-        BucketR.setPosition(0.99);
+        BucketL.setPosition(0.955);
+        BucketR.setPosition(0.955);
     }
     public void stopRobot(){
         leftDrive.setPower(0);

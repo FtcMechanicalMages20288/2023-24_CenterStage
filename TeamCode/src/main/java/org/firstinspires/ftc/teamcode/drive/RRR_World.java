@@ -243,8 +243,8 @@ public class RRR_World extends LinearOpMode {
 
                 })
 
-                .lineToLinearHeading(new Pose2d(4,-8,Math.toRadians(-90))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(4, 58, Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4,-8,Math.toRadians(-90))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, 58, Math.toRadians(-90))) //x = 4.5 prev
                 .lineToLinearHeading(new Pose2d(16.5,65, Math.toRadians(-90-23)))
                 //  .turn(Math.toRadians(-3.6))
 
@@ -820,8 +820,8 @@ public class RRR_World extends LinearOpMode {
     //Bucket Hold Port 3
 
     private void BoardDropBox(){
-        BucketL.setPosition(0.18);
-        BucketR.setPosition(0.18);
+        BucketL.setPosition(0.955);
+        BucketR.setPosition(0.955);
     }
     public void stopRobot(){
         leftDrive.setPower(0);
@@ -840,8 +840,8 @@ public class RRR_World extends LinearOpMode {
         SlideL.setPower(0);
     }
     private void IntakeBox(){
-        BucketL.setPosition(0.5);
-        BucketR.setPosition(0.5);
+        BucketL.setPosition(0.63);
+        BucketR.setPosition(0.63);
 //        BucketR.setPosition(0.59);
 //        BucketL.setPosition(0.63);
     }

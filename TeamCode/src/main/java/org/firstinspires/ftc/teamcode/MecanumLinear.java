@@ -123,8 +123,8 @@ public class MecanumLinear extends LinearOpMode {
 
         if (opModeInInit()) {
             initCode();
-            BucketL.setPosition(0.5);
-            BucketR.setPosition(0.5 );
+         //   BucketL.setPosition(0.5);
+         //   BucketR.setPosition(0.5 );
         }
 
         waitForStart();
@@ -257,14 +257,15 @@ public class MecanumLinear extends LinearOpMode {
             }
 
             if (Pixels == 1 && endTime < 85000) {
-                colorsDefined(stripWhite , getBackColor() );
-                //showGreen();
+               // colorsDefined(stripWhite , getBackColor() );
+                showGreen();
             }
 
             if (Pixels == 2 && endTime < 85000) {
-               // showPurple();
+                showPurple();
 
-                colorsDefined(getFrontColor(), getBackColor());
+
+              //  colorsDefined(getFrontColor(), getBackColor());
             }
 
             if (endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2) {
@@ -541,9 +542,10 @@ public class MecanumLinear extends LinearOpMode {
     private void setGrabber(){
         Grabber.setPosition(0.47);
     }
+
     private void BoardDropBox(){
-        BucketL.setPosition(0.01);
-        BucketR.setPosition(0.01);
+        BucketL.setPosition(0.1);
+        BucketR.setPosition(0.1);
 
     }
     private void HoldSlides(){
