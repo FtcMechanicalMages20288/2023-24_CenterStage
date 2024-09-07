@@ -151,8 +151,6 @@ public class RBR_State extends LinearOpMode {
 
     public static double FwBw = 8;
 
-    //Wait Adjust based of team autos in Seconds. Adjusted in milliseconds for Pos1 & Pos3(sleep commands)
-    public static int WaitAdjustVar = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -288,7 +286,7 @@ public class RBR_State extends LinearOpMode {
 
                 .lineToLinearHeading(new Pose2d(26, 32, Math.toRadians(88)))
                  //Wait Adjust Variable. Default 0, bf strafe
-                .waitSeconds(WaitAdjustVar) // Change depending on teammate speed
+
 
                 .lineToLinearHeading(new Pose2d(25.5, 75.5, Math.toRadians(88)))
                 .addSpatialMarker(new Vector2d(25.7,73) , ()-> {
@@ -388,7 +386,6 @@ public class RBR_State extends LinearOpMode {
                 drive.followTrajectorySequence(pos1);
 
                 //Wait Adjust Variable. Default 0, bf strafe
-                sleep(WaitAdjustVar * 1000);
 
                 DESIRED_TAG_ID = 1;
                 strafeLeft();
@@ -479,8 +476,6 @@ public class RBR_State extends LinearOpMode {
 
                 drive.followTrajectorySequence(pos3);
 
-                //Wait Adjust Variable. Default 0, bf strafe
-                sleep(WaitAdjustVar * 1000);
 
                 DESIRED_TAG_ID = 3;
                 strafeLeft();

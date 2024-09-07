@@ -26,8 +26,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 
-
-@Autonomous(name = "BlueWebcamAutoTest", group = "drive")
+@Autonomous(name = "OpenCV_RBL_World", group = "drive")
 public class BlueAutoVision extends LinearOpMode {
     private ElapsedTime runTime = new ElapsedTime();
 
@@ -222,9 +221,9 @@ public class BlueAutoVision extends LinearOpMode {
 
                 })
 
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132-3)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(92))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(92))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132-2)))
                 //  .turn(Math.toRadians(-3.6))
 
                 .back(6)
@@ -296,8 +295,8 @@ public class BlueAutoVision extends LinearOpMode {
                 // new code!!!!
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93)))
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93)))
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(92)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(92)))
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
                     boolean breakyCheck = false;
@@ -373,7 +372,7 @@ public class BlueAutoVision extends LinearOpMode {
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
                 .waitSeconds(0.5)
-                .forward(FwBw+1.5,
+                .forward(FwBw+3,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -389,6 +388,7 @@ public class BlueAutoVision extends LinearOpMode {
                     StopSlides();
                     //sleep(300);
                 })
+               // .forward(0.5)
 
 
                 .build();
@@ -472,6 +472,20 @@ public class BlueAutoVision extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(strafetox+5,strafetoy,Math.toRadians(90)))
                 .build();
 
+        TrajectorySequence tempPark = drive.trajectorySequenceBuilder(traj2.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox+8,33,Math.toRadians(-90)))
+                .build();
+
+        TrajectorySequence tempPark2 = drive.trajectorySequenceBuilder(traj2_2.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox + 8,33,Math.toRadians(-90)))
+                .build();
+
+        TrajectorySequence tempPark3 = drive.trajectorySequenceBuilder(traj2_3.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox + 8,33,Math.toRadians(-90)))
+                .build();
 
 
 
@@ -502,7 +516,7 @@ public class BlueAutoVision extends LinearOpMode {
 
                 //drive.followTrajectorySequence(traj3);
 
-
+                /*
                 drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
@@ -538,7 +552,7 @@ public class BlueAutoVision extends LinearOpMode {
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
 
@@ -558,6 +572,9 @@ public class BlueAutoVision extends LinearOpMode {
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
                 }
+
+                 */
+                drive.followTrajectorySequence(tempPark);
 
 
 
@@ -580,7 +597,7 @@ public class BlueAutoVision extends LinearOpMode {
 
                 //drive.followTrajectorySequence(traj3);
 
-
+                /*
                 drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
@@ -592,6 +609,7 @@ public class BlueAutoVision extends LinearOpMode {
 
 
                 drive.followTrajectorySequence(traj5);
+                /*
                 pixelCheck = false;
                 breakerCheck = false;
                 while (!pixelCheck) {
@@ -610,12 +628,12 @@ public class BlueAutoVision extends LinearOpMode {
                 CloseBox();
 
                 //sleep(5000);
-                /*IntakeBox();
+                IntakeBox();
                 SlidePower(slidePower + 0.2);
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
 
@@ -635,6 +653,9 @@ public class BlueAutoVision extends LinearOpMode {
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
                 }
+
+                 */
+                drive.followTrajectorySequence(tempPark2);
 
 
 
@@ -661,7 +682,7 @@ public class BlueAutoVision extends LinearOpMode {
 
                 //drive.followTrajectorySequence(traj3);
 
-
+                /*
                 drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
@@ -673,6 +694,7 @@ public class BlueAutoVision extends LinearOpMode {
 
 
                 drive.followTrajectorySequence(traj5);
+                /*
                 pixelCheck = false;
                 breakerCheck = false;
                 while (!pixelCheck) {
@@ -696,7 +718,7 @@ public class BlueAutoVision extends LinearOpMode {
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
                     //sleep(5000);
@@ -714,6 +736,9 @@ public class BlueAutoVision extends LinearOpMode {
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
                 }
+                */
+
+                drive.followTrajectorySequence(tempPark3);
 
 
 

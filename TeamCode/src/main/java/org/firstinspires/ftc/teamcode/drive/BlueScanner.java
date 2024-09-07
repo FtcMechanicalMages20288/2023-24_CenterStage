@@ -22,10 +22,10 @@ public class BlueScanner extends OpenCvPipeline {
 //    Rect midROI = new Rect(new Point(640 / 3.0, 0), new Point(2 * 640 / 3.0, 480));
 //    Rect rightROI = new Rect(new Point(2 * 640 / 3.0, 0), new Point(640, 480));
 
-    Rect leftROI = new Rect(new Point(0, 0), new Point(299, 480));
-    Rect midROI = new Rect(new Point(299, 0), new Point(639, 480));
+    Rect leftROI = new Rect(new Point(0, 0), new Point(150, 480));
+    Rect midROI = new Rect(new Point(150, 0), new Point(500, 480));
 
-    Rect rightROI = new Rect(new Point(639, 0), new Point(640, 480));
+    Rect rightROI = new Rect(new Point(500, 0), new Point(640, 480));
     private Barcode result = null;
     private Telemetry telemetry;
 

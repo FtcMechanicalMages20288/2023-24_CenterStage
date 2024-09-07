@@ -31,8 +31,8 @@ import java.util.List;
  */
 
 @Config
-@Autonomous(group = "RRR_World")
-public class RRR_World extends LinearOpMode {
+@Autonomous(group = "RRR_World2")
+public class RRR_WorldPlus2 extends LinearOpMode {
 
     int dropPos1;
     int dropPos2;
@@ -519,7 +519,7 @@ public class RRR_World extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 drive.followTrajectorySequence(traj2);
-                drive.followTrajectorySequence(tempPark);
+                // drive.followTrajectorySequence(tempPark);
 
 
 
@@ -527,7 +527,7 @@ public class RRR_World extends LinearOpMode {
                 //drive.followTrajectorySequence(traj3);
 
 
-                /*drive.followTrajectorySequence(traj4);
+                drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
 
@@ -559,12 +559,12 @@ public class RRR_World extends LinearOpMode {
                 CloseBox();
 
                 //sleep(5000);
-                IntakeBox();
+               /* IntakeBox();
                 SlidePower(slidePower + 0.2);
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
+                sleep(waitTimev2);*/
 
                 breakerCheck = true;
 
@@ -588,7 +588,7 @@ public class RRR_World extends LinearOpMode {
                     drive.followTrajectorySequence(breakPark);
                 }
 
-                    */
+
             }
             if(finalDropPos == 2 ) {
                 drive.followTrajectorySequence(pos2);
@@ -599,85 +599,11 @@ public class RRR_World extends LinearOpMode {
                 HoldSlides();
                 BoardDropBox();
                 drive.followTrajectorySequence(traj2_2);
-                drive.followTrajectorySequence(tempPark2);
+                //drive.followTrajectorySequence(tempPark2);
 
 
 
                 //drive.followTrajectorySequence(traj3);
-
-
-                /*drive.followTrajectorySequence(traj4);
-                //useGrabber();
-
-                IntakePix();
-                //sleep(waitTime+1500);
-
-
-                drive.followTrajectorySequence(intake);
-
-
-                drive.followTrajectorySequence(traj5);
-                boolean pixelCheck = false;
-                boolean breakerCheck = false;
-                while (!pixelCheck) {
-
-                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
-                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
-                        breakerCheck = true;
-                        pixelCheck = true;
-                    }
-                    else{
-                        pixelCheck = true;
-                    }
-                }
-                IntakeRoller.setPower(0);
-                Intake.setPower(0);
-                CloseBox();
-
-                //sleep(5000);
-                intakeBox();
-                SlidePower(slidePower + 0.2);
-                sleep(waitTime+200);
-                HoldSlides();
-                BoardDropBox();
-                sleep(waitTimev2);
-
-                breakerCheck = true;
-
-                if(!breakerCheck) {
-
-                    //sleep(5000);
-                    SlidePower(slidePower + 0.2);
-                    sleep(waitTime + 200);
-                    HoldSlides();
-                    BoardDropBox();
-
-
-                    drive.followTrajectorySequence(traj5p2);
-                    OpenBox();
-                    sleep(475);
-                    IntakeBox();
-                    sleep(300);
-                    drive.followTrajectorySequence(park);
-                } else if(breakerCheck){
-                    drive.followTrajectorySequence(breakPark);
-                }*/
-
-            }
-            if(finalDropPos == 3) {
-                drive.followTrajectorySequence(pos3);
-
-                IntakeBox();
-                SlidePower(slidePower + 0.2);
-                sleep(waitTime-250); //Change
-                HoldSlides();
-                BoardDropBox();
-                drive.followTrajectorySequence(traj2_3);
-                drive.followTrajectorySequence(tempPark3);
-
-
-
-               /* //drive.followTrajectorySequence(traj3);
 
 
                 drive.followTrajectorySequence(traj4);
@@ -708,13 +634,74 @@ public class RRR_World extends LinearOpMode {
                 Intake.setPower(0);
                 CloseBox();
 
-                //sleep(5000);
+
+
+                breakerCheck = true;
+
+                if(!breakerCheck) {
+
+                    //sleep(5000);
+                    SlidePower(slidePower + 0.2);
+                    sleep(waitTime + 200);
+                    HoldSlides();
+                    BoardDropBox();
+
+
+                    drive.followTrajectorySequence(traj5p2);
+                    OpenBox();
+                    sleep(475);
+                    IntakeBox();
+                    sleep(300);
+                    drive.followTrajectorySequence(park);
+                } else if(breakerCheck){
+                    drive.followTrajectorySequence(breakPark);
+                }
+
+            }
+            if(finalDropPos == 3) {
+                drive.followTrajectorySequence(pos3);
+
                 IntakeBox();
                 SlidePower(slidePower + 0.2);
-                sleep(waitTime+200);
+                sleep(waitTime-250); //Change
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);
+                drive.followTrajectorySequence(traj2_3);
+                //  drive.followTrajectorySequence(tempPark3);
+
+
+
+                //drive.followTrajectorySequence(traj3);
+
+
+                drive.followTrajectorySequence(traj4);
+                //useGrabber();
+
+                IntakePix();
+                //sleep(waitTime+1500);
+
+
+                drive.followTrajectorySequence(intake);
+
+
+                drive.followTrajectorySequence(traj5);
+                boolean pixelCheck = false;
+                boolean breakerCheck = false;
+                while (!pixelCheck) {
+
+                    if (!(((DistanceSensor) Color).getDistance(DistanceUnit.CM) < 2) &&
+                            !(((DistanceSensor) ColorFront).getDistance(DistanceUnit.CM) < 1.5)) {
+                        breakerCheck = true;
+                        pixelCheck = true;
+                    }
+                    else{
+                        pixelCheck = true;
+                    }
+                }
+                IntakeRoller.setPower(0);
+                Intake.setPower(0);
+                CloseBox();
+
 
 
                 breakerCheck = true;
@@ -733,7 +720,7 @@ public class RRR_World extends LinearOpMode {
                     drive.followTrajectorySequence(park);
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
-                }*/
+                }
 
             }
 

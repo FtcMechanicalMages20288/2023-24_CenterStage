@@ -35,7 +35,7 @@ public class ColorDetect extends OpMode {
 
     @Override
     public void loop() {
-
+/*
 
         telemetry.addData("FrontBlue: ", ColorFront.blue());
         telemetry.addData("FrontRed: ", ColorFront.red());
@@ -43,7 +43,7 @@ public class ColorDetect extends OpMode {
 
         telemetry.addData("BackBlue: ", Color.blue());
         telemetry.addData("BackRed: ", Color.red());
-        telemetry.addData("BackGreen: ", Color.green());
+        telemetry.addData("BackGreen: ", Color.green()); */
 
 
         telemetry.addData("Normalized Color Front: " , ColorFrontSense.getNormalizedColors().toColor());

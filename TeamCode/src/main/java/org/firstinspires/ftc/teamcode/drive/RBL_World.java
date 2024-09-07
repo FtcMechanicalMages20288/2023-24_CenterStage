@@ -193,7 +193,7 @@ public class RBL_World extends LinearOpMode {
 
 
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(pos1.end())
-                .forward(FwBw+3,
+                .forward(FwBw+3.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -238,9 +238,9 @@ public class RBL_World extends LinearOpMode {
 
                 })
 
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93))) //x = 4.5 prev
-                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132-3)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(92))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(92))) //x = 4.5 prev
+                .lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(132-2)))
               //  .turn(Math.toRadians(-3.6))
 
                 .back(6)
@@ -312,8 +312,8 @@ public class RBL_World extends LinearOpMode {
                 // new code!!!!
 
                 //.lineToLinearHeading(new Pose2d(15, -68, Math.toRadians(136)))
-                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(93)))
-                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(93)))
+                .lineToLinearHeading(new Pose2d(3.4, -55, Math.toRadians(92)))
+                .lineToLinearHeading(new Pose2d(3.4,10,Math.toRadians(92)))
                 .addDisplacementMarker(()->{
                     boolean pixelCheck = false;
                    boolean breakyCheck = false;
@@ -389,7 +389,7 @@ public class RBL_World extends LinearOpMode {
 
         TrajectorySequence traj2_2 = drive.trajectorySequenceBuilder(pos2.end())
                 .waitSeconds(0.5)
-                .forward(FwBw+1.5,
+                .forward(FwBw+2.5,
                         SampleMecanumDrive.getVelocityConstraint(14, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL)
 
@@ -489,6 +489,21 @@ public class RBL_World extends LinearOpMode {
                 .build();
 
 
+        TrajectorySequence tempPark = drive.trajectorySequenceBuilder(traj2.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox+8,-33,Math.toRadians(90)))
+                .build();
+
+        TrajectorySequence tempPark2 = drive.trajectorySequenceBuilder(traj2_2.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox + 8,-33,Math.toRadians(90)))
+                .build();
+
+        TrajectorySequence tempPark3 = drive.trajectorySequenceBuilder(traj2_3.end())
+                .back(5)
+                .lineToLinearHeading(new Pose2d(strafetox + 8,-33,Math.toRadians(90)))
+                .build();
+
 
 
 
@@ -541,6 +556,7 @@ public class RBL_World extends LinearOpMode {
 
                 drive.followTrajectorySequence(traj5);
 
+                /*
                 boolean pixelCheck = false;
                 boolean breakerCheck = false;
                 while (!pixelCheck) {
@@ -564,7 +580,7 @@ public class RBL_World extends LinearOpMode {
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
 
@@ -587,6 +603,11 @@ public class RBL_World extends LinearOpMode {
 
 
 
+                 */
+
+                drive.followTrajectorySequence(tempPark);
+
+
             }
             if(finalDropPos == 2 ) {
                 drive.followTrajectorySequence(pos2);
@@ -602,7 +623,7 @@ public class RBL_World extends LinearOpMode {
 
                 //drive.followTrajectorySequence(traj3);
 
-
+                /*
                 drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
@@ -637,7 +658,7 @@ public class RBL_World extends LinearOpMode {
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
 
@@ -657,6 +678,10 @@ public class RBL_World extends LinearOpMode {
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
                 }
+
+                 */
+
+                drive.followTrajectorySequence(tempPark2);
 
             }
             if(finalDropPos == 3) {
@@ -676,7 +701,7 @@ public class RBL_World extends LinearOpMode {
 
                 //drive.followTrajectorySequence(traj3);
 
-
+                /*
                 drive.followTrajectorySequence(traj4);
                 //useGrabber();
 
@@ -711,7 +736,7 @@ public class RBL_World extends LinearOpMode {
                 sleep(waitTime+200);
                 HoldSlides();
                 BoardDropBox();
-                sleep(waitTimev2);*/
+                sleep(waitTimev2);
 
                 if(!breakerCheck) {
                     //sleep(5000);
@@ -720,7 +745,7 @@ public class RBL_World extends LinearOpMode {
                     HoldSlides();
                     BoardDropBox();
 
-                    drive.followTrajectorySequence(traj5p2);
+                    drive.followTrajectorySequence(traj5p2)
                     OpenBox();
                     sleep(475);
                     IntakeBox();
@@ -729,6 +754,9 @@ public class RBL_World extends LinearOpMode {
                 } else if(breakerCheck){
                     drive.followTrajectorySequence(breakPark);
                 }
+
+                 */
+                drive.followTrajectorySequence(tempPark3);
 
             }
 

@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.util.Range;
 import com.w8wjb.ftc.AdafruitNeoDriver;
 
 import android.graphics.Color;
@@ -21,10 +22,10 @@ import android.graphics.Color;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
-@TeleOp(name = "MecanumWorld", group = "TeleOp")
+@TeleOp(name = "Mecanum_Outreach", group = "TeleOp")
 
 
-public class MecanumLinear extends LinearOpMode {
+public class MecanumOutreach extends LinearOpMode {
 
 
     //DriveTrain Motors
@@ -69,13 +70,13 @@ public class MecanumLinear extends LinearOpMode {
 
     AdafruitNeoDriver neopixels;
 
-       float[] stripPurple =  new float[] {278 , 89, 66 };
+    float[] stripPurple =  new float[] {278 , 89, 66 };
 
-       float[] stripGreen = new float[] {101 , 42, 66 };
+    float[] stripGreen = new float[] {101 , 42, 66 };
 
-       float[] stripYellow = new float[] {20, 100, 100};
+    float[] stripYellow = new float[] {20, 100, 100};
 
-       float[] stripWhite = new float[] {0 , 0, 100};
+    float[] stripWhite = new float[] {0 , 0, 100};
 
 
 
@@ -123,8 +124,9 @@ public class MecanumLinear extends LinearOpMode {
 
         if (opModeInInit()) {
             initCode();
-         //   BucketL.setPosition(0.5);
-         //   BucketR.setPosition(0.5 );
+            showPurple();
+            //   BucketL.setPosition(0.5);
+            //   BucketR.setPosition(0.5 );
         }
 
         waitForStart();
@@ -164,19 +166,22 @@ public class MecanumLinear extends LinearOpMode {
             telemetry.addData("Pixels:", Pixels);
 
 
-            //Movement Controller
+            //Movement Controller Version-Refined
 
 
-            right_drivePower = gamepad1.right_stick_y *-1;
-            back_left_drivePower = gamepad1.left_stick_y * -1;
-            left_drivePower = gamepad1.left_stick_y * -1;
-            back_right_drivePower = gamepad1.right_stick_y * -1;
+            drive = gamepad1.left_stick_y * -1;
+            turn = gamepad1.right_stick_x;
+            strafe = gamepad1.left_stick_x;
 
+            fLeftPow = Range.clip(drive + turn + strafe, -1, 1);
+            bLeftPow = Range.clip(drive + turn - strafe, -1, 1);
+            fRightPow = Range.clip(drive - turn - strafe, -1, 1);
+            bRightPow = Range.clip(drive - turn + strafe, -1, 1);
 
-            left_drive.setPower(left_drivePower);
-            right_drive.setPower(right_drivePower);
-            back_left_drive.setPower(left_drivePower);
-            back_right_drive.setPower(right_drivePower);
+            left_drive.setPower(fLeftPow*0.5);
+            back_left_drive.setPower(bLeftPow*0.5);
+            right_drive.setPower(fRightPow*0.5);
+            back_right_drive.setPower(bRightPow*0.50);
 
 
             boolean rightbumper = gamepad1.right_bumper; //Strafe Right
@@ -193,18 +198,18 @@ public class MecanumLinear extends LinearOpMode {
 
             if (rightbumper) {
 
-                left_drive.setPower(1); // left drive is 0
-                right_drive.setPower(-1); // right drive is 2
-                back_left_drive.setPower(-1); // back left drive is 1
-                back_right_drive.setPower(1); // back right drive is 3
+                left_drive.setPower(0.5); // left drive is 0
+                right_drive.setPower(-0.5); // right drive is 2
+                back_left_drive.setPower(-0.5); // back left drive is 1
+                back_right_drive.setPower(0.5); // back right drive is 3
 
 
             } else if (leftbumper) {
 
-                left_drive.setPower(-1);
-                right_drive.setPower(1);
-                back_left_drive.setPower(1);
-                back_right_drive.setPower(-1);
+                left_drive.setPower(-0.5);
+                right_drive.setPower(0.5);
+                back_left_drive.setPower(0.5);
+                back_right_drive.setPower(-0.5);
 
 
             }
@@ -213,95 +218,26 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-
             //Fwd Bckwd
             if(gamepad1.right_trigger > 0.3){
-                left_drive.setPower(1);
-                right_drive.setPower(1);
-                back_left_drive.setPower(1);
-                back_right_drive.setPower(1);
+                left_drive.setPower(0.5);
+                right_drive.setPower(0.5);
+                back_left_drive.setPower(0.5);
+                back_right_drive.setPower(0.5);
             }
 
             if(gamepad1.left_trigger > 0.3){
-                left_drive.setPower(-1);
-                right_drive.setPower(-1);
-                back_left_drive.setPower(-1);
-                back_right_drive.setPower(-1);
-            }
-            //Auto Forward and Backward
-
-       /* if(gamepad1.right_trigger > 0.3){
-            left_drive.setPower(1);
-            right_drive.setPower(1);
-            back_left_drive.setPower(1);
-            back_right_drive.setPower(1);
-        }
-        else if(gamepad1.left_trigger > 0.3){
-            left_drive.setPower(-1);
-            right_drive.setPower(-1);
-            back_left_drive.setPower(-1);
-            back_right_drive.setPower(-1);
-
-
-
-        }
-        else{
-
-        } */
-
-
-            //Led code
-
-
-            if (Pixels == 0 /*&& endTime < 85000*/) {
-                  showRed();
+                left_drive.setPower(-0.5);
+                right_drive.setPower(-0.5);
+                back_left_drive.setPower(-0.5);
+                back_right_drive.setPower(-0.5);
             }
 
-            if (Pixels == 1 /*&& endTime < 85000*/) {
-               // colorsDefined(stripWhite , getBackColor());
-                 showGreen();
-            }
-
-            if (Pixels == 2 /*&& endTime < 85000*/) {
-               showPurple();
 
 
-                //colorsDefined(getFrontColor(), getBackColor());
-            }
-
-            if (endTime > 80000 && Pixels == 0 || endTime > 80000 && Pixels == 1 || endTime > 80000 && Pixels == 2) {
 
 
-                if (endTime > 80100 && endTime < 80500) {
-                    showGold();
-                }
-                if (endTime > 80500 && endTime < 81000) {
-                    showPurple();
-                }
-                if (endTime > 81500 && endTime < 82000) {
-                    showGold();
-
-                }
-                if (endTime > 82000 && endTime < 82500) {
-                    showPurple();
-                }
-                if (endTime > 82500 && endTime < 83000) {
-                    showGold();
-                }
-                if (endTime > 83500 && endTime < 84000) {
-                    showPurple();
-                }
-                if (endTime > 84000 && endTime < 84500) {
-                    showGold();
-
-                }
-                if (endTime > 85000) {
-                    showPurple();
-                }
-
-
-            }
-
+// Dhruv (Dr. Huv, David, Drufus) singh sucks balls
             // CLAW ROTATION
 
 
@@ -388,7 +324,7 @@ public class MecanumLinear extends LinearOpMode {
                 pixelBack = false;
 
             }
-           else if(gamepad2.left_trigger > 0.3){
+            else if(gamepad2.left_trigger > 0.3){
                 Pixels = 0;
                 OpenBox();
                 pixelBack = false;
@@ -452,13 +388,13 @@ public class MecanumLinear extends LinearOpMode {
             //intake
             if (gamepad2.a && IntakeReady) {
                 Intake.setPower(1); // was 0.9 until 3/1
-                IntakeRoller.setPower(0.8);
+                IntakeRoller.setPower(-0.8);
 
             }
             // outtake
             else if (gamepad2.b) {
                 Intake.setPower(-0.6);
-                IntakeRoller.setPower(-0.8);
+                IntakeRoller.setPower(0.8);
             } else {
                 Intake.setPower(0);
                 IntakeRoller.setPower(0);
@@ -499,16 +435,16 @@ public class MecanumLinear extends LinearOpMode {
         }
 
 
-            left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_left_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            left_drive.setPower(0);
-            right_drive.setPower(0);
-            back_left_drive.setPower(0);
-            back_right_drive.setPower(0);
-            colorOff();
+        left_drive.setPower(0);
+        right_drive.setPower(0);
+        back_left_drive.setPower(0);
+        back_right_drive.setPower(0);
+        colorOff();
 
     }
 
@@ -520,7 +456,7 @@ public class MecanumLinear extends LinearOpMode {
         BucketHold.setPosition(0.7);
     }
     private void OpenBox(){
-      //  BucketHold.setPosition(0.7); //close
+        //  BucketHold.setPosition(0.7); //close
         BucketHold.setPosition(0.5);
 
     }
@@ -542,8 +478,8 @@ public class MecanumLinear extends LinearOpMode {
     }
 
     private void BoardDropBox(){
-        //BucketL.setPosition(0.02);
-        BucketR.setPosition(0.72);
+        BucketL.setPosition(0.05);
+        BucketR.setPosition(0.05);
 
     }
     private void HoldSlides(){
@@ -556,8 +492,8 @@ public class MecanumLinear extends LinearOpMode {
         SlideR.setPower(0);
     }
     private void IntakeBox(){
-       BucketL.setPosition(0.3);
-       BucketR.setPosition(0.34);
+        BucketL.setPosition(0.365);
+        BucketR.setPosition(0.365);
 
     }
 
@@ -669,7 +605,7 @@ public class MecanumLinear extends LinearOpMode {
         }
 
         return stripGreen;
-        
+
     }
 
     private float[] getFrontColor() {
@@ -713,8 +649,8 @@ public class MecanumLinear extends LinearOpMode {
             return stripYellow;
         }
 
-            return stripGreen;
-        }
+        return stripGreen;
+    }
 
 
 
@@ -782,7 +718,7 @@ public class MecanumLinear extends LinearOpMode {
 
 
 
-         Grabber = hardwareMap.get(Servo.class, "Grab");
+        Grabber = hardwareMap.get(Servo.class, "Grab");
 
 
         IntakeRoller = hardwareMap.get(CRServo.class, "Roll");
@@ -805,7 +741,7 @@ public class MecanumLinear extends LinearOpMode {
         right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         back_right_drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-      //  GrabRoller.setPower(0);
+        //  GrabRoller.setPower(0);
         HangR.setPosition(0.5); // correct
         HangL.setPosition(0.1);
         // HangR.setPosition(0.5);

@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Config
-@Autonomous(group = "RRL_StateW")
+@Autonomous(group = "RRL_State")
 public class RRL_State extends LinearOpMode {
 
     int dropPos1;
